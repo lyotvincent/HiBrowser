@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <title>HiC Browser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- site CSS -->
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/igv_browser.css">
+
+    <!-- Juicebox CSS-->
+    <link rel="stylesheet" href="css/juicebox.css"/>
+
+    <!-- Bootstrap 4 and Dependancies -->
+   
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/layer/layer.js"></script>
+
+    <script src="js/stat.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/header.js"></script>
+    <script type="module" src="js/tools.js"></script>
+    <script type="module" src="js/example.js"></script>
+
+    
+    
+</head>
+<body>
+  <header class="hic-header">
+    <div class="hic-logo">
+      <span style="color: darkcyan;font-size: 2.5rem;font-weight: 900; cursor: pointer;">HiC Browser</span>
+    </div>
+    <div class="hic-nav">
+      <!-- A map -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle radius-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+          A map
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" id="load-a-human-sample1">human sample1</a>
+          <a class="dropdown-item" id="load-a-human-sample2">human sample2</a>
+          <a class="dropdown-item" id="load-a-mouse-sample1">mouse sample1</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#load-A-modal">From URL</a>
+          <label class="dropdown-item btn btn-default btn-file">
+            <div>
+                <div>
+                    Local File
+                </div>
+                <div>
+                    <input name="local-contact-map" type="file" style="display: none;">
+                </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- B map -->
+      <div class="dropdown">
+        <button class="btn btn-danger dropdown-toggle radius-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+          B map
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" id="load-b-human-sample1">human sample1</a>
+          <a class="dropdown-item" id="load-b-human-sample2">human sample2</a>
+          <a class="dropdown-item" id="load-b-mouse-sample1">mouse sample1</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#load-B-modal">From URL</a>
+          <label class="dropdown-item btn btn-default btn-file">
+            <div>
+                <div>
+                    Local File
+                </div>
+                <div>
+                    <input name="local-control-map" type="file" style="display: none;">
+                </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Ref GENE -->
+      <div class="dropdown">
+        <button class="btn btn-warning dropdown-toggle radius-1"  type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+          Genome
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" id="load-hg19-ref">hg19</a>
+          <a class="dropdown-item" id="load-mm10-ref">mm10</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#load-gene-modal">From URL</a>
+          <label class="dropdown-item btn btn-default btn-file">
+            <div>
+                <div>
+                    Local File
+                </div>
+                <div>
+                  <input name="local-ref-gene" type="file"  multiple="" style="display: none;">
+                </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+
+      <div class="hic-track">
+        <button class="btn btn-success radius-1" type="button" data-toggle="modal" data-target="#load-track-modal">
+          Track
+        </button>
+      </div>
+
+      <div class="hic-clone">
+        <button name="hic-clone" type="button" class="btn btn-info radius-1">Clone</button>
+      </div>
+
+    </div>
+  </header>
+  <!-- <div class="cover" id='cover'>
+    <div class="left-menu">
+      <div class="item title">
+        <span>A map</span>
+      </div>
+      <div class="item subtitle">
+        <span>Load Local File</span>
+      </div>
+      <div class="item subtitle">
+        <span>Load Remote File</span>
+      </div>
+      <div class="item title">
+        <span>B map</span>
+      </div>
+      <div class="item subtitle">
+        <span>Load Local File</span>
+      </div>
+      <div class="item subtitle">
+        <span>Load Remote File</span>
+      </div>
+
+      <div class="item title">
+        <span>Track</span>
+      </div>
+      <div class="item subtitle">
+        <span>Load Local File</span>
+      </div>
+      <div class="item subtitle">
+        <span>Load Remote File</span>
+      </div>
+      <div class="item subtitle">
+        <span>Clone</span>
+      </div>
+
+    </div>
+    <div class="right-cover" id = 'right-cover'></div>
+  </div> -->
+  
+
+  <main class="hic-main">
+    <section class="hic-view">
+      <div id="app-container" class="hic-browser-container">
+      </div>
+      <div class="row">
+        <div class="col-sm">
+            <div id="igv-app-container">
+            </div>
+        </div>
+    </div>
+    </section>
+  </main>
+
+  <section class="modal-section">
+    <!-- 加载track -->
+    <div class="modal fade" id="load-track-modal">
+      <div class="modal-dialog modal-large">
+        <div class="modal-content">
+          <!-- 模态框头部 -->
+          <div class="modal-header">
+            <div class="modal-title">Loading track...</div>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+     
+          <!-- 模态框主体 -->
+          <div class="modal-body">
+            <div class="modal-box">
+              <h3>1.Choose file type:</h3>
+              <div class="track-type">
+                <input type="text" id = "track-select-input" readonly placeholder="Select the track Type">
+                <div class="track-option" id = "track-option">
+                  <label>2D annotations(supported by Juicebox)</label>
+                  <div value="tad">TAD Domains, processed by tabix in .txt format</div>
+                  <div value="loop">Loop, processed by tabix in .txt format</div>
+                  <div value="ab" >A/B compartment, processed by tabix in .bedGraph</div>
+                  <label>Other tracks(supported by IGV)</label>
+                  <div value="annotation">Non-quantitative genome annotations  - bed, gff, gff3, gtf, bedpe, and others</div>
+                  <div value="wig">Quantitative genomic data - 	wig, bigWig, bedGraph</div>
+                  <div value="alignment">Sequencing and alignments - bam, cram</div>
+                  <div value="variant">Genomic variants - vcf</div>
+                  <div value="seg">Segmented copy number data - seg</div>
+                  <div value="mut">Mutation data, primarily from cancer studies - 	maf, mutt</div>
+                  <div value="interact" >Arcs representing associations or interactions between 2 genomic loci. - 	bedpe, interact, bigInteract</div>
+                  <div value="gwas">Genome wide association data (manhattan plots) - gwas, bed</div>
+                  <div value="arc">RNA secondary structure - 	bp, bed</div>
+                  <div value="junction">RNA splice junctions -	bed</div>
+                  <div value="auto">Automatic speculation</div>
+                </div>
+              </div>
+            </div>
+            <div class="dashed-line"></div>
+            <div class="modal-box">
+              <h3>2. Choose track file(optional)</h3>
+              <label class="button-like-file-select">
+                <span id = "button-like-select-track" class="button-like-select-text">Select a Track File</span>
+                <span class="icon-folder">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="full-dim" viewBox="0 0 32 32" fill-rule="evenodd"><path d="M0 6h2v20H0zM30 15h2v11h-2zM13 6h9v2h-9zM4 2h6v2H4zM10 11h18v2H10zM4 28h24v2H4zM6 15h2v11H6zM2 6H0c0-2.208 1.792-4 4-4v2a2 2 0 0 0-2 2zM8 15H6c0-2.208 1.792-4 4-4v2a2 2 0 0 0-2 2zM32 15h-2a2 2 0 0 0-2-2v-2h.052A4.002 4.002 0 0 1 32 15zM26 10h-2a2 2 0 0 0-2-2V6h.052A4.002 4.002 0 0 1 26 10zM10.026 2A4.002 4.002 0 0 1 14 6h-2a2 2 0 0 0-2-2V2h.026z" fill="currentColor"></path><circle cx="13" cy="7" r="1" fill="currentColor"></circle><path d="M12 6h2v1h-2zM32 26c0 2.208-1.792 4-4 4v-2a2 2 0 0 0 2-2h2zM2 26a2 2 0 0 0 4 0h2c0 2.208-1.792 4-4 4s-4-1.792-4-4h2z" fill="currentColor"></path>
+                  </svg>
+                </span>
+                <input type="file" id="upload-track-input">
+              </label>
+              <label class="button-like-file-select">
+                <span id = "button-like-select-track-idx" class="button-like-select-text">Select a Track Index File</span>
+                <span class="icon-folder">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="full-dim" viewBox="0 0 32 32" fill-rule="evenodd"><path d="M0 6h2v20H0zM30 15h2v11h-2zM13 6h9v2h-9zM4 2h6v2H4zM10 11h18v2H10zM4 28h24v2H4zM6 15h2v11H6zM2 6H0c0-2.208 1.792-4 4-4v2a2 2 0 0 0-2 2zM8 15H6c0-2.208 1.792-4 4-4v2a2 2 0 0 0-2 2zM32 15h-2a2 2 0 0 0-2-2v-2h.052A4.002 4.002 0 0 1 32 15zM26 10h-2a2 2 0 0 0-2-2V6h.052A4.002 4.002 0 0 1 26 10zM10.026 2A4.002 4.002 0 0 1 14 6h-2a2 2 0 0 0-2-2V2h.026z" fill="currentColor"></path><circle cx="13" cy="7" r="1" fill="currentColor"></circle><path d="M12 6h2v1h-2zM32 26c0 2.208-1.792 4-4 4v-2a2 2 0 0 0 2-2h2zM2 26a2 2 0 0 0 4 0h2c0 2.208-1.792 4-4 4s-4-1.792-4-4h2z" fill="currentColor"></path>
+                  </svg>
+                </span>
+                <input type="file" id="upload-track-idx-input">
+              </label>
+            </div>
+            <div class="dashed-line"></div>
+            <div class="modal-box">
+              <h3>3. Choose track url(optional)</h3>
+              <div class="igv-file-load-widget-container">
+                <div class="igv-flw-input-container">
+                  <div class="igv-flw-input-row">
+                    <div class="igv-flw-input-label">Track URL</div>
+                    <input id = 'track-url' type="text">
+                  </div>
+                  <div class="igv-flw-input-row">
+                    <div class="igv-flw-input-label">Index URL</div>
+                    <input id="track-index-url" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+     
+          <!-- 模态框底部 -->
+          <div class="modal-footer">
+            <button name = "load-track-button" type="button" class="btn btn-primary">Submit</button>
+          </div>
+     
+        </div>
+      </div>
+    </div>
+    <div id="load-gene-modal" class="modal" aria-hidden="true">
+      <div class="modal-dialog modal-large">
+        <div class="modal-content">
+          <div class="modal-header">
+              <div class="modal-title">refGene URL</div>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+          <div class="igv-file-load-widget-container">
+            <div class="igv-flw-input-container">
+              <div class="igv-flw-input-row">
+                <div class="igv-flw-input-label">fasta/fa URL</div>
+                <input type="text">
+              </div>
+              <div class="igv-flw-input-row">
+                <div class="igv-flw-input-label">fai URL</div>
+                <input type="text">
+              </div>
+              <div class="igv-flw-input-row">
+                <div class="igv-flw-input-label">refGene URL</div>
+                <input type="text">
+              </div>
+              <div class="igv-flw-input-row">
+                <div class="igv-flw-input-label">cytoBandIdeo URL</div>
+                <input type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="load-A-modal" class="modal" aria-hidden="true">
+      <div class="modal-dialog modal-large">
+        <div class="modal-content">
+          <div class="modal-header">
+              <div class="modal-title">Load A map from url</div>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+          <div class="igv-file-load-widget-container">
+            <div class="igv-flw-input-container">
+              <div class="igv-flw-input-row">
+                <div class="igv-flw-input-label">.hic file URL</div>
+                <input id ="load-A-url" type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id="load-A-btn">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="load-B-modal" class="modal" aria-hidden="true">
+      <div class="modal-dialog modal-large">
+        <div class="modal-content">
+          <div class="modal-header">
+              <div class="modal-title">Load A map from url</div>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+          <div class="igv-file-load-widget-container">
+            <div class="igv-flw-input-container">
+              <div class="igv-flw-input-row">
+                <div class="igv-flw-input-label">.hic file URL</div>
+                <input id="load-B-url" type="text">
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" id = "load-B-btn">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <div style="background-color: #F6F8F7; height: 300px;border-bottom: 1px solid white;">
+    <div class="footer-left">
+
+    </div>
+    <fiv class="footer-right">
+
+    </fiv>
+  </div>
+  <footer class="hic-footer">
+    <div>Copyright © 2021-2022. Nankai University.</div>
+    <div>Developed by the <a href="http://bio.nankai.edu.cn" target="_blank">Liu Lab</a></div>
+    <div>All rights reserved.</div>
+  </footer>
+
+  <div class="hic-tools-right">
+    <div class="box" id="cursor-guide" data-toggle="tooltip" data-placement="left" title="cursor guide">
+      <span href="#" class="tool" >
+          <i class="fa fa-magic"></i>
+      </span>
+     </div>
+     <div class="box" id = "ROI" data-toggle="tooltip" data-placement="left" title = "Region of Interest">
+      <span href="#" class="tool">
+          <i class="fa fa-square-o"></i>
+      </span>
+    </div>
+    <div class="box" id ='browser-refresh' data-toggle="tooltip" data-placement="left" title = "refresh">
+      <span class="tool">
+          <i class="fa fa-rotate-left"></i>
+      </span>
+    </div>
+
+
+    <div class="box" id ='setting'>
+      <span class="tool">
+          <i class="fa fa-gear"></i>
+      </span>
+    </div>
+    <div id = "back-to-top" class="box" data-toggle="tooltip" data-placement="left" title = "back-to-top">
+      <span class="tool">
+          <i class="fa fa-arrow-up"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="hic-tools-left">
+    <div class="box" id="3Ddisplay" data-toggle="tooltip" data-placement="left" title="3Ddisplay">
+      <span href="#" class="tool" >
+          <i class="fa fa-cube"></i>
+      </span>
+    </div>
+
+    <div  class="box" id = "browser-search" data-toggle="tooltip" data-placement="left" title = "Search">
+        <span class="tool">
+            <i class="fa fa-search"></i>
+        </span>
+    </div>
+
+    <div class="box" id='analyse'>
+        <span href="#" class="tool">
+            <i class="fa fa-bar-chart-o"></i>
+        </span>
+    </div>
+    
+   
+    <div class="box" id = "browser-zoom-in" data-toggle="tooltip" data-placement="left" title = "Browser Zoom In">
+        <span href="#" class="tool">
+            <i class="fa fa-plus"></i>
+        </span>
+    </div>
+
+    <div class="box" id = "browser-zoom-out" data-toggle="tooltip" data-placement="left" title = "Browser Zoom Out">
+        <span href="#" class="tool">
+            <i class="fa fa-minus"></i>
+        </span>
+    </div>
+
+    <div class="box" id ='browser-rotate' data-toggle="tooltip" data-placement="left" title = "display map in diagonal">
+      <span class="tool">
+          <i class="fa fa-caret-up"></i>
+      </span>
+    </div>
+  </div>
+
+  <div style="display: none;">
+    <input id="delete_panel">
+    <button id="delete_panel_button"/>
+  </div>
+
+</body>
+
+
+</html>

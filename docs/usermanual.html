@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0"/>
+    <link href="img/favicon.ico" rel="shortcut icon">
+	<title>HiBrowser: a Flexible and Synchronous Multi Omics Browser </title>
+	<!-- Les styles -->
+	<link href="css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="css/docs.css" rel="stylesheet" media="screen">
+	<link href="css/prettify.css" rel="stylesheet" media="screen">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/prettify.js"></script>
+	<script src="js/main.js"></script>
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+              <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="brand" href="./index.html">HiBrowser</a>
+              <div class="nav-collapse collapse">
+                  <ul class="nav">
+                      <li><a href="./index.html">HOME</a></li>
+                      <li><a href="" target="_blank">BROWSER</a></li>
+                      <li class="active"><a href="./usermanual.html">USER MANUAL</a></li>
+                      <li><a href="./data.html">SUPPORT DATA</a></li>
+                      <li><a href="https://github.com/nkulpj/hicbrowser" target="_blank">SOURCE</a></li>
+                      <li><a href="./contact.html">CONTACT</a></li>
+                  </ul>
+              </div><!--/.nav-collapse -->
+          </div>
+      </div>
+  	</div>
+  
+	<div class="container">
+		<div class="row">
+			<div class="span3 bs-docs-sidebar" id="menu-list" >
+				<ul class="nav nav-list bs-docs-sidenav affix">
+					<li class="active"><a href="#start"><i class="icon-chevron-right"></i> Quick Start</a></li>
+					<li><a href="#loadhic"><i class="icon-chevron-right"></i> Load HiBrowser</a></li>
+					<li><a href="#loadgene"><i class="icon-chevron-right"></i> Load Gene Browser</a></li>
+					<li><a href="#loadtrack"><i class="icon-chevron-right"></i> Load Track</a></li>
+					<li><a href="#clone"><i class="icon-chevron-right"></i> Monitoring and Clone</a></li>
+					<li><a href="#hicpanel"><i class="icon-chevron-right"></i> Hi-C Viewer Panel</a></li>
+					<li><a href="#hiccanvas"><i class="icon-chevron-right"></i> Hi-C Viewer Canvas</a></li>
+					<li><a href="#hicsync"><i class="icon-chevron-right"></i> Browser Sync</a></li>
+					<li><a href="#gb"><i class="icon-chevron-right"></i> Genome Browser</a></li>
+					<li><a href="#tools"><i class="icon-chevron-right"></i> Widget</a></li>
+					<li><a href="#3d"><i class="icon-chevron-right"></i> 3D model</a></li>
+		    		<li><a href="#search"><i class="icon-chevron-right"></i> Search </a></li>
+					<li><a href="#analyse"><i class="icon-chevron-right"></i> Analyse </a></li>
+		    	</ul>
+		  	</div>
+		  	
+		  	<div class="span9">
+		  		<section id="start">
+                    <div class="page-header">
+						<h1>Quick start</h1>
+						
+					</div>
+					<h4>Guide to the UI</h4>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig1.png" class="img-rounded">
+					</div> 
+					<p> This screenshot illustrates default Hi-C Map and tracks after adjusting track order and heights to display heat maps.</p>
+					<p>The interface consists of four main components:</p>
+					<ul>
+						<li>Header</li>
+						<ul>
+							<li>Load Hi-C Map: Button A&B Map</li>
+							<li>Load Gene Browser: Button Genome</li>
+							<li>Load Track</li>
+							<li>Clone</li>
+						</ul>
+						<li>Hi-C Viewer</li>
+							<ul>
+								<li>panel</li>
+								<li>main canvas</li>
+							</ul>
+						<li>Gene Browser</li>
+						<li>Widgets</li>
+							<ul>
+								<li>3D model</li>
+								<li>Search</li>
+								<li>Analyse</li>
+								<li>Others</li>
+							</ul>
+					</ul>
+					<p><b>When entering the app homepage, we will load two empty Hi-C Viewer by default 
+						and use a <span style="background: rgb(15, 118, 162);color: white;">blue bar</span> to indicate the currently selected viewer.
+					</b></p>
+					<p class="warning">
+						Please pay attention to the Hi-C Viewer you selected(<u>Just click with your mouse</u>), because this will be the key associated with subsequent Gene Browsers and the right widgets(tools).
+					</p>
+					<p>The following describes the usage of each component in detail.</p>
+				</section>
+                <section id="loadhic">
+                    <div class="page-header">
+						<h1>Load Hi-C Viewer</h1>
+					</div>
+					<h4>A map</h4>
+					<p>By clicking this button, you can load a Hi-C file and visualize it.</p>
+					<ul>
+						<li>Only support .hic file(<i>We will automatically check the files you upload</i>)</li>
+						<li>support local file and remote url</li>
+						<li>It will be displayed on the viewer you selected</li>
+						<li>It will overwrite the previous one, if you have already loaded it</li>
+					</ul>
+					<div class="collapse-btn" data-toggle="collapse" data-target="#one">How to use</div>
+					<div class="collapse multi-collapse" id="one">
+						<hr>
+						<p>
+							1. Select one viewer by clicking it if you have cloned 2 or more viewers.
+						</p>
+						<p>
+							2. Click A map button.
+						</p>
+						<p>
+							3. If using a remote file, select `remote url` and enter the url which is ended with `.hic`
+						</p>
+					</div>
+					<h4>B map</h4>
+					<p><i>The first .hic file is called <b class="warning">contact map</b> and the second one called <b class="warning">control map</b> if they are both loaded into the same Hi-C Viewer.</i></p>
+					<p><i>This function is implemented to compare the differences between samples more conveniently which is supported by juicer box.</i></p>
+					<p>By clicking this button, you can load a control Hi-C file and visualize it.</p>
+					<ul>
+						<li>Only support .hic file(<i>We will automatically check the files you upload</i>)</li>
+						<li>Only when you load the contact map will it take effect(Loaded it By clicking Button A map)</li>
+						<li>support local file and remote url</li>
+						<li>It will overwrite the previous one, if you have already loaded it</li>
+					</ul>
+					<div class="collapse-btn" data-toggle="collapse" data-target="#two">How to use</div>
+					<div class="collapse multi-collapse" id="two">
+						<hr>
+						<p>
+							1. Select one viewer by clicking it if you have cloned 2 or more viewers and make sure you have loaded contact map.
+						</p>
+						<p>
+							2. Click B map button.
+						</p>
+						<p>
+							3. If using a remote file, select `remote url` and enter the url which is ended with `.hic`
+						</p>
+					</div>
+					<p class="info">If you are prompted that loading fails, you can confirm whether you have selected the correct viewer.</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="48%" src="img/fig5.png" class="img-rounded">
+						<img width="48%" src="img/fig6.png" class="img-rounded">
+						<hr>
+						<span>left:load contact map; right: load control map</span>
+					</div> 
+                </section>
+				<section id="loadgene">
+                    <div class="page-header">
+						<h1>Load Gene Browser</h1>
+					</div>
+					<p>By clicking this button, you can load a Gene Browser and visualize it.</p>
+					<ul>
+						<li>It requires three files and one optional file. <a href="./data.html#ref" target="_blank"> More details.</a></li>
+						<ul>
+							<li>the reference Genome sequence(.fasta, .fa)</li>
+							<li>the index file of reference Genome sequence(.fai)</li>
+							<li>the refGene(.txt.gz)</li>
+							<li><i>(Optional)</i>the cytoBandIdeo(.txt)</li>
+						</ul>
+						<li>Only when you load the contact map will it take effect(Loaded it By clicking Button A map)</li>
+						<li>It will overwrite the previous one, if you have already loaded it</li>
+						<li>support local file and remote url</li>
+					</ul>
+					<div class="collapse-btn" data-toggle="collapse" data-target="#three">How to use</div>
+					<div class="collapse multi-collapse" id="three">
+						<hr>
+						<p>
+							1. Select one viewer by clicking it if you have cloned 2 or more viewers and make sure you have loaded contact map.
+						</p>
+						<p>
+							2. Click `Genome` button.
+						</p>
+						<p>
+							3. If using remote files, select `remote url` and enter three required urls and one optional url.
+						</p>
+						<p>
+							4. If using local files, press and hold the keyboard `CTRL`(`command` in Mac), and select three required files and one optional file.
+						</p>
+					</div>
+
+					<p class="info">If you are prompted that loading fails, you can confirm whether you have selected the correct viewer.</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig7.png" class="img-rounded">
+					</div> 
+                </section>
+				<section id="loadtrack">
+                    <div class="page-header">
+						<h1>Load Track</h1>
+					</div>
+					<p>We support displaying 2D annotations on Hi-C Viewer and gene annotations on Gene Browser.<a href="./data.html#2d" target="_blank"> More details.</a></p>
+					<ul>
+						<li>support local file and remote url</li>
+						<li>support for various file types</li>
+					</ul>
+					<div class="collapse-btn" data-toggle="collapse" data-target="#four">How to use</div>
+					<div class="collapse multi-collapse" id="four">
+						<hr>
+						<p>
+							1. Select one viewer by clicking it if you have cloned 2 or more viewers and make sure you have loaded contact map and Gene Browser.
+						</p>
+						<p>
+							2. Click `track` button.
+						</p>
+						<p>
+							3. select your track type. [If there is no track type for you, please select `Automactic speculation`(The last one)]
+						</p>
+						<p>
+							4. Enter the urls or select local files. Note that the local file has higher priority than url.
+						</p>
+					</div>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="80%" src="img/fig9.png" class="img-rounded">
+					</div> 
+                </section>
+				<section id="clone">
+                    <div class="page-header"><h1>Clone</h1></div>
+					<!-- <h4>Monitoring</h4>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="31%" src="img/fig2.png" class="img-rounded">
+						<img width="31%" src="img/fig3.png" class="img-rounded">
+						<img width="31%" src="img/fig4.png" class="img-rounded">
+						<hr>
+						<span>left: Memory; Middle: Net Delay; right: FPS</span>
+					</div> 
+					<p>
+						<del>This widget provides a simple info box that will help you monitor your browser performance. You can close it in <span class="bghl">tools->setting</span></del>.
+					</p>
+					<p class="warning">UPDATE2.0 : We have removed the components, which are currently only displayed on the 3D model page.</p> -->
+					<h4>Clone</h4>
+					<p>We take a Hi-C Viewer and a Genome Browser as a whole.</p>
+					<p>By clicking this button, you can clone this component with empty body.</p>
+                </section>
+				<section id="hicpanel">
+					<div class="page-header">
+						<h1>Hi-C Viewer Panel</h1>
+					</div>
+					 <div class="bs-docs-example" style="text-align: center;">
+						 <img width="75%" src="img/fig10.png" class="img-rounded">
+					 </div> 
+					 <h4>filename</h4>
+					 <p>file name of contact map. we use the <span style="background: blue; color: white;">blue bar</span>, which is displayed on the file name, to indicate the currently selected browser</p>
+					 <h4>Locus</h4>
+					 <p> Locate to the chromosome sites quickly(by clicking its right icon)</p>
+					 <ul>
+						 <li>Support coordinate : <span class="bghl">chrx:start-end chry:start-end(space split)</span></li>
+							 <ul>
+								 <li>support omitting prefix `chr` </li>
+								 <li>support ommiting chry</li>
+								 <li>support ommiting end</li>
+							 </ul>
+						 <li>Support gene : gene name</li>
+					 </ul>
+					<h4>color bar</h4>
+					 <p>Set the color bar of the heat map:</p>
+					 <ul>
+						<li>left one: if the value recored in .hic is equal to min value</li>
+						<li>right one: if the value recored in .hic is equal to max value</li>
+					 </ul>
+					 <h4>Threshold of contact value</h4>
+					 <p>Controls the color depth of the heat map. The higher the value, the lighter the heat map color</p>
+				
+					 <h4>normalization</h4>
+					 <p>different normalization of Hi-C contact Matrix</p>
+					 <h4>resolution</h4>
+					 <p>Adjust the resolution to view more detailed</p>
+					 <div class="bs-docs-example" style="text-align: center;">
+						 <img width="48%" src="img/fig11.png" class="img-rounded">
+						 <img width="48%" src="img/fig12.png" class="img-rounded">
+						 <hr>
+						 <span>Adjust color bar and threshold. The resolution and normalization are changed for the right</span>
+					 </div> 
+					 <h4>lock</h4>
+					 <p>lock the select option resolution</p>
+					 <h4>delete</h4>
+					 <p>delete this Hi-C Viewer(if there are two or more)</p>
+				 </section>	
+				 <section id="hiccanvas">
+					<div class="page-header">
+						<h1>Hi-C Viewer Canvas</h1>
+					</div>
+					 <h4>X axis and Y axis</h4>
+					 <p>By clicking it, the canvas zooms into the intra-chromosome heatmap</p>
+					 <h4>canvas</h4>
+					 <p>By double clicking it, the canvas can zoom into more details</p>
+					 <p>By dragging it, you can view heat map of other regions of chromosome</p>
+					 <div class="collapse-btn" data-toggle="collapse" data-target="#five">How to use</div>
+					 <div class="collapse multi-collapse" id="five">
+						 <hr>
+						 <div class="bs-docs-example" style="text-align: center;">
+							<img width="75%" src="img/fig31.png" class="img-rounded">
+						</div> 
+					 </div>
+					 <h4>2d track menu</h4>
+					 <p>Here, you can quickly locate the whole chromosome.</p>
+					 <p>If you loaded 2d tracks, you can also manage them here, such as adjusting colors, deleting, etc</p>
+					 <div class="bs-docs-example" style="text-align: center;">
+						<img width="48%" src="img/fig13.png" class="img-rounded">
+						<img width="48%" src="img/fig14.png" class="img-rounded">
+					</div> 
+					 <h4>sync</h4>
+					 <p>See Next Section.</p>
+					 <h4>control map panel</h4>
+					 <p>Select the matrix displayed on canvas:</p>
+					 <ul>
+						<li>A:Contact Map</li>
+						<li>B:Control Map</li>
+						<li>A/B</li>
+						<li>B/A</li>
+					 </ul>
+					 <div class="bs-docs-example" style="text-align: center;">
+						<img width="24%" src="img/fig15.png" class="img-rounded">
+						<img width="24%" src="img/fig16.png" class="img-rounded">
+						<img width="24%" src="img/fig17.png" class="img-rounded">
+						<img width="24%" src="img/fig18.png" class="img-rounded">
+						<hr>
+						<span>From left to right: A, B, A/B, B/A</span>
+					</div> 
+
+				 </section>	
+				 <section id="hicsync">
+					<div class="page-header"><h1>Browser Sync</h1></div>
+					<p>Multiomics and Sample differences are of great significance to the study of biological gene regulatory network and epigenetic network.</p>
+					<!-- <p>Despite the rapid development of Genome and Hic visualization tools, two collaborative visualization tools of omics have not yet appeared.</p> -->
+					<p class="warning">Our browser provides two collaborative visualization functions</p>
+					<ul>
+						<li>Synchronization between Hi-C and Gene Browser</li>
+						<li>Synchronization between two and more Hi-C and Gene Browser</li>
+					</ul>
+					<p>After loading the Gene browser, it will synchronize with its associated hic browser.</p>
+					<p>That is, if you drag or zoom in or out the Hi-C Viewer, the Gene Browser will also synchronize, and vice versa.</p>
+					<p>In addition, we provide a <i>sync button</i> on the Hi-C panel to synchronize multiple samples by clicking it.</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/gif/2.gif" class="img-rounded">
+					</div> 
+				 </section>	
+				<section id="gb">
+                    <div class="page-header"><h1>Genome Browser</h1></div>
+					<p>We embed igv as our Gene Browser and integrated their functions as result.</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig19.png" class="img-rounded">
+					</div> 
+					<p>By clicking the gear icon, you can modify the property of loaded track. </p>
+					<p>By clicking the canvas, you can view more detail infos recored in you track files.</p>
+                </section>
+				<section id="tools">
+                    <div class="page-header"><h1>Widgets</h1></div>
+					<p>To explore more information in the hic heatmap, we provide very rich expansion components.</p>
+					<h4>3D model</h4>
+					<p>see in <a href="#3d">here</a></p>
+					<h4>Cursour guide</h4>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig20.png" class="img-rounded">
+					</div> 
+					<p>Add guide line at your mouse pointer, and locate the same site on different samples</p>
+					<h4>Search</h4>
+					<p>see in <a href="#search">here</a></p>
+					<h4>Analyse</h4>
+					<p>see in <a href="#analyse">here</a></p>
+					<h4>ROI</h4>
+					<p>Region of Interest</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig21.png" class="img-rounded">
+					</div> 
+					<p>Changed the drag event on canvas to be selecting a region of interest, where you can: </p>
+					<ul>
+						<li>Get coordinate</li>
+						<li>Zoom into this region</li>
+						<li>Display in 3D model</li>
+						<li>Highlight</li>
+					</ul>
+					<h4>Zoom in & Zoom out & Back to Top</h4>
+					<p>The functions are the same as their name.</p>
+					<h4>Rotate</h4>
+					<p class="warning">We found that the currently published Hi-C browser only allows to display the heat maps for intra-chromosomes, 
+						that are displayed in diagonal matrix which is more suitable for studying the internal interaction of chromosomes 
+						while The juicebox can display the heatmap of different chromosomes.
+					</p>
+					<p>We integrate two forms, 
+						supporting the diagonal matrix to display the  heat map of intra-chromosomes, 
+						and the matrix to display the inter-chromosomes.
+					</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig22.png" class="img-rounded">
+						<hr>
+						<span>left: inter-contact between chr X and chr Y; right : intra-contact of chr 1</span>
+					</div> 
+					<h4>Refresh</h4>
+					<p class="warning">
+						We suggest using this widget to refresh the page instead of using `F5` or the reload button of your browser.
+						Because this widget will save the current session of the browser which is vatal for restoring. See <b style="color: black;">Setting</b> below.
+					</p>
+					<p class="info">
+						Using F5 or others, our browser can not read the latest session. It may load a session that saved a long time ago.
+					</p>
+					<h4>Setting</h4>
+					<p>Personal setting</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="60%" src="img/fig29.png" class="img-rounded">
+					</div> 
+					<h5>Save Session</h5>
+					<p>
+						Save current browser statuses, including various loaded data.
+					</p>
+					<p class="warning">
+						For security reasons, the browser cannot actively access your device data, so the data loaded locally cannot be saved.
+					</p>
+					<h5>upload Session</h5>
+					<p>
+						Upload a session file, and restore to a consistent state. 
+					</p>
+					
+					<h5>Restore while Refresh</h5>
+					<p>
+						Restore a consistent state, while you refresh the browser page.
+					</p>
+					<p class="warning">
+						For security reasons, the browser cannot actively access your device data, so the data loaded locally cannot be restored.
+					</p>
+					<h5>Force Sync</h5>
+					<p>
+						see <a href="#hicsync">here</a>.
+					</p>
+					<p>
+						When different reference genes are used, they will not be synchronized. You can force to be synchronized, which is very useful when studying different species.
+					</p>
+					<h5>Color setting</h5>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="60%" src="img/fig30.png" class="img-rounded">
+						<hr>
+						<span>default colors</span>
+					</div> 
+					<p>
+						Provide color groups for <a href="#analyse">analyze page</a>, We will give priority to the colors you provide.
+					</p>
+
+
+
+                </section>
+				<section id="3d">
+                    <div class="page-header"><h1>3D model</h1></div>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig23.png" class="img-rounded">
+					</div> 
+					<p>In order to understand the 3d structure of genes, for example teaching, we provide a 3d visualization function.</p>
+					<p class="info">You must load the Hi-C file to use this extended function, or you can go to a separate page we provided.</p>
+					<h4>3D model panel</h4>
+					<ul>
+						<li>file icon : upload your local 3d track(for more, see <a href="./data.html#3d" target="_blank">here</a>)</li>
+						<li>input file : show the track file name, also, you can type you remote url and press `enter` in your keyboard to load it. </li>
+						<li>setting icon:</li>
+						<ul>
+							<li>Modify background color</li>
+							<li>Modify chromosome color</li>
+							<li>Modify chromosome width</li>
+							<li>hide all</li>
+							<li>fade all</li>
+							<li>clear all</li>
+							<li>sync : sync with HiBrowser</li>
+						</ul>
+					</ul>
+
+					<h4>Sync with Hic Viewer</h4>
+					<p>When you view the Hi-C heat map, 
+						you can see the 3D structure of the segment synchronously 
+						and its spatial position with other chromosomes.</p>
+					<p class="warning">This feature may reduce some browser performance, such as fps.</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/gif/3.gif" class="img-rounded">
+					</div>
+					<div class="collapse-btn" data-toggle="collapse" data-target="#six">How to use</div>
+					 <div class="collapse multi-collapse" id="six">
+						 <hr>
+						 <p>1. Select one Hi-C Viewer and load your Hi-C map.</p>
+						 <p>2. Click the `3D Display` button.</p>
+						 <p>3. Click the `file icon` to upload your 3D model or type a url in `input field` and press `Enter` in your keyboard</p>
+						 <p>4. We have wrote a test model in `input field`. You can select it and press `Enter` to load it.</p>
+						 <div class="bs-docs-example" style="text-align: center;">
+							<img width="100%" src="img/fig32.png" class="img-rounded">
+						</div>
+						 
+					 </div>
+                </section>
+				<section id="search">
+					<div class="page-header"><h1>Search</h1></div>
+					<p>The technological developments of recent years have dramatically accelerated the discovery and characterization of SVs, 
+						expanded our knowledge of the 3D nature of chromatin folding
+						and assigned functionality to large parts of the non-coding Genome.
+						<sup class="ref" title="Spielmann M, Lupiáñez D G, Mundlos S. Structural variation in the 3D genome[J]. Nature Reviews Genetics, 2018, 19(7): 453-467.">1</sup>
+					</p>
+					<p>In order to study the way of participating in gene regulation over a long distance, we have processed data from many sources,
+						including hic experiment, gene annotation, enhancer annotation, human transcriptional regulatory networks,disease related.</p>
+					<p>We use interaction table module to display the strongly related data.</p>
+					<p class="info">You must load the Hi-C file to use this extended function</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig24.png" class="img-rounded">
+					</div>
+
+					<p>Here you can choose:</p>
+					<ul>
+						<li>Gene</li>
+						<li>Locus</li>
+						<li>Disease</li>
+					</ul>
+					<p>as the keyword for querying.</p>
+
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig25.png" class="img-rounded">
+					</div> 
+					<p>In each column of the interaction table, you can click to view the details and associate them with the Hi-C Viewer</p>
+                </section>
+				 <section id="analyse">
+					<div class="page-header"><h1>Analyse</h1></div>
+					<p>At the chromosome level, Hi-C technology reveals that chromatin can be divided into A/B components, where A is related with accessible and transcriptionally active euchromatin
+						while B is the opposite.
+					</p>
+					<p>With the increase of sequencing depth(resolution), A/B compartments are subdivided into topological associated domain(TAD). Within TAD, regulatory elements interact with regulated genes.</p>
+					<p>When the sequencing depth reaches 5kb, the structure of chromatin loop can be detected. The mutation of non coding region often leads to the destruction of loop structure.</p>
+					<p>In addition to adding TAD, A/B compartment and Loop annotation files on Hi-C Viewer and Genome Browser, we also provide a visual page for basic diversity analysis.</p>
+					<p class="warning">All chart can be exported as svg, picture and pdf.</p>
+					<h4>One sample</h4>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig26.png" class="img-rounded">
+					</div>
+					<p>The page is divided into three areas:</p>
+					<ul>
+						<li>Track infos</li>
+						<ul>
+							<li>Hi-C file</li>
+							<li>2D annotations</li>
+							<li>move button</li>
+						</ul>
+						<li>Track overview</li>
+						<ul>
+							<li>the overview of TAD and Loop for the first <b>card</b></li>
+							<li>the overview of TAD and Loop for the first and second <b>cards</b></li>
+							<li>the overview of A/B compartment for the first and second <b>cards</b></li>
+						</ul>
+						<li>Track details</li>
+						<ul>
+							<li>Summary of selected areas</li>
+							<li>Records in your track files</li>
+							<li>Gene annotation respectivily</li>
+						</ul>
+					</ul>
+					<h4>Two and more samples</h4>
+					<p>When two or more samples are loaded, we will show the differences between the first two samples.</p>
+					<p>Note that in the details area on the right, we use different colors to mark different comparison results:</p>
+					<ul>
+						<li><span style="color: green;">Green : Have the same 2D annotation</span></li>
+						<li><span style="color: red;">Red : Have the changed 2D annotation</span></li>
+						<li><span style="color: blue;">Blue : Sample Unique 2D annotation</span></li>
+					</ul>
+					<p class="info">You can click the up or down buttons on the left card to adjust the position, so as to modify the samples you want to compare</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig27.png" class="img-rounded">
+					</div>
+					<p class="warning">In addition, we provide a button for compartment switch case, through which you can add a track on the Genome Browser.</p>
+					<p>Wherein the red track represents the area without switch.</p>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig28.png" class="img-rounded">
+					</div>
+					<h4>A use case of this page</h4>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/gif/4.gif" class="img-rounded">
+					</div>
+                </section>
+		  	</div>
+		</div>
+		
+		<hr>
+		<footer class="footer">
+			<div>Copyright © 2021-2022. Nankai University</div>
+			<div>Developed by the <a href="http://bio.nankai.edu.cn" target="_blank">Liu Lab</a></div>
+			<div>All rights reserved.</div>
+			<div class="beian">
+                <a href="https://beian.miit.gov.cn/" target="_blank">
+                    <img src="./img/beian.png">
+                    <span>皖ICP备19003590号-2</span>
+                </a>
+            </div>
+		</footer>
+	</div>
+</body>
+</html>

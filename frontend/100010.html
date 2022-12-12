@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/bootstrap-table.min.css" rel="stylesheet">
+  <script src="js/jquery-3.6.0.min.js"></script>
+  <script src="js/layer/layer.js"></script>
+  <link rel="stylesheet" href="css/example.css">
+
+  <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="step">
+            <div class="stepidx">
+                <span>Step One</span>
+            </div>
+            <div class="step_img">
+                <img width="80%" src="img/ex11.png" class="img-rounded">
+                <span>example figure 1</span>
+            </div>
+            <div class="step_content">
+                <br><br><br>
+                <ul>
+                    <li>Load MCF-6 on the first viewer</li>
+                    <li>Load MCF-10A on the second viewer</li>
+                    <li>Load MCF-6(Contact Map) and MCF-10A(Control Map) on the third viewer</li>
+                </ul>
+                <p>(1) Hi-C analyses identify that small chromosomes (chr16–22) in the MCF10A genome show preferential associations with each other.</p>
+                <p>(2) Significant interactions within and between chr16–22 are shown by using the Control and Contact Map Function.</p>
+                <p>(3) The 4th Viewer show the first principal component of MCF-6 and MCF-10A separately.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="stepidx">
+                <span>Step Two</span>
+            </div>
+            <div class="step_content">
+                <br><br><br>
+                <p>(1) On the 1st Viewer, load A/B compartment files(.bigwig) of MCF-6 and MCF-10A.
+                </p>
+                <p>(2) Open the analyses page by clicking widget icon <span class="ex-icon"><i class="fa fa-bar-chart-o"></i></span>
+                </p>
+                <p>(3) Click the buton <span class="ex-btn">Display</span>.</p>
+                <p>(4)  The differential compartments are defined as genomic regions in which one type of compartmentalization is observed in one
+                    cell line and the other compartment type in the second cell line.
+                </p>
+                <p>
+                    (5) The red area indicates the unchanged area, while the gray area indicates the difference area.
+                </p>
+            </div>
+            <div class="step_img">
+                <img width="80%" src="img/ex12.png" class="img-rounded">
+                <span>example figure 2</span>
+            </div>
+        </div>
+        <div class="step">
+            <div class="stepidx">
+                <span>Step Three</span>
+            </div>
+            <div class="step_img">
+                <img width="80%" src="img/ex13.png" class="img-rounded">
+                <span>example figure 3</span>
+            </div>
+            <div class="step_content">
+                <br><br><br><br><br>
+                <p>(1) On the 1st Viewer, load TAD files(.txt) of MCF-6 and MCF-10A.</p>
+                <p>(2) On the pannel, Click the <span><i class="fa fa-bars fa-lg" title="Present menu"></i></span> and modify the two tracks to different colors</p>
+                <p>(3) TADs are similar between MCF-10A and MCF-7 genomes.</p>
+            </div>
+
+        </div>
+        <div class="step">
+            <div class="stepidx">
+                <span>Step Four</span>
+            </div>
+            <div class="step_content">
+                <br>
+                <p>(1) Open the analyses page by clicking widget icon <span class="ex-icon"><i class="fa fa-bar-chart-o"></i></span></p>
+                <p>(2) On this page We can see:</p>
+                <ul>
+                    <li>The violin diagram showing the distribution of TAD on each chromosome</li>
+                    <li>Two column bar chart showing the difference of TAD between MCF-6 and MCF-10A. </li>
+                    <li>Pie chart showing the genomic compartment changes between MCF-10A and
+                        MCF-7 genomes. "A" and "B" denote the open and closed compartments, respectively.</li>
+                        <ul>
+                            <li> "A→A" represents compartments that are open in both cell lines</li>
+                            <li> "B→B" represents compartments that are closed in both cell lines</li>
+                            <li> "A→B" denotes compartments that are open in MCF-10A but closed in MCF-7</li>
+                            <li> "B→A" denotes compartments that are closed in MCF-10A and open in MCF-7</li>
+                        </ul>
+                </ul>
+                <p class="success">Click the chart to view the details on the right.</p>
+            </div>
+            <div class="step_img">
+                <img width="80%" src="img/ex14.png" class="img-rounded">
+                <span>example figure 4</span>
+            </div>
+        </div>
+        <div class="ref">
+            <span class="label-info" style="position:absolute;top:-10px;left:-10px">Cite Article</span>
+            <span>Barutcu A R, Lajoie B R, McCord R P, et al. Chromatin interaction analysis reveals changes in small chromosome and telomere clustering between epithelial and breast cancer cells[J]. 
+                <a href="https://link.springer.com/article/10.1186/s13059-015-0768-0" target="_blank">Genome biology, 2015, 16(1): 1-14.</a></span>
+        </div>
+    </div>
+
+</body>
+</html>

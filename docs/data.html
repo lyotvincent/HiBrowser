@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scalable=no"/>
+    <link href="img/favicon.ico" rel="shortcut icon">
+	<title>HiBrowser: a Flexible and Synchronous Multi Omics Browser </title>
+	<!-- Les styles -->
+	<link href="css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="css/docs.css" rel="stylesheet" media="screen">
+	<link href="css/prettify.css" rel="stylesheet" media="screen">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/prettify.js"></script>
+</head>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+              <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="brand" href="./index.html">HiBrowser</a>
+              <div class="nav-collapse collapse">
+                  <ul class="nav">
+                      <li><a href="./index.html">HOME</a></li>
+                      <li><a href="" target="_blank">BROWSER</a></li>
+                      <li><a href="./usermanual.html">USER MANUAL</a></li>
+                      <li  class="active"><a href="./data.html">SUPPORT DATA</a></li>
+                      <li><a href="https://github.com/nkulpj/hicbrowser" target="_blank">SOURCE</a></li>
+                      <li><a href="./contact.html">CONTACT</a></li>
+                  </ul>
+              </div><!--/.nav-collapse -->
+          </div>
+      </div>
+  </div>
+	<div class="container">
+		<div class="row">
+			<div class="span3 bs-docs-sidebar">
+				<ul class="nav nav-list bs-docs-sidenav affix">
+					<li class="active"><a href="#hic"><i class="icon-chevron-right"></i> Hi-C Map</a></li>
+                    <li><a href="#ref"><i class="icon-chevron-right"></i>Ref Gene </a></li>
+					<li><a href="#2d"><i class="icon-chevron-right"></i> 2D annotation </a></li>
+					<li><a href="#gene"><i class="icon-chevron-right"></i> Gene track</a></li>
+					<li><a href="#3d"><i class="icon-chevron-right"></i> 3D model</a></li>
+		    	</ul>
+		  	</div>
+		  	
+		  	<div class="span9">
+		  		<section id="hic">
+                    <div class="page-header">Hi-C Map</div>
+				  	<p>In order to use HiBrowser to view three dimensional conformation of chromosome, you need to convert your file into <a href="https://github.com/aidenlab/hic-format" target="_blank">.hic</a> format.</p>
+                    <ul>
+                        <li>We strongly recommend using <a href="https://github.com/aidenlab/juicer" target="_blank">juicer pipeline</a> to process your fasta files</li>
+                        <li>If you have data in other formats such as .cool, <a href="https://github.com/deeptools/HiCExplorer" target="_blank">Hi-CExplorer</a> may help you with some format processing</li>
+                        <li><a href="https://github.com/aidenlab/straw" target="_blank">Straw</a> is a useful software for reading .hic files</li>
+                    </ul>
+				</section>
+                <section id="ref">
+                    <div class="page-header">Reference Genome sequence</div>
+                    <p>In order to use the Gene Browser, you need to prepare the reference genome. three required files and one optional file.</p>
+                    <ul>
+                        <li>the reference Genome sequence(.fasta, .fa)</li>
+                        <li>the index file of reference Genome sequence(.fai)</li>
+                        <li>the refGene(.txt.gz)</li>
+                        <li><i>(Optional)</i>the cytoBandIdeo(.txt)</li>
+                    </ul>
+                    <h4>Where can we download reference Genome sequence?</h4>
+                    <ul>
+                        <li>NCBI</li>
+                        <li>Ensemble</li>
+                        <li>GENCODE</li>
+                        <li>UCSC</li>
+                        <li>...</li>
+                    </ul>
+                    <h4>How can we obtain the index file?</h4>
+                    <ul>
+                        <li>Install the samtools</li>
+                    </ul>
+                    <pre class="prettyprint">samtools faidx refGene.fa   # *.fa or *.fasta is your input sequence</pre>
+                    <h4>How to download refGene and cytoBandIdeo?</h4>
+                    <p>1. Visit <a href="https://hgdownload.soe.ucsc.edu/downloads.html" target="_blank">page</a></p>
+                    <p>2. Select Species</p>
+                    <p>3. Select Version</p>
+                    <p>4. Click <u>Annotations</u> > <u>SQL table dump annotations</u> </p>
+                    <p>5. Search <u>cytoBandIdeo (refGene)</u></p>
+                    <p>6. Download <u>cytoBandIdeo.txt.gz (refGene.txt.gz)</u></p>
+
+                    <div class="bs-docs-example" style="text-align: center;">
+						<img width="40%" src="img/fig8.png" class="img-rounded">
+					</div> 
+                    <p>Our server provides a human reference genome(hg19).</p>
+
+                </section>
+		  		<section id="2d">
+                    <div class="page-header">2D Annotation</div>
+				  	<p>A/B Compartment, TAD and Loop are three very important three-dimensional structures that identified from interaction matrix.</p>
+                    <p>To distinguish them from gene annotations, we call it 2D Annotation.</p>
+                    <h4><B>TAD and Loop file format(.txt file)</B></h4>
+                    <p>
+                        <ul>
+                            <li>chr1 : chr1 or 1 (We recommend using 1 instead of chr1)</li>
+                            <li>x1 : start point</li>
+                            <li>x2 : end point</li>
+                            <li>chr2 : <i>same as col chr1 for TAD</i></li>
+                            <li>y1 :  <i>same as col x1 for TAD</i></li>
+                            <li>y2 :  <i>same as col x2 for TAD</i></li>
+                            <li>color : <i>(optional)</i> a rbg color</li>
+                        </ul>
+                    </p>
+                    <p>In addition to the above six columns, you can add anything later.</p>
+                    <p><u>Below is a sample of TAD file <b>(tab-delimited)</b></u> or you can <a href="/sample/tad.txt" target="_blank">download</a> it.</p>
+				  	<pre class="prettyprint">
+1	4835000	5835000	1	4835000	5835000	255,255,0	0.5	0.3	0.2	0.4	0.5
+X	3360000	4895000	1	3360000	4895000	255,255,0	1.1	0.2	0.2	0.7	0.6</pre>
+
+                    <h4><B>A/B compartment file format(.bedGraph file)</B></h4>
+                    <p>We use gene browser to show A/B compartment</p>
+                    <p>
+                        <ul>
+                            <li>chr : chr1 or 1 (We recommend using 1 instead of chr1)</li>
+                            <li>start : start point</li>
+                            <li>end : end point</li>
+                            <li>eigen1 :  eigenvalue of first principal component</li>
+                        </ul>
+                    </p>
+                    <p>In addition to the above 4 columns, you can add anything later, such as eigen2, eigen3 ... All information can be displayed in the browser.</p>
+                    <p><u>Below is a sample of A/B compatment file <b>(tab-delimited)</b></u> or you can <a href="/sample/ab.bedGraph" target="_blank">download</a> it.</p>
+				  	<pre class="prettyprint">
+chr1    500001  750000  0.0139276847711 -0.00805369000596       0.0031572649846700004
+chr1    750001  1000000 0.0597001694219 0.00840457775972        0.0133151984592 
+chr1    1000001 1250000 0.0667134614676 -0.0153965230636        -0.00574097879679</pre>
+                    <h5 class="warning">PLEASE NOTE, <i>each gap between start and end should be a fixed bin size.</i> ALL BIN SHOULD HAVE AN EIGENVALUE.</h5>
+				</section>	
+				<section id="gene">
+					<div class="page-header">Gene Track File Format</div>
+				  	<p>We embed the IGV browser into our APP, so all track files are consistent with igv requirements.</p>
+                    <p><u>Here is a simple summary.</u></p>
+                    <div class="div-table">
+                        <div class="div-line">
+                            <span>Track Type</span>
+                            <span>Description</span>
+                            <span>File Formats</span>
+                        </div>
+                        <div class="line"></div>
+                        <div class="div-line">
+                            <span>annotation</span>
+                            <span title="Non-quantitative genome annotations such as genes. This is the most generic track type.">Non-quantitative genome annotations such as genes. This is the most generic track type.</span>
+                            <span title="bed, gff, gff3, gtf, bedpe, and others">bed, gff, gff3, gtf, bedpe, and others</span>
+                        </div>
+                        <div class="div-line">
+                            <span>wig</span>
+                            <span title="Quantitative genomic data, such as ChIP peaks and alignment coverage.">Quantitative genomic data, such as ChIP peaks and alignment coverage.</span>
+                            <span title="wig, bigWig, bedGraph">wig, bigWig, bedGraph</span>
+                        </div>
+                        <div class="div-line">
+                            <span>alignment</span>
+                            <span title="Sequencing ead alignments.">Sequencing ead alignments.</span>
+                            <span>bam, cram</span>
+                        </div>
+                        <div class="div-line">
+                            <span>variant</span>
+                            <span>Genomic variants.</span>
+                            <span>vcf</span>
+                        </div>
+                        <div class="div-line">
+                            <span>seg</span>
+                            <span title="Segmented copy number data.">Segmented copy number data.</span>
+                            <span>seg</span>
+                        </div>
+                        <div class="div-line">
+                            <span>mut</span>
+                            <span title="Mutation data, primarily from cancer studies.">Mutation data, primarily from cancer studies.</span>
+                            <span>maf, mut</span>
+                        </div>
+                        <div class="div-line">
+                            <span>interact</span>
+                            <span title="Arcs representing associations or interactions between 2 genomic loci.">Arcs representing associations or interactions between 2 genomic loci.</span>
+                            <span title="bedpe, interact, bigInteract">bedpe, interact, bigInteract</span>
+                        </div>
+                        <div class="div-line">
+                            <span>gwas</span>
+                            <span title="Genome wide association data (manhattan plots)">Genome wide association data (manhattan plots)</span>
+                            <span>gwas, bed</span>
+                        </div>
+                        <div class="div-line">
+                            <span>arc</span>
+                            <span title="RNA secondary structure">RNA secondary structure</span>
+                            <span>bp, bed</span>
+                        </div>
+                        <div class="div-line">
+                            <span>junction</span>
+                            <span title="RNA splice junctions">RNA splice junctions</span>
+                            <span>bed</span>
+                        </div>
+                    </div>
+                    <p>Go to <a href="https://github.com/igvteam/igv.js/wiki/Tracks-2.0" target="_blank">IGV</a> for more details.</p>
+
+				</section>
+				<section id="3d">
+					<div class="page-header">3D Structure format</div>
+                    <p><u>Below is a sample of 3D file <b>(tab-delimited)</b></u> or you can <a href="/sample/3d.txt" target="_blank">download</a> it.</p>
+				  	<pre class="prettyprint">
+TITLE   'human_coord.3d'    # Tab split, File extension is not required
+GENOME  hg38    # Tab split
+BINSIZE 20000    # Tab split
+CHR chr1 # Tab split
+0,-2534.13,-654.40,2956.27
+1,-2456.07,-620.22,3420.28
+2,-2172.37,-688.99,3073.28
+3,-1772.57,-889.97,3224.16
+4,-1304.49,-924.26,3278.24
+5,-1259.02,-825.52,3074.58
+6,-1218.38,-1288.18,2971.38
+..
+CHR chr2
+..</pre>
+                    <h5 class="warning">PLEASE NOTE, ALL BIN SHOULD HAVE A COORDINATES.</h5>
+                    <p><i>This means that the number of the first column is continuous(using <u>nan</u> for those can't calculate coordinates).</i></p>
+				</section>
+		  	</div>
+		</div>
+		
+		<hr>
+		<footer class="footer">
+			<div>Copyright © 2021-2022. Nankai University</div>
+			<div>Developed by the <a href="http://bio.nankai.edu.cn" target="_blank">Liu Lab</a></div>
+			<div>All rights reserved.</div>
+            <div class="beian">
+                <a href="https://beian.miit.gov.cn/" target="_blank">
+                    <img src="./img/beian.png">
+                    <span>皖ICP备19003590号-2</span>
+                </a>
+            </div>
+		</footer>
+	</div>
+	<script>
+     	!function ($) {
+     		$(function(){
+				window.prettyPrint && prettyPrint()   
+			})
+		}(window.jQuery)
+	</script>
+</body>
+</html>
