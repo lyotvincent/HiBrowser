@@ -44,7 +44,7 @@ cat /usr/local/nginx/conf/nginx.conf
 
 3. Modify `/js/global.js`, change to your backend address
 ```js
-export const api_url = 'your_ip:your_port/api';
+export const api_url = '<your_ip>:<your_port>/api';
 ```
 4. Start your nginx
 ```sh
