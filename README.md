@@ -84,7 +84,7 @@ https://hic.bioaimed.com/browser/?example=100030
 ## test data
 Here are some test data we provide.It can be visualized in HiBrowser(your locally deployed or our instance) by url. But it will be slow due to the network congestion.
 
-You can download it from our data hub.
+You can download it from our data hub. [Total 110.35 GB]
 ```text
 ### Hi-C file
 #### human
