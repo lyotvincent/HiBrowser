@@ -28,6 +28,13 @@ ALLOWED_HOSTS = ["192.168.31.196"]
 ---
 
 ## 2、frontend
+<B>[For Developer]</B>
+
+> Recommended using <u>Visual Studio Code</u> + <u>Live Server</u>
+
+
+<B>[For User]</B>
+
 Install [nginx](http://nginx.org/en/download.html).
 
 1. Enter `/frontend`
