@@ -2,7 +2,7 @@
 
 Download the source code from our [github repo](https://github.com/NKUlpj/HiBrowser).
 
-## backend
+## 1、backend
 
 ### Requirements
 
@@ -27,7 +27,7 @@ ALLOWED_HOSTS = ["192.168.31.196"]
 6. `python manage.py runsever 0.0.0.0:<your_port>`
 ---
 
-## frontend
+## 2、frontend
 Install [nginx](http://nginx.org/en/download.html).
 
 1. Enter `/frontend`
@@ -56,7 +56,7 @@ cd usr/local/nginx/sbin
 start  nginx.exe
 ```
 
-## docs
+## 3、docs
 
 1. Enter `/docs`
 2. Open `index.html` with your browser[eg. Google Chrome]
