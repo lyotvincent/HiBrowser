@@ -60,3 +60,7 @@ start  nginx.exe
 
 1. Enter `/docs`
 2. Open `index.html` with your browser[eg. Google Chrome]
+
+
+# Example page
+Three cases are available for users to view. 
