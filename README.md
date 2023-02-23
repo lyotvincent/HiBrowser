@@ -87,11 +87,15 @@ Here are some test data we provide.It can be visualized in HiBrowser(your locall
 You can download it from our data hub.
 ```text
 ### Hi-C file
+#### human
 1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/4DNFI1E6NJQJ.hic
 2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/4DNFICSTCJQZ.hic
 3. https://hic-1256812583.cos.ap-beijing.myqcloud.com/GSE126199/GSE126199_0.hic
 4. https://hic-1256812583.cos.ap-beijing.myqcloud.com/GSE126199/GSE126199_4.hic
 5. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human.hic
+
+
+#### mouse
 6. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse.hic
 
 ### hg19
@@ -119,4 +123,19 @@ You can download it from our data hub.
 1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse_domain.txt
 2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse_loop.txt
 
+
+### track file
+
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz.tbi
+--
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/auto/case1.bed.gz
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/auto/case1.bed.gz.tbi
+--
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/gwas/gwas_sample.gwas
+--
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/seg/GBM-TP.seg.gz
+--
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz.tbi
 ```
