@@ -1,3 +1,9 @@
+# We recommend deploying HiBrowser locally so that you can access your data privatly or data in your LAN.
+> Alrough the instance we host at https://hic.bioaimed.com is an end-user application, you need to realize that your data will be flowing in the Interet.
+>
+>Besides, multi-omics data, especially Hi-C data, is often very large. Therefor, in our host instace, the case may spend few minutes to fetching data.
+>
+
 # Start the Browser standalone
 
 Download the source code from our [github repo](https://github.com/NKUlpj/HiBrowser).
@@ -89,7 +95,7 @@ https://hic.bioaimed.com/browser/?example=100030
 ```
 
 ## test data
-Here are some test data we provide.It can be visualized in HiBrowser(your locally deployed or we host instance) by url. But it will be slow due to the network congestion.
+Here are some test data we provide.It can be visualized in HiBrowser(your locally deployed or we host instance) by using URL. But it will be slow due to the network congestion.
 
 You can download it from our data hub. [Total 110.35 GB]
 ```text
