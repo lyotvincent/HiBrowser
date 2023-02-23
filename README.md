@@ -65,4 +65,4 @@ start  nginx.exe
 # Example page
 Three cases are available for users to view. 
 
-$\color{#FF3030}{Note .hic file is generally very large(~20G), the example page will block while loading. Please be patient}$
+$\color{#FF3030}{Note}$ .hic file is generally very large(~20G), the example page will block while loading. Please be patient
