@@ -85,3 +85,11 @@ https://hic.bioaimed.com/browser/?example=100030
 Here are some test data we provide.It can be visualized in HiBrowser(your locally deployed or our instance) by url. But it will be slow due to the network congestion.
 
 You can download it from our data hub.
+
+### Hi-C file
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/4DNFI1E6NJQJ.hic
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/4DNFICSTCJQZ.hic
+3. https://hic-1256812583.cos.ap-beijing.myqcloud.com/GSE126199/GSE126199_0.hic
+4. https://hic-1256812583.cos.ap-beijing.myqcloud.com/GSE126199/GSE126199_4.hic
+5. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human.hic
+6. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse.hic
