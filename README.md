@@ -80,7 +80,7 @@ visit http://<you_ip>
 # Example page
 Three cases are available for users to view. 
 
-$\color{#FF3030}{Note}$ .hic file is generally very large(~20G), the example pages will block while loading. Please be patient.
+$\color{#FF3030}{Note}$ .hic file is generally very large(~20G), the example pages will be blocked while loading. Please be patient.
 
 
 
