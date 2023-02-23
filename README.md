@@ -75,9 +75,13 @@ $\color{#FF3030}{Note}$ .hic file is generally very large(~20G), the example pag
 <your ip>/?example=100010
 <your ip>/?example=100020
 <your ip>/?example=100030
+################################################ an instance we host
 https://hic.bioaimed.com/browser/?example=100010
 https://hic.bioaimed.com/browser/?example=100020
 https://hic.bioaimed.com/browser/?example=100030
 ```
 
+## test data
+Here are some test data we provide.It can be visualized in HiBrowser(your locally deployed or our instance) by url. But it will be slow due to the network congestion.
 
+You can download it from our data hub.
