@@ -56,6 +56,8 @@ cd usr/local/nginx/sbin
 start  nginx.exe
 ```
 
+visit http://<you_ip>
+
 ## 3、docs
 
 1. Enter `/docs`
@@ -65,4 +67,17 @@ start  nginx.exe
 # Example page
 Three cases are available for users to view. 
 
-$\color{#FF3030}{Note}$ .hic file is generally very large(~20G), the example page will block while loading. Please be patient
+$\color{#FF3030}{Note}$ .hic file is generally very large(~20G), the example pages will block while loading. Please be patient.
+
+
+
+```text
+<your ip>/?example=100010
+<your ip>/?example=100020
+<your ip>/?example=100030
+https://hic.bioaimed.com/browser/?example=100010
+https://hic.bioaimed.com/browser/?example=100020
+https://hic.bioaimed.com/browser/?example=100030
+```
+
+
