@@ -94,4 +94,29 @@ You can download it from our data hub.
 5. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human.hic
 6. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse.hic
 
+### hg19
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/Homo_sapiens_assembly19.fasta
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai
+3. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human_cytoBandIdeo.txt
+4. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human_refGene.txt.gz
+
+### mm10
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/Mus_musculus.GRCm39.dna.primary_assembly.fa
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/Mus_musculus.GRCm39.dna.primary_assembly.fa.fai
+3. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse_refGene.txt.gz
+4. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse_cytoBand.txt
+
+### human 3D structure
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human_domain.txt
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/human_loop.txt
+3. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/MCF10a_domin.txt
+4. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/MCF10a_ab.bedGraph
+5. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/MCF7_domin.txt
+6. https://hic-1256812583.cos.ap-beijing.myqcloud.com/human/MCF7_ab.bedGraph
+
+
+### mouse 3D structure
+1. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse_domain.txt
+2. https://hic-1256812583.cos.ap-beijing.myqcloud.com/mouse/mouse_loop.txt
+
 ```
