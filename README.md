@@ -15,16 +15,16 @@ Download the source code from our [github repo](https://github.com/NKUlpj/HiBrow
 ---
 <b>We recommend using `conda` to create a virtual environment.</b>
 
-Install [conda](https://docs.conda.io/en/latest/miniconda.html).
+Install [conda](https://docs.conda.io/en/latest/miniconda.html) firstly. 
 
 1. Enter the `backend`
-2. `conda create --name your_name --file requirements.txt`
-3. `conda activate your_name`
+2. `conda create --name <your_name> --file requirements.txt`
+3. `conda activate <your_name>`
 4. Modify `/HicBrowser/setting.py`, Change to your IP address or domain name
 ```python
 ALLOWED_HOSTS = ["192.168.31.196"]
 ```
-6. `python manage.py runsever 0.0.0.0:your_port`
+6. `python manage.py runsever 0.0.0.0:<your_port>`
 ---
 
 ## frontend
