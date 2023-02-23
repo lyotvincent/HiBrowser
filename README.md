@@ -1,5 +1,5 @@
 # We recommend deploying HiBrowser locally so that you can access your data privatly or data in your LAN.
-> Alrough the instance we host at https://hic.bioaimed.com is an end-user application, you need to realize that your data will be flowing in the Interet.
+> Alrough the instance we host at https://hic.bioaimed.com is an end-user application, you need to realize that your data will be flowing on the Interet [except for visualizing your local file]
 >
 >Besides, multi-omics data, especially Hi-C data, is often very large. Therefor, in our host instace, the case may spend few minutes to fetching data.
 >
