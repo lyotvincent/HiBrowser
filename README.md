@@ -9,12 +9,16 @@
 >Besides, multi-omics data, especially Hi-C data, is often very large. Therefor, in our host instace, the case may spend few minutes to fetching data.
 >
 
-framework
-![framework of HiBrowser](imgs/figure2.png)
+<div align=center>
+<img src="./imgs/figure2.png" width="50%" height="50%" />
+</br>Figure 1. framework of HiBrowser
+</div>
 
+<div align=center>
+<img src="./imgs/figure1.png" width="100%" height="100%" />
+Figure 2. Interface of HiBrowser
+</div>
 
-Interface
-![Interface](imgs/figure1.png)
 
 # Start the Browser standalone
 
