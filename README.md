@@ -15,8 +15,8 @@
 </div>
 
 <div align=center>
-<img src="./imgs/figure1.png" width="100%" height="100%" />
-Figure 2. Interface of HiBrowser
+<img src="./imgs/figure1.png" width="70%" height="70%" />
+</br>Figure 2. Interface of HiBrowser
 </div>
 
 
