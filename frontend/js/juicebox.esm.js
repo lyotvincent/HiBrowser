@@ -33609,12 +33609,6 @@ function createNavBar(browser, $root) {
       }else{
         $('#ROI').removeClass('active');
       }
-
-      if(browser.isDiag){
-        $('#browser-rotate').addClass('active');
-      }else{
-        $('#browser-rotate').removeClass('active');
-      }
   });
 
   const html_contact_map_hic_nav_bar_map_container =
@@ -33622,8 +33616,8 @@ function createNavBar(browser, $root) {
           <div id="${browser.id}-contact-map-hic-nav-bar-map-label">
           </div>
            <div class="hic-nav-bar-button-container">
-              <i class="fa fa-bars fa-lg" title="Present menu"></i>
-              <i class="fa fa-minus-circle fa-lg" title="Delete browser panel" style="display: none;"></i>
+              <span class="present-menu" title="Present menu"></span>
+              <span class="delete-browser-panel" title="Delete browser panel" style="display: none;"></span>
            </div>
       </div>`;
 
@@ -33631,10 +33625,10 @@ function createNavBar(browser, $root) {
 
   browser.$contactMaplabel = $hic_navbar_container.find("div[id$='contact-map-hic-nav-bar-map-label']");
 
-  browser.$menuPresentDismiss = $hic_navbar_container.find('.fa-bars');
+  browser.$menuPresentDismiss = $hic_navbar_container.find('.present-menu');
   browser.$menuPresentDismiss.on('click', e => browser.toggleMenu());
 
-  browser.$browser_panel_delete_button = $hic_navbar_container.find('.fa-minus-circle');
+  browser.$browser_panel_delete_button = $hic_navbar_container.find('.delete-browser-panel');
   browser.$browser_panel_delete_button.on('click', e => deleteBrowser(browser));
 
   // Delete button is only vidible if there is more then one browser
@@ -41508,6 +41502,14 @@ class LocusGoto {
       this.$container.append(this.$resolution_selector);
       this.$container.append(this.$resolution_selector_button);
 
+      this.$resolution_selector.on('keydown', function(e){
+        if(e.keyCode == 13){
+          let _val = $(this).val()
+          browser.parseGotoInput(_val);
+          $(this).blur();
+        }
+      })
+
       
       this.$sync_toggle_button = $(`<i id ='sync-${this.browser.id}' class=${browser.isSync? "'fa fa-circle-o'":"'fa fa-ban'"}></i>`,{class: 'hic-browser-sync-button'});
       this.$syncContainer.append(this.$sync_toggle_button);
@@ -43184,6 +43186,191 @@ function computePercentile(records, p) {
 *
 */
 
+function _parseLocus(x){
+  x = x.split(':');
+  let chr = x[0];
+  let scales = x[1];
+  scales = scales.replaceAll(',', '');
+  scales = scales.split('-');
+  let x_start = parseInt(scales[0]);
+  let x_end = parseInt(scales[1]);
+  return [chr, x_start, x_end];
+}
+
+function _generate_a_locus(chrx,xs,xe){
+  xs = Number(xs).toLocaleString();
+  xe = Number(xe).toLocaleString();
+  let cor = chrx + ':' + xs + '-' + xe;
+  return cor;
+}
+function _generate_locus(chrx,xs,xe,chry, ys, ye){
+  let cor = _generate_a_locus(chrx,xs,xe) + ' ' + _generate_a_locus(chry, ys, ye);
+  return cor;
+}
+
+
+// check diag
+function _browser_goto_locus(browser, locus){
+  let d = browser.isDiag;
+  if(d){
+    locus = locus.split(' ');
+    locus = locus[0] + ' ' + locus[0];
+  }
+  browser.gotoLocus(locus);
+}
+
+
+function zoom_in(cur_locus, browser){
+  if (cur_locus === ""){
+    try {
+      browser.zoomIn();
+    }catch(error){
+
+    }
+    return;
+  }
+  if(cur_locus === 'All'){
+    _browser_goto_locus(browser, '1');
+  }else{
+    let xy = cur_locus.split(' ');
+    let [chrx, xs, xe] = _parseLocus(xy[0]);
+    let [chry, ys, ye] = _parseLocus(xy[1]);
+    let xns = xs + parseInt((xe - xs) / 4);
+    let xne = xe - parseInt((xe - xs) / 4);
+    let yns = ys + parseInt((ye - ys) / 4);
+    let yne = ye - parseInt((ye - ys) / 4);
+    let new_loc = _generate_locus(chrx,xns,xne,chry, yns, yne);
+    _browser_goto_locus(browser, new_loc);
+  }
+}
+
+function zoom_out(cur_locus, browser){
+  if (cur_locus === 'All') return;
+  if (cur_locus === ''){
+    try {
+      browser.zoomOut();
+    }catch(error){
+        
+    }
+    return;
+  }
+  let xy = cur_locus.split(' ');
+  let [chrx, xs, xe] = _parseLocus(xy[0]);
+  let [chry, ys, ye] = _parseLocus(xy[1]);
+  let xns = xs - parseInt((xe - xs) / 2);
+  if (xns < 1) xns = 1;
+  let xne = xe + parseInt((xe - xs) / 2);
+  let yns = ys - parseInt((ye - ys) / 2);
+  if (yns < 1) yns = 1;
+  let yne = ye + parseInt((ye - ys) / 2);
+  let new_loc = _generate_locus(chrx,xns,xne,chry, yns, yne);
+  _browser_goto_locus(browser, new_loc);
+}
+
+
+function _showDiag(browser){
+  // 修改状态
+  browser.isDiag = true;
+  let _id = browser.id;
+
+  // 旋转iewport
+  let viewport = $(`#${_id}-viewport`);
+  let ow = viewport.width();
+  viewport.css('transform','rotate(315deg)');
+  viewport.css('clip-path','polygon(0 0, 100% 100%, 100% 0%)');
+  viewport.css('background','transparent');
+  viewport.css('margin-left','20px');
+
+  //.hic-browser-div
+  $('.hic-browser-div').css('padding-bottom','135px');
+
+  // 隐藏axis
+  $(`#${_id}-y-axis`).hide();
+  $(`#${_id}-x-axis`).hide();
+  // 缩小canvas
+  let canvas = $(`#${_id}-viewport > canvas`);
+  canvas.css('transform','scale(0.707)'); // 根号2 分之1
+    // 将igV div往上提
+  let igv_div = $(`#igv-${_id}`);
+  igv_div.css('margin-top',`${-ow / 2}px`);
+  igv_div.css('padding-bottom',`${-ow / 2}px`);
+  //修改locus
+  let locus = get_goto_input();
+  locus = locus.split(' ');
+  locus = locus[0] + ' ' + locus[0];
+  _browser_goto_locus(browser, locus);
+}
+
+function _hideDiag(browser){
+  // 修改状态
+    browser.isDiag = false;
+    let _id = browser.id;
+  
+    // 旋转iewport
+    let viewport = $(`#${_id}-viewport`);
+    let ow = viewport.width();
+    viewport.css('transform','');
+    viewport.css('clip-path','');
+    viewport.css('background','');
+    viewport.css('margin-left','');
+  
+  
+    //.hic-browser-div
+    $('.hic-browser-div').css('padding-bottom','');
+  
+    $(`#${_id}-y-axis`).show();
+    $(`#${_id}-x-axis`).show();
+  
+    let canvas = $(`#${_id}-viewport > canvas`);
+    canvas.css('transform',''); 
+  
+    let igv_div = $(`#igv-${_id}`);
+    igv_div.css('margin-top',`15px`);
+    igv_div.css('padding-bottom',``);
+  }
+
+function _showGlassDiag(_id){
+  // 旋转iewport
+  let glass_div = $(`#glass_canvas_${_id}`);
+  glass_div.css('transform','rotate(315deg)');
+  glass_div.css('clip-path','polygon(0 0, 100% 100%, 100% 0%)');
+  glass_div.css('background','transparent');
+  glass_div.css('margin-left','5px');
+  // 缩小canvas
+  let canvas = $(`#glass_canvas_${_id} > canvas`);
+  canvas.css('transform','scale(0.707)'); // 根号2 分之1
+}
+
+function _hideGlassDiag(_id){
+  // 旋转iewport
+  let glass_div = $(`#glass_canvas_${_id}`);
+  glass_div.css('transform','');
+  glass_div.css('clip-path','');
+  glass_div.css('background','');
+  glass_div.css('margin-left','');
+  // 缩小canvas
+  let canvas = $(`#glass_canvas_${_id} > canvas`);
+  canvas.css('transform',''); // 根号2 分之1
+}
+
+
+function _browser_diag_show(browser){
+  let _id = browser.id;
+  _showDiag(browser);
+  if($(`#glass_canvas_${_id}`).length > 0){
+    _showGlassDiag(_id);
+  }
+}
+
+function _browser_diag_hide(browser){
+  _hideDiag(browser);
+  let _id = browser.id;
+  if($(`#glass_canvas_${_id}`).length > 0){
+    _hideGlassDiag(_id);
+  }
+}
+
+
 class ColorScaleWidget {
 
   constructor(browser, $hic_navbar_container) {
@@ -43229,15 +43416,58 @@ class ColorScaleWidget {
           }
       });
 
-      // threshold -
-      let $fa = $("<i>", {class: 'fa fa-minus', 'aria-hidden': 'true', 'title': 'negative threshold'});
+      let $fa = $("<span>", {class: 'thresh-minus', 'aria-hidden': 'true', 'title': 'Negative Threshold'});
       $fa.on('click', () => this.$high_colorscale_input.val(updateThreshold(browser, 0.5)));
       this.$container.append($fa);
 
-      // threshold +
-      $fa = $("<i>", {class: 'fa fa-plus', 'aria-hidden': 'true', 'title': 'positive threshold'});
+      $fa = $("<span>", {class: 'thresh-plus', 'aria-hidden': 'true', 'title': 'Positive Threshold'});
       $fa.on('click', () => this.$high_colorscale_input.val(updateThreshold(browser, 2.0)));
       this.$container.append($fa);
+
+
+
+
+      // threshold -
+      $fa = $("<span>", {class: 'zoom-out', 'aria-hidden': 'true', 'title': 'Zoom out'});
+      $fa.on('click', () => {
+        let _id = this.browser.id;
+        let _cur_locus = $(`#hic-chromosome-goto-container-${_id} >input`).val();
+        zoom_out(_cur_locus, this.browser);
+      });
+      this.$container.append($fa);
+
+      // threshold +
+      $fa = $("<span>", {class: 'zoom-in', 'aria-hidden': 'true', 'title': 'Zoom in'});
+      $fa.on('click', () => {
+        let _id = this.browser.id;
+        let _cur_locus = $(`#hic-chromosome-goto-container-${_id} >input`).val();
+        zoom_in(_cur_locus, this.browser)
+      });
+      this.$container.append($fa);
+
+
+
+      // diagnoal
+      $fa = $("<span>", {class: 'diagonal', 'id':`display-mode-${this.browser.id}`, 'aria-hidden': 'true', 'title': 'Change Display Mode'});
+      $fa.on('click', () => {
+        if(this.browser === undefined || this.browser.dataset === undefined){
+          return;
+        }
+        if(this.browser.isDiag){
+          $fa.removeClass('triangle');
+          $fa.addClass('diagonal');
+          _browser_diag_hide(this.browser);
+        }else{
+          $fa.removeClass('diagonal');
+          $fa.addClass('triangle');
+          _browser_diag_show(this.browser)
+        }
+
+      })
+      this.$container.append($fa);
+
+
+
 
       const handleColorScaleEvent = event => {
 
@@ -43392,15 +43622,15 @@ class ControlMapWidget {
       this.$select.attr('name', 'control_map_selector');
       this.$container.append(this.$select);
 
-      // a-b toggle icon
+      // // a-b toggle icon
       const $toggle_container = $('<div>');
       this.$container.append($toggle_container);
 
-      // cycle button
+      // // cycle button
       const $cycle_container = $('<div>');
       this.$container.append($cycle_container);
 
-      this.controlMapHash = new ControlMapHash(browser, this.$select, $toggle_container, $cycle_container, toggle_arrows_up(), toggle_arrows_down());
+      this.controlMapHash = new ControlMapHash(browser, this.$select);
 
       const self = this;
 
@@ -43437,27 +43667,16 @@ class ControlMapWidget {
 
 class ControlMapHash {
 
-  constructor(browser, $select, $toggle, $cycle, $img_a, $img_b) {
+  constructor(browser, $select) {
 
       const self = this;
 
       this.browser = browser;
       this.$select = $select;
-      this.$toggle = $toggle;
-      this.$cycle = $cycle;
-
-      // a arrow
-      this.$img_a = $img_a;
-      this.$toggle.append(this.$img_a);
-
-      // b arrow
-      this.$img_b = $img_b;
-      this.$toggle.append(this.$img_b);
-
-      const A = {title: 'A', value: 'A', other: 'B', $hidden: $img_b, $shown: $img_a};
-      const B = {title: 'B', value: 'B', other: 'A', $hidden: $img_a, $shown: $img_b};
-      const AOB = {title: 'A/B', value: 'AOB', other: 'BOA', $hidden: $img_b, $shown: $img_a};
-      const BOA = {title: 'B/A', value: 'BOA', other: 'AOB', $hidden: $img_a, $shown: $img_b};
+      const A = {title: 'A', value: 'A', other: 'B'};
+      const B = {title: 'B', value: 'B', other: 'A'};
+      const AOB = {title: 'A/B', value: 'AOB', other: 'BOA'};
+      const BOA = {title: 'B/A', value: 'BOA', other: 'AOB'};
 
       this.hash =
           {
@@ -43475,27 +43694,6 @@ class ControlMapHash {
           value = $(this).val();
           self.setDisplayMode(value);
       });
-
-      this.$toggle.on('click', function (e) {
-          self.disableDisplayModeCycle();
-          self.toggleDisplayMode();
-      });
-
-      // cycle outline
-      this.$cycle_outline = cycle_outline();
-      $cycle.append(this.$cycle_outline);
-
-      // cycle solid
-      this.$cycle_solid = cycle_solid();
-      $cycle.append(this.$cycle_solid);
-      this.$cycle_solid.hide();
-
-      $cycle.on('click', function () {
-          self.toggleDisplayModeCycle();
-      });
-
-      $cycle.hide();
-
   }
 
   disableDisplayModeCycle  () {
@@ -43552,26 +43750,15 @@ class ControlMapHash {
 
       // update select element
       str = 'option[value=' + displayModeNew + ']';
-
       this.$select.find(str).prop('selected', true);
-
   }
-
   setDisplayMode (displayMode) {
-
-      setDisplayModeHelper.call(this, displayMode);
-
       this.browser.setDisplayMode(displayMode);
   }
 
   updateOptions  (displayMode) {
       let self = this;
-
-      this.$img_a.hide();
-      this.$img_b.hide();
-
       this.$select.empty();
-
       Object.keys(this.hash).forEach(function (key) {
           let item,
               option;
@@ -43583,132 +43770,11 @@ class ControlMapHash {
           if (displayMode === item.value) {
 
               option.attr('selected', true);
-              item.$shown.show();
-
-              setDisplayModeHelper.call(self, displayMode);
           }
 
           self.$select.append(option);
       });
   }
-}
-
-function setDisplayModeHelper(displayMode) {
-
-  this.hash[displayMode].$hidden.hide();
-  this.hash[displayMode].$shown.show();
-
-  this.$cycle.show();
-  this.$toggle.show();
-
-  // if ('A' === displayMode || 'B' === displayMode) {
-  //     this.$cycle.show();
-  //     this.$toggle.show();
-  // } else {
-  //     this.$cycle.hide();
-  //     this.$toggle.hide();
-  // }
-
-}
-
-function toggle_arrows_up() {
-  let str,
-      a;
-
-  str = '<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
-      '    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->\n' +
-      '    <title>Toggle Maps</title>\n' +
-      '    <desc>Created with Sketch.</desc>\n' +
-      '    <defs></defs>\n' +
-      '    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\n' +
-      '        <g id="Group">\n' +
-      '            <rect id="Rectangle" stroke="#A6A6A6" stroke-width="1.25201381" fill="#F8F8F8" x="0.626006904" y="0.626006904" width="32.7479862" height="32.7479862" rx="3.91254315"></rect>\n' +
-      '            <g id="arrows" transform="translate(6.533947, 7.003452)" fill-rule="nonzero" stroke="#5F5F5F" stroke-width="0.626006904">\n' +
-      '                <path d="M25.9411017,8.76431329 L11.8559464,8.76431329 L11.8559464,6.88629258 C11.8559464,6.05237313 10.8440845,5.63114873 10.2529383,6.22229488 L7.12290378,9.3523294 C6.75622024,9.71905207 6.75622024,10.3136021 7.12290378,10.6802857 L10.2529383,13.8103202 C10.8409153,14.3982581 11.8559464,13.9850935 11.8559464,13.1463616 L11.8559464,11.2683409 L25.9411017,11.2683409 C26.4597093,11.2683409 26.8801121,10.8479381 26.8801121,10.3293306 L26.8801121,9.70332365 C26.8801121,9.18471605 26.4597093,8.76431329 25.9411017,8.76431329 Z" id="down-arrow" fill="#F8F8F8" transform="translate(16.864002, 10.016110) rotate(-90.000000) translate(-16.864002, -10.016110) "></path>\n' +
-      '                <path d="M13.1470856,8.76431329 L-0.938069748,8.76431329 L-0.938069748,6.88629258 C-0.938069748,6.05237313 -1.94993166,5.63114873 -2.5410778,6.22229488 L-5.67111233,9.3523294 C-6.03779587,9.71905207 -6.03779587,10.3136021 -5.67111233,10.6802857 L-2.5410778,13.8103202 C-1.95310082,14.3982581 -0.938069748,13.9850935 -0.938069748,13.1463616 L-0.938069748,11.2683409 L13.1470856,11.2683409 C13.6656932,11.2683409 14.086096,10.8479381 14.086096,10.3293306 L14.086096,9.70332365 C14.086096,9.18471605 13.6656932,8.76431329 13.1470856,8.76431329 Z" id="up-arrow" fill="#5F5F5F" transform="translate(4.069985, 10.016110) scale(1, -1) rotate(-90.000000) translate(-4.069985, -10.016110) "></path>\n' +
-      '            </g>\n' +
-      '        </g>\n' +
-      '    </g>\n' +
-      '</svg>';
-
-  a = str.split('\n').join(' ');
-
-  return $(a);
-}
-
-function toggle_arrows_down() {
-  let str,
-      b;
-
-  str = '<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
-      '    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->\n' +
-      '    <title>Toggle Maps</title>\n' +
-      '    <desc>Created with Sketch.</desc>\n' +
-      '    <defs></defs>\n' +
-      '    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\n' +
-      '        <g id="Group">\n' +
-      '            <rect id="Rectangle" stroke="#A6A6A6" stroke-width="1.25201381" fill="#F8F8F8" x="0.626006904" y="0.626006904" width="32.7479862" height="32.7479862" rx="3.91254315"></rect>\n' +
-      '            <g id="arrows" transform="translate(6.533947, 7.003452)" fill-rule="nonzero" stroke="#5F5F5F" stroke-width="0.626006904">\n' +
-      '                <path d="M25.9411017,8.76431329 L11.8559464,8.76431329 L11.8559464,6.88629258 C11.8559464,6.05237313 10.8440845,5.63114873 10.2529383,6.22229488 L7.12290378,9.3523294 C6.75622024,9.71905207 6.75622024,10.3136021 7.12290378,10.6802857 L10.2529383,13.8103202 C10.8409153,14.3982581 11.8559464,13.9850935 11.8559464,13.1463616 L11.8559464,11.2683409 L25.9411017,11.2683409 C26.4597093,11.2683409 26.8801121,10.8479381 26.8801121,10.3293306 L26.8801121,9.70332365 C26.8801121,9.18471605 26.4597093,8.76431329 25.9411017,8.76431329 Z" id="down-arrow" fill="#5F5F5F" transform="translate(16.864002, 10.016110) rotate(-90.000000) translate(-16.864002, -10.016110) "></path>\n' +
-      '                <path d="M13.1470856,8.76431329 L-0.938069748,8.76431329 L-0.938069748,6.88629258 C-0.938069748,6.05237313 -1.94993166,5.63114873 -2.5410778,6.22229488 L-5.67111233,9.3523294 C-6.03779587,9.71905207 -6.03779587,10.3136021 -5.67111233,10.6802857 L-2.5410778,13.8103202 C-1.95310082,14.3982581 -0.938069748,13.9850935 -0.938069748,13.1463616 L-0.938069748,11.2683409 L13.1470856,11.2683409 C13.6656932,11.2683409 14.086096,10.8479381 14.086096,10.3293306 L14.086096,9.70332365 C14.086096,9.18471605 13.6656932,8.76431329 13.1470856,8.76431329 Z" id="up-arrow" fill="#F8F8F8" transform="translate(4.069985, 10.016110) scale(1, -1) rotate(-90.000000) translate(-4.069985, -10.016110) "></path>\n' +
-      '            </g>\n' +
-      '        </g>\n' +
-      '    </g>\n' +
-      '</svg>';
-
-  b = str.split('\n').join(' ');
-
-  return $(b);
-}
-
-function cycle_outline() {
-  let str,
-      b;
-
-  str = '<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
-      '    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->\n' +
-      '    <title>Cycle Maps</title>\n' +
-      '    <desc>Created with Sketch.</desc>\n' +
-      '    <defs></defs>\n' +
-      '    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\n' +
-      '        <g id="Group" fill="#F8F8F8">\n' +
-      '            <rect id="Rectangle" stroke="#A6A6A6" stroke-width="1.25201381" x="0.626006904" y="0.626006904" width="32.7479862" height="32.7479862" rx="3.91254315"></rect>\n' +
-      '            <g id="circle-notch-group" transform="translate(5.947066, 6.103567)" fill-rule="nonzero" stroke="#5F5F5F" stroke-width="0.75">\n' +
-      '                <path d="M12.5012159,1.07356655 L12.5012159,1.81734411 C12.5012159,2.29971235 12.8262916,2.71738683 13.2908449,2.84717621 C16.7518005,3.81392183 19.2875784,6.98762275 19.2875784,10.7595067 C19.2875784,15.2996349 15.6133435,18.9745898 11.072508,18.9745898 C6.53238683,18.9745898 2.85743758,15.3003493 2.85743758,10.7595067 C2.85743758,6.98815851 5.39276905,3.81401113 8.85408182,2.84717621 C9.31872442,2.71738683 9.64380011,2.29962306 9.64380011,1.81721016 L9.64380011,1.07392373 C9.64380011,0.372561009 8.98150471,-0.138381443 8.30233269,0.0365908983 C3.5094195,1.27117502 -0.0270343765,5.6342771 0.00015572077,10.8189768 C0.0323016485,16.9379636 4.97728293,21.8448684 11.0963496,21.8319654 C17.2005487,21.819107 22.1449942,16.8667067 22.1449942,10.7595067 C22.1449942,5.5968181 18.611621,1.2595221 13.831209,0.0336441837 C13.1565464,-0.139363681 12.5012159,0.377070376 12.5012159,1.07356655 Z" id="circle-notch---solid"></path>\n' +
-      '            </g>\n' +
-      '        </g>\n' +
-      '    </g>\n' +
-      '</svg>';
-
-  b = str.split('\n').join(' ');
-
-  return $(b);
-
-}
-
-function cycle_solid() {
-  let str,
-      b;
-
-  str = '<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n' +
-      '    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->\n' +
-      '    <title>Cycle Maps</title>\n' +
-      '    <desc>Created with Sketch.</desc>\n' +
-      '    <defs></defs>\n' +
-      '    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\n' +
-      '        <g id="Group">\n' +
-      '            <rect id="Rectangle" stroke="#A6A6A6" stroke-width="1.25201381" fill="#F8F8F8" x="0.626006904" y="0.626006904" width="32.7479862" height="32.7479862" rx="3.91254315"></rect>\n' +
-      '            <g id="circle-notch-group" transform="translate(5.947066, 6.103567)" fill="#5F5F5F" fill-rule="nonzero">\n' +
-      '                <path d="M12.5012159,1.07356655 L12.5012159,1.81734411 C12.5012159,2.29971235 12.8262916,2.71738683 13.2908449,2.84717621 C16.7518005,3.81392183 19.2875784,6.98762275 19.2875784,10.7595067 C19.2875784,15.2996349 15.6133435,18.9745898 11.072508,18.9745898 C6.53238683,18.9745898 2.85743758,15.3003493 2.85743758,10.7595067 C2.85743758,6.98815851 5.39276905,3.81401113 8.85408182,2.84717621 C9.31872442,2.71738683 9.64380011,2.29962306 9.64380011,1.81721016 L9.64380011,1.07392373 C9.64380011,0.372561009 8.98150471,-0.138381443 8.30233269,0.0365908983 C3.5094195,1.27117502 -0.0270343765,5.6342771 0.00015572077,10.8189768 C0.0323016485,16.9379636 4.97728293,21.8448684 11.0963496,21.8319654 C17.2005487,21.819107 22.1449942,16.8667067 22.1449942,10.7595067 C22.1449942,5.5968181 18.611621,1.2595221 13.831209,0.0336441837 C13.1565464,-0.139363681 12.5012159,0.377070376 12.5012159,1.07356655 Z" id="circle-notch---solid"></path>\n' +
-      '            </g>\n' +
-      '        </g>\n' +
-      '    </g>\n' +
-      '</svg>';
-
-  b = str.split('\n').join(' ');
-
-  return $(b);
-
 }
 
 /*
@@ -43831,7 +43897,8 @@ class NormalizationWidget {
                   const isSelected = (norm === normalization);
                   const titleString = (label === undefined ? '' : ' title = "' + label + '" ');
                   const valueString = ' value=' + normalization + (isSelected ? ' selected' : '');
-                  const labelPresentation = '&nbsp &nbsp' + label + '&nbsp &nbsp';
+                  // const labelPresentation = '&nbsp &nbsp' + label + '&nbsp &nbsp';
+                  const labelPresentation = label;
                   return '<option' + titleString + valueString + '>' + labelPresentation + '</option>';
               });
 
@@ -44196,18 +44263,18 @@ function annotationPanelRow($container, track) {
       });
   }
 
-  if (isTrack2D) {
+  // if (isTrack2D) {
 
-      // matrix diagonal widget
-      const $matrix_diagonal_div = $('<div>', {class: 'matrix-diagonal-widget-container matrix-diagonal-widget-all'});
-      $row.append($matrix_diagonal_div);
-      $matrix_diagonal_div.on('click.matrix_diagonal_div', (e) => {
-          e.preventDefault;
-          matrixDiagionalWidgetHandler($matrix_diagonal_div, track);
-          self.browser.eventBus.post(HICEvent('TrackState2D', track));
-      });
+  //     // matrix diagonal widget
+  //     const $matrix_diagonal_div = $('<div>', {class: 'matrix-diagonal-widget-container matrix-diagonal-widget-all'});
+  //     $row.append($matrix_diagonal_div);
+  //     $matrix_diagonal_div.on('click.matrix_diagonal_div', (e) => {
+  //         e.preventDefault;
+  //         matrixDiagionalWidgetHandler($matrix_diagonal_div, track);
+  //         self.browser.eventBus.post(HICEvent('TrackState2D', track));
+  //     });
 
-  }
+  // }
 
   // color swatch selector button
   $colorpickerButton = annotationColorSwatch(isTrack2D ? track.getColor() : track1D.color);
@@ -44720,7 +44787,7 @@ class HICBrowser {
       // 创建IGV viewer
       let track_container_x = 
       `
-      <div style="min-height:170px;" id="igv-${this.id}" class="igv-browser-div">
+      <div style="min-height:100px; max-width:100%" id="igv-${this.id}" class="igv-browser-div">
       </div>
       `;
 
@@ -46262,8 +46329,7 @@ function presentError(prefix, error) {
 * @author Jim Robinson Dec-2020
 */
 // 默认长宽
-const cur_container_width = (document.documentElement.clientWidth * 0.8) / 2
-const default_w = 600;
+const cur_container_width = (document.documentElement.clientWidth * 0.9) / 3
 const defaultSize = {width: cur_container_width, height: cur_container_width};
 //const defaultSize = {width: default_w > cur_container_width ? cur_container_width : default_w, height: default_w > cur_container_width ? cur_container_width : default_w};
 let allBrowsers = [];
@@ -46357,7 +46423,13 @@ function deleteAllBrowsers() {
   allBrowsers = [];
 }
 
+// 设置当前选中的浏览器
 function setCurrentBrowser(browser) {// unselect current browser
+  if(browser.dataset === undefined){
+     $('#dropdown-b-map').addClass('disabled')
+  }else{
+     $('#dropdown-b-map').removeClass('disabled')
+  }
   if (undefined === browser) {
       if (currentBrowser) {
           currentBrowser.$root.removeClass('hic-root-selected');

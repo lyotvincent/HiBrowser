@@ -1,24 +1,10 @@
-import {api_url,table_header, parseLocus} from "./global.js"
+import {table_header, parseLocus} from "./global.js"
+import { AlertSingleton } from "./igv-widgets.js";
+import {api_url} from './setting.js'
 
 
-function get_gene_locus_by_name(name){
-  let locus = '';
-  $.ajax({
-    type: "post",
-    url:api_url + '/getGeneLocus',
-    dataType: 'json',
-    data: JSON.stringify({'name':name}),
-    contentType: 'application/json',
-    async:false, // 同步
-    success: function(res){
-      locus = res.data
-    },
-    error: function(err){
-      console.log(err);
-    }
-  })
-  return locus;
-}
+// 全局的table data
+let table_data = undefined;
 
 class Table_bs {
   constructor($box) {
@@ -71,15 +57,24 @@ class Table_bs {
               html_tbody += `<td><a href="https://www.ncbi.nlm.nih.gov/gene/?term=${v}" target="_blank"><i class="fa fa-external-link"></i> ${v}</a></td>`;
             }
             else if (option.colNames[j] === 'locus') {
-              html_tbody += `<td>
-            <button type="button" class="search_goto_button" data-toggle="tooltip" data-placement="top" title = "${v}" onclick="goto1('${buff['name']}', '${buff['locus']}')"><i class="fa fa-hand-o-right"></i></button>
-            </td>`;
+              html_tbody += `
+              <td>
+                <button 
+                    type="button" 
+                    class="search_goto_button" 
+                    data-toggle="tooltip" 
+                    data-placement="top" 
+                    title = "${v}" 
+                    onclick="goto(${i})">
+                  <i class="fa fa-hand-o-right"></i>
+                </button>
+              </td>`;
             }
             else if (option.colNames[j] === 'name' || option.colNames[j] === 'strand') {
               html_tbody += `<td data-toggle="tooltip" data-placement="top" title = "${v}">${v}</td>`;
             }
             else {
-              html_tbody += `<td data-toggle="tooltip" data-placement="top" title = "${v}" onclick="ShowDetails(this,'${option.colNames[j]}','${buff['name']}' ,'${buff['locus']}')">${v}</td>`;
+              html_tbody += `<td data-toggle="tooltip" data-placement="top" title = "${v}" onclick="ShowDetails('${option.colNames[j]}',${i})">${v}</td>`;
             }
           }
         }
@@ -90,12 +85,12 @@ class Table_bs {
   }
 }
 
-function write_table(res){
+function write_table(){
   $('#result-table').children().remove();
   let t = new Table_bs($('#result-table'));
   let option = {
     colNames: table_header,
-    data:res.data
+    data:table_data
   };
   t.load(option);
 }
@@ -116,6 +111,7 @@ $('#search-btn').on('click',function(e){
     // valid search-input
     let bak = val.split(' ');
     let [chrx,xs,xe] = parseLocus(bak[0]);
+    // console.log(xs,xe)
 
     if(xe - xs < 4999){
       layer.msg('Invalid Input: Too short interval. Minimun range is 5,000(5kb ~ as the min size of resolution can be viewed in the browser!)');
@@ -136,8 +132,16 @@ $('#search-btn').on('click',function(e){
     data: JSON.stringify({'type':search_type,'val': val}),
     contentType: 'application/json',
     success: function(data){
+      // console.log(data)
+      table_data = data.data
       layer.close(loading);
-      write_table(data);
+      if (search_type == 'Gene'){
+        document.querySelector('.show-arcs').classList.add('hidden');
+      }else{
+        document.querySelector('.show-arcs').classList.remove('hidden');
+      }
+      write_table();
+
     },
     error: function(err){
       layer.close(loading);
@@ -147,48 +151,36 @@ $('#search-btn').on('click',function(e){
 })
 
 
-function generate_pop_html(data, title, name, locus){
-  data = data.split(',');
+function generate_pop_html(title, idx){
+  idx = parseInt(idx)
+  let data = table_data[idx][title]
+  data = data.split(',')
   let _html = `<div class="res_list">`
-  if(title === 'enhancer' || title === 'super_enhancer' || title === 'promoter'){
+  if(title === 'diseases'){
     for (let d of data){
       _html += `
       <div class = "res_item">
-        <span>${d}</span>
-        <div class="goto" title = "view this gene in browser" onclick="goto1('${name}','${d}')"><i class="fa fa-level-up"></i></div>
-        <div class="goto" title = "view the contact of this and origin gene in browser" onclick="goto2('${name}','${d}','${locus}')"><i class="fa fa-code-fork"></i></div>
+        <span title='${d}'>${d}</span>
       </div>`
     }
   }
-  else if(title === 'TF' || title === 'target'){
-    for (let d of data){
-      _html += `
-      <div class = "res_item">
-        <span>${d}</span>
-        <div class="goto" title = "view this gene in browser" onclick="goto1('${name}','${d}')"><i class="fa fa-level-up"></i></div>
-        <div class="goto" title = "view the contact of this and origin gene in browser" onclick="goto2('${name}','${d}','${locus}')"><i class="fa fa-code-fork"></i></div>
-      </div>`
-    }
-  }
-  // disease
   else{
     for (let d of data){
       _html += `
       <div class = "res_item">
-        <span>${d}</span>
+        <span title = '${d}'>${d}</span>
+        <div class="goto" title = "view this Locus in browser" onclick="goto1('${d}')"><i class="fa fa-level-up"></i></div>
+        <div class="goto" title = "view the contact of this and origin gene in browser" onclick="goto2(${idx}, '${d}')"><i class="fa fa-code-fork"></i></div>
       </div>`
     }
   }
-  
-  
-  
+
   _html += `</div>`
   return _html
 }
 
-window.ShowDetails = function(that, title, name, locus){
-  let data = $(that).attr('title')
-  let _html = generate_pop_html(data, title, name, locus)
+window.ShowDetails = function(title, idx){
+  let _html = generate_pop_html(title, idx)
   layer.open({
     type: 1,
     title: title,
@@ -196,55 +188,109 @@ window.ShowDetails = function(that, title, name, locus){
     area: ['420px', '240px'], //宽高
     content: _html
   });
-  $(that).blur();
+  $(this).blur();
 }
 
+window.goto = function(idx){
+  let data = table_data[idx];
+  let locus = data['locus'];
+  let [base_chr, base_s, base_e] = parseLocus(locus);
+  let loci = [locus];
+  let names = [data['name']];
 
-window.goto1 = function(name, locus){
-  let loading = layer.load(1, {
-    shade: [0.5,'#fff'] 
-  });
-  // locus可能是基因
-  // 判断是基因还是locus
-  if(locus.lastIndexOf(':') === -1){
-    // 先根据基因查询坐标
-    let suff = locus.indexOf('(');
-    locus = locus.substring(0, suff);
-    locus = get_gene_locus_by_name(locus);
-    if(locus === ''){
-      layer.msg('No such Gene')
-      layer.close(loading);
-      return
+  for(let key of ['TF', 'enhancer', 'promoter', 'super_enhancer', 'target']){
+    let key_data = data[key].split(',');
+    for(let o of key_data){
+      if(o == '' || o.length == 0) continue
+      let to = removeBrack(o);
+      //let [to_chr, to_s, to_e] = parseLocus(to);
+      //if(to_chr != base_chr) continue;
+      loci.push(to);
+      names.push(`[${key}]${o}`)
     }
   }
-  // 前往地址
-  parent.drawCanvas([locus],[name]);
-  layer.close(loading);
-  let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-  parent.layer.min(index);
-}
-
-window.goto2 = function(name1, locus1, locus2){
-  let name2= locus2;
-  let loading = layer.load(1, {
-    shade: [0.5,'#fff'] 
-  });
-  if(locus1.lastIndexOf(':') === -1){
-    // 先根据基因查询坐标
-    let suff = locus1.indexOf('(');
-    locus1 = locus1.substring(0, suff);
-    locus1 = get_gene_locus_by_name(locus1);
-    if(locus1 === ''){
-      layer.msg('No such Gene')
-      layer.close(loading);
-      return
-    }
-  }
-  // locus2 一定是地址
-  parent.drawCanvas([locus1,locus2],[name1,name2])
-  layer.close(loading);
+  parent.drawCanvas3(loci, names);
   let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
   parent.layer.min(index);
 }
 
 
+
+function removeBrack(str){
+  let index = str.indexOf("(");
+  if(index == -1) return str;
+  let index2 = str.indexOf(")");
+  return str.substring(index + 1, index2)
+}
+
+/*
+传1个坐标： 画一个点
+传2个坐标： 画一个框， 或者 一个弧线
+传2个及以上个坐标： 画弧线
+
+*/
+window.goto1 = function(locus){
+  locus = removeBrack(locus)
+  parent.drawCanvas1([locus],[locus]);
+  let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+  parent.layer.min(index);
+}
+
+window.goto2 = function(idx, locus2){
+  let locus1 = table_data[idx]['locus']
+  locus2 = removeBrack(locus2)
+  parent.drawCanvas2([locus1,locus2],[table_data[idx]['name'],locus2])
+  let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+  parent.layer.min(index);
+}
+
+
+function createBedpe(){
+  let s = 'chr1\tx1\tx2\tchr2\t\y1\ty2\tname\n';
+  for(let idx = 0; idx < table_data.length; idx ++){
+    let _data = table_data[idx];
+    let cREs1 = _data['name'];
+    let [base_chr, base_s, base_e] = parseLocus(_data['locus']);
+    for(let key of ['TF', 'enhancer', 'promoter', 'super_enhancer', 'target']){
+      let key_data = _data[key].split(',');
+      for(let o of key_data){
+        if(o == '' || o.length == 0) continue
+        let to = removeBrack(o);
+        let [to_chr, to_s, to_e] = parseLocus(to);
+        s += `${base_chr}\t${base_s}\t${base_s + 1000}\t${to_chr}\t${to_s}\t${to_s + 1000}\t${cREs1}-[${key}]${o}\t1\n`;
+      }
+    }
+  }
+  let blob = new Blob([s]);
+  let url = window.URL.createObjectURL(blob);
+  // console.log(url);
+  return [url, table_data[0]['locus']];
+}
+
+window.ShowArcs = function(){
+  // alert(1)
+  let [_, live_igv_browser] =  parent.getAllBrowser();
+  // console.log(live_igv_browser)
+  if(live_igv_browser.size == 0){
+    alert('No Gene Browser Loaded!'); 
+    return;
+  }
+  let [url, base_locus] = createBedpe();
+  let config = {
+    "track_type": "one_to_all_interact",
+    "type": "interact",
+    "url":url,
+    "name":"all_interact",
+    "arcOrientation":false,
+    "height":100,
+    "color":"rgb(255,44,28)",
+    "format":"bedpe"
+  }
+  let b = live_igv_browser.values().next().value;
+  b.removeTrackByName('all_interact');
+  b.loadTrackList([config]);
+  parent.browser_goto_locus(base_locus);
+  let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+  parent.layer.min(index);
+  parent.RemoveBodyOverflow();
+}

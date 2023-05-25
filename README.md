@@ -46,7 +46,7 @@ Install [conda](https://docs.conda.io/en/latest/miniconda.html) firstly.
 ```python
 ALLOWED_HOSTS = ["192.168.31.196"]
 ```
-6. `python manage.py runsever 0.0.0.0:<your_port>`
+6. `python manage.py runserver 0.0.0.0:<your_port>`
 ---
 
 ## 2、frontend
@@ -71,7 +71,7 @@ cat /usr/local/nginx/conf/nginx.conf
 ## In your downloaded compressed file
 ```
 
-3. Modify `/js/global.js`, change to your backend address
+3. Modify `/js/setting.js`, change to your backend address
 ```js
 export const api_url = '<your_ip>:<your_port>/api';
 ```

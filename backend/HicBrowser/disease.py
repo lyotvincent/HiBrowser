@@ -5,16 +5,11 @@ import requests
 from urllib3.exceptions import InsecureRequestWarning
 from urllib3 import disable_warnings
 
-
 auth_params = {"email": "klstftz@gmail.com", "password": "1511182@Lpj"}
 
 api_host = "https://www.disgenet.org/api"
 
 disable_warnings(InsecureRequestWarning)
-
-
-
-
 
 
 def get_token():
@@ -67,5 +62,4 @@ def query_gene_by_disease(disease):
         return gda_response.json()
     return None
 
-
-print(query_disease_by_gene('APP'))
+# print(query_disease_by_gene('APP'))

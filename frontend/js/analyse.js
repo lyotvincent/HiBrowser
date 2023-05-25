@@ -1,5 +1,6 @@
 import {create2bar, createDrilldown, createBoxPlot, createColumn, createStkColumn} from'./chart.js'
-import {api_url, gene_locus_range, parseLocus} from './global.js'
+import {gene_locus_range, parseLocus} from './global.js'
+import { api_url } from './setting.js';
 
 
 //====================全局变量 start============================
@@ -1259,9 +1260,9 @@ function searchAnotherSample(chr, s, e, track, idx){
   return undefined;
 }
 
-window.drawCanvas = function(locus){
+window.drawCanvas_helper = function(locus){
     let b  = live_hic_browser.values().next().value;
-    parent.drawCanvas([locus],[`compare with ${locus}`], b);
+    parent.drawCanvas1(locus,[`compare with ${locus}`], b);
     layer.msg(`The HiC Browser has been located to ${locus}, you can minimize this page and view it.`)
 
 }
@@ -1283,13 +1284,13 @@ window.getGeneAndChange = function(that, chr, s, e, track){
     if(!t){
       _html = `
       <div class="nocontrast info">
-        Unique TAD. <span onclick="drawCanvas('${chr}:${s}-${e}')" style="cursor:pointer"><u>view in hic browser</u></span>
+        Unique TAD. <span onclick="drawCanvas_helper('${chr}:${s}-${e}')" style="cursor:pointer"><u>view in hic browser</u></span>
       </div>
       `
     }else{
       let color = ((t.x1 === s && t.y2 === e) ? 'success':'warning');
       _html = `
-      <div class="contrast ${color}" onclick="drawCanvas('${t.chr1}:${t.x1}-${t.y2}')">
+      <div class="contrast ${color}" onclick="drawCanvas_helper('${t.chr1}:${t.x1}-${t.y2}')">
         <span>${t.chr1}</span>
         <span>${t.x1}</span>
         <span>${t.x2}</span>

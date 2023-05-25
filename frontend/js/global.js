@@ -36,14 +36,18 @@ export function formatLocus(x){
 }
 
 export function parseLocus(x){
-  x = x.split(':');
-  let chr = x[0];
-  let scales = x[1];
-  scales = scales.replaceAll(',', '');
-  scales = scales.split('-');
-  let x_start = parseInt(scales[0]);
-  let x_end = parseInt(scales[1]);
-  return [chr, x_start, x_end];
+  try{
+    x = x.split(':');
+    let chr = x[0];
+    let scales = x[1];
+    scales = scales.replaceAll(',', '');
+    scales = scales.split('-');
+    let x_start = parseInt(scales[0]);
+    let x_end = parseInt(scales[1]);
+    return [chr, x_start, x_end];
+  }catch(error){
+    return undefined
+  }
 }
 
 
@@ -100,7 +104,6 @@ export function getNameAndExt(url){
 }
 
 export const container = document.getElementById("app-container");
-export const api_url = 'http://192.168.31.196:8080/api';
 export const table_header = ['id', 'name', 'locus', 'enhancer', 'promoter', 'super_enhancer', 'strand',  'TF', 'target', 'diseases'];
 
 /*

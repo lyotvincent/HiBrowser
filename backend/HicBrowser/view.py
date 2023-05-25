@@ -9,9 +9,7 @@ from . import analyseService
 
 
 def index(request):
-    context = {}
-    context['hello'] = 'Hello World!'
-    context['python'] = 'nkul'
+    context = {'msg': 'Congratulation! API is ok', 'doc': 'https://hic.bioaimed.com', 'author': '@nkul'}
     print(os.getcwd())
     return render(request, 'test.html', context)
 

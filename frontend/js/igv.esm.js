@@ -38795,6 +38795,7 @@ class CircularView {
     // }
 
     // TODO -- remove corresponding row from track panel
+    // 删除Track
     deleteTrack(trackID) {
         let idx = this.tracks.findIndex(t => trackID === t.name);
         if (idx >= 0) {
@@ -51909,29 +51910,22 @@ class Browser {
         if (isString$3(config)) {
             config = JSON.parse(config);
         }
-
         try {
-
-
             // 新建track
             const newTrack = await this.createTrack(config);
             
-
             if (undefined === newTrack) {
                 return
             }
-
             // Set order field of track here.  Otherwise track order might get shuffled during asynchronous load
             if (undefined === newTrack.order) {
                 newTrack.order = this.trackViews.length;
             }
-
             const trackView = new TrackView(this, this.columnContainer, newTrack);
             this.trackViews.push(trackView);
             toggleTrackLabels(this.trackViews, this.trackLabelsVisible);
             this.reorderTracks();
             this.fireEvent('trackorderchanged', [this.getTrackOrder()]);
-
             if (typeof newTrack.postInit === 'function') {
                 try {
                     trackView.startSpinner();
@@ -51940,7 +51934,6 @@ class Browser {
                     trackView.stopSpinner();
                 }
             }
-
             if (!newTrack.autoscaleGroup) {
                 // Group autoscale will get updated later (as a group)
                 if (config.sync) {
@@ -51949,13 +51942,11 @@ class Browser {
                     trackView.updateViews();
                 }
             }
-
             if (typeof newTrack.hasSamples === 'function' && newTrack.hasSamples()) {
                 if (this.config.showSampleNameButton !== false) {
                     this.sampleNameControl.show();   // If not explicitly set
                 }
             }
-
             return newTrack
 
         } catch (error) {
@@ -52239,12 +52230,9 @@ class Browser {
      * @returns {Array}  tracks with given property value.  e.g. findTracks("type", "annotation")
      */
     findTracks(property, value) {
-
         let f = typeof property === 'function' ?
             trackView => property(trackView.track) :
             trackView => value === trackView.track[property];
-        
-
         return this.trackViews.filter(f).map(tv => tv.track)
     }
 

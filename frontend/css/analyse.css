@@ -1,4 +1,5 @@
-html,body{
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -6,13 +7,13 @@ html,body{
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 
-div.ana-container{
+div.ana-container {
   height: 100%;
   display: flex;
   flex-direction: row;
 }
 
-.ana-left{
+.ana-left {
   width: 20%;
   height: 100%;
   overflow-y: auto;
@@ -20,15 +21,16 @@ div.ana-container{
 
 }
 
-.ana-right{
+.ana-right {
   width: 80%;
   height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-} 
-.ana-card{
+}
+
+.ana-card {
   margin-left: auto;
   margin-right: auto;
   width: 96.7%;
@@ -43,7 +45,7 @@ div.ana-container{
   border-radius: 10px;
 }
 
-.ana-empty-card{
+.ana-empty-card {
   margin-left: auto;
   margin-right: auto;
   width: 96.7%;
@@ -60,20 +62,21 @@ div.ana-container{
 
 
 
-.arrow-container{
+.arrow-container {
   color: #7c7575;
 }
 
-.ana-card:first-child .ana-file-icon:first-child{
+.ana-card:first-child .ana-file-icon:first-child {
   color: #eee;
-  pointer-events:none;
+  pointer-events: none;
 }
 
-.ana-card:last-child .ana-file-icon:nth-child(2){
+.ana-card:last-child .ana-file-icon:nth-child(2) {
   color: #eee;
-  pointer-events:none;
+  pointer-events: none;
 }
-.refresh-button{
+
+.refresh-button {
   width: 20px;
   height: 20px;
   display: flex;
@@ -86,10 +89,12 @@ div.ana-container{
   color: rgb(102, 102, 102);
   cursor: pointer;
 }
-.refresh-button:hover{
+
+.refresh-button:hover {
   background-color: rgb(224, 222, 222);
 }
-.ana-title{
+
+.ana-title {
   width: 98%;
   height: 30px;
   margin-left: 2%;
@@ -103,39 +108,39 @@ div.ana-container{
 }
 
 
-.ana-left::-webkit-scrollbar{
+.ana-left::-webkit-scrollbar {
   width: 4px;
 }
 
-.ana-left::-webkit-scrollbar-track{
+.ana-left::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);
 }
 
-.ana-left::-webkit-scrollbar-thumb{
+.ana-left::-webkit-scrollbar-thumb {
   background: #03a8f4c5;
 }
 
 
 
-.ana-right .ana-intra::-webkit-scrollbar{
+.ana-right .ana-intra::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
 
-.ana-right .ana-intra::-webkit-scrollbar-track{
+.ana-right .ana-intra::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);
 }
 
-.ana-right .ana-intra::-webkit-scrollbar-thumb{
+.ana-right .ana-intra::-webkit-scrollbar-thumb {
   background: #03a8f4c5;
 }
 
 
-.ana-file-icon{
+.ana-file-icon {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,13 +148,13 @@ div.ana-container{
 }
 
 
-.ana-title input{
+.ana-title input {
   outline: none;
   border: none;
   width: 75%;
   height: 100%;
   margin-right: 2%;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   border-radius: .4rem;
   padding: 12px 20px;
   cursor: pointer;
@@ -157,7 +162,7 @@ div.ana-container{
   font-size: 13px;
 }
 
-.ana-tracks{
+.ana-tracks {
   width: 94%;
   margin-left: auto;
   margin-right: auto;
@@ -167,7 +172,7 @@ div.ana-container{
   justify-content: flex-start;
 }
 
-.ana-tracks span{
+.ana-tracks span {
   height: 30px;
   line-height: 30px;
   padding-left: 20px;
@@ -177,17 +182,17 @@ div.ana-container{
   cursor: pointer;
 }
 
-.ana-tracks span i{
+.ana-tracks span i {
   font-size: 10px;
   margin-right: 15px;
-  user-select:none;
+  user-select: none;
   -webkit-user-select: none;
 }
 
 
 
 
-.ana-inter{
+.ana-inter {
   width: 60%;
   height: 100%;
   border-right: 1px solid silver;
@@ -197,18 +202,19 @@ div.ana-container{
 }
 
 
-.ana-right .ana-inter::-webkit-scrollbar{
+.ana-right .ana-inter::-webkit-scrollbar {
   width: 4px;
 }
 
-.ana-right .ana-inter::-webkit-scrollbar-track{
+.ana-right .ana-inter::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);
 }
 
-.ana-right .ana-inter::-webkit-scrollbar-thumb{
+.ana-right .ana-inter::-webkit-scrollbar-thumb {
   background: #03a8f4c5;
 }
-.ana-cover{
+
+.ana-cover {
   position: fixed;
   left: 0;
   top: 0;
@@ -216,7 +222,7 @@ div.ana-container{
   z-index: 100;
 }
 
-.tempContainer{
+.tempContainer {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -225,7 +231,8 @@ div.ana-container{
   text-align: center;
   z-index: 101;
 }
-.tempContainer img{
+
+.tempContainer img {
   cursor: zoom-out;
 }
 
@@ -254,13 +261,13 @@ div.ana-container{
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   border-bottom-color: #b3b3b3;
   -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn:hover,
@@ -286,9 +293,9 @@ div.ana-container{
   text-decoration: none;
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
-     -moz-transition: background-position 0.1s linear;
-       -o-transition: background-position 0.1s linear;
-          transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
 }
 
 .btn:focus {
@@ -313,8 +320,8 @@ div.ana-container{
   opacity: 0.65;
   filter: alpha(opacity=65);
   -webkit-box-shadow: none;
-     -moz-box-shadow: none;
-          box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 .btn-group {
@@ -331,7 +338,7 @@ div.ana-container{
   margin-left: 0;
 }
 
-.point-group{
+.point-group {
   width: 30px;
   height: 20px;
   position: fixed;
@@ -343,10 +350,12 @@ div.ana-container{
   align-content: center;
   z-index: 10;
 }
-.chart-disabled{
+
+.chart-disabled {
   display: none;
 }
-.point-group .point{
+
+.point-group .point {
   cursor: pointer;
   width: 12px;
   height: 12px;
@@ -355,11 +364,11 @@ div.ana-container{
   border-radius: 50% !important;
 }
 
-.point-group .selected{
+.point-group .selected {
   background-color: rgba(185, 159, 159, 0.61);
 }
 
-.inter-card{
+.inter-card {
   width: 98.8%;
   margin-left: auto;
   margin-right: auto;
@@ -371,21 +380,21 @@ div.ana-container{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  transform: translate(0,0);
+  transform: translate(0, 0);
 }
 
-.inter-card div{
+.inter-card div {
   border-radius: 10px;
 }
 
-.inter-card iframe{
+.inter-card iframe {
   width: 99%;
   height: 90%;
   margin-top: auto;
   margin-bottom: auto;
 }
 
-.inter-card img{
+.inter-card img {
   height: 100%;
   width: 48%;
   margin-left: auto;
@@ -393,30 +402,30 @@ div.ana-container{
   cursor: zoom-in;
 }
 
-.ana-intra{
+.ana-intra {
   width: 40%;
   height: 100%;
   background: #c9e5d7;
   overflow-y: hidden;
 }
 
-.intra-setting-card{
+.intra-setting-card {
   width: 98.8%;
   margin-left: auto;
   margin-right: auto;
   background-color: white;
-  height:calc(100% - 10px) ;
+  height: calc(100% - 10px);
   margin-top: 5px;
   margin-bottom: 5px;
   border-radius: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  transform: translate(0,0);
+  transform: translate(0, 0);
 }
 
 
-.venn{
+.venn {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
@@ -466,13 +475,13 @@ div.ana-container{
   color: #2c5777;
 }
 
-.intra-setting-card{
+.intra-setting-card {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 
-.setting-group{
+.setting-group {
   margin-top: 10px;
   height: 55px;
   display: flex;
@@ -482,14 +491,14 @@ div.ana-container{
 
 }
 
-.detail-card{
+.detail-card {
   height: calc(100% - 65px);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
 }
 
-.content{
+.content {
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px;
@@ -503,7 +512,7 @@ div.ana-container{
   height: 30%;
 }
 
-.associated{
+.associated {
   width: 96%;
   margin-top: 10px;
   height: 75%;
@@ -513,7 +522,7 @@ div.ana-container{
   overflow-x: hidden;
 }
 
-.associated .item{
+.associated .item {
   width: 96%;
   height: 38px;
   background-color: aliceblue;
@@ -528,11 +537,11 @@ div.ana-container{
   align-items: center;
   cursor: pointer;
   border-radius: 8px;
-  transform: translate(0,0);
+  transform: translate(0, 0);
 }
 
 
-.associated .item::before{
+.associated .item::before {
   content: '';
   position: absolute;
   top: 20px;
@@ -545,11 +554,11 @@ div.ana-container{
   transition: 0.5s;
 }
 
-.associated .item.detail::before{
+.associated .item.detail::before {
   right: 20px;
 }
 
-.associated .item::after{
+.associated .item::after {
   content: '';
   position: absolute;
   top: 20px;
@@ -562,11 +571,11 @@ div.ana-container{
   transition: 0.5s;
 }
 
-.associated .item.detail::after{
+.associated .item.detail::after {
   right: 28px;
 }
 
-.associated .item-detail{
+.associated .item-detail {
   width: 96%;
   height: 0px;
   margin-left: auto;
@@ -583,7 +592,7 @@ div.ana-container{
   flex-direction: column;
 }
 
-.item-detail .gene{
+.item-detail .gene {
   margin: 3px;
   width: 100%;
   height: 30px;
@@ -595,7 +604,7 @@ div.ana-container{
   font-weight: 300;
 }
 
-.item-detail .contrast{
+.item-detail .contrast {
   margin: 3px;
   width: 100%;
   height: 30px;
@@ -607,45 +616,51 @@ div.ana-container{
   font-weight: 300;
   cursor: pointer;
 }
-.info{
+
+.info {
   color: blue;
 }
-.success{
+
+.success {
   color: green;
-  
+
 }
 
-.warning{
+.warning {
   color: red;
 }
-.item-detail .nocontrast{
+
+.item-detail .nocontrast {
   margin: auto;
   font-size: 13px;
-  cursor:default;
+  cursor: default;
 }
 
-.item-detail .nogene{
+.item-detail .nogene {
   margin: auto;
   font-size: 13px;
-  cursor:default;
+  cursor: default;
 }
 
-.item-detail .gene span:nth-child(1){
+.item-detail .gene span:nth-child(1) {
   text-align: left;
   width: 90px;
   cursor: default;
 }
-.item-detail .gene span:nth-child(2){
+
+.item-detail .gene span:nth-child(2) {
   text-align: left;
   width: 180px;
   cursor: pointer;
 }
-.item-detail .gene span:nth-child(3){
+
+.item-detail .gene span:nth-child(3) {
   text-align: center;
   width: 10px;
   cursor: default;
 }
-.item-detail .gene span:nth-child(4){
+
+.item-detail .gene span:nth-child(4) {
   text-align: left;
   width: 10px;
   height: 10px;
@@ -655,22 +670,22 @@ div.ana-container{
   cursor: pointer;
 }
 
-.item-detail::-webkit-scrollbar{
+.item-detail::-webkit-scrollbar {
   width: 2px;
 }
 
-.item-detail::-webkit-scrollbar-track{
+.item-detail::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .1);
   margin-top: 3px;
   margin-bottom: 3px;
 }
 
-.item-detail::-webkit-scrollbar-thumb{
+.item-detail::-webkit-scrollbar-thumb {
   background: #a9b0b3c5;
 }
 
 
-.associated .item-detail.detail{
+.associated .item-detail.detail {
   visibility: visible;
   opacity: 1;
   height: 165px;
@@ -678,10 +693,10 @@ div.ana-container{
 
 
 
-.associated  .empty-item{
+.associated .empty-item {
   width: 96%;
   height: 38px;
-  background: linear-gradient(90deg,#f2f2f2 25%,#e6e6e6 37%,#f2f2f2 63%);
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
   animation-duration: 1.4s;
   animation-timing-function: ease;
   animation-delay: 0s;
@@ -703,29 +718,29 @@ div.ana-container{
   border-radius: 8px;
 }
 
-.associated .item span{
+.associated .item span {
   height: 100%;
   margin-left: 20px;
   font-size: 13px;
 }
 
 
-.associated::-webkit-scrollbar{
+.associated::-webkit-scrollbar {
   width: 2px;
 }
 
-.associated::-webkit-scrollbar-track{
+.associated::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .1);
   margin-top: 3px;
   margin-bottom: 3px;
 }
 
-.associated::-webkit-scrollbar-thumb{
+.associated::-webkit-scrollbar-thumb {
   background: #03a8f4c5;
 }
 
 
-.rotate{
+.rotate {
   transform: rotate(315deg);
   margin-right: 20px;
 }

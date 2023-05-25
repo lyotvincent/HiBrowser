@@ -33,19 +33,28 @@
         <i class="fa fa-search"></i>
       </div>
     </div>
+    <div class="search-tips">
+      <span class="disease-url hidden">
+        <a href="https://hic.bioaimed.com/browser/uploads/diseases.txt" target="_blank">Click to view all annotated diseases</a>
+      </span>
+      <span class="show-arcs hidden" onclick="ShowArcs()">
+        <a>Click to view all interact</a>
+      </span>
+
+
+    </div>
     <div class="search-result">
       <div id="result-table" style="width: 95%; margin: 20px;">
       </div>
     </div>
 
-
     <script>
     //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
     //parent.layer.close(index);
       let query_map = new Map();
-      query_map.set('Locus','1:1-180,915,260');
-      query_map.set('Gene','SCAI');
-      query_map.set('Disease','Carcinoma');
+      query_map.set('Locus','4:80,824,298-82,324,298');
+      query_map.set('Gene','APP');
+      query_map.set('Disease',"Alzheimer's Disease");
 
       let search_type = document.querySelector('.search-type');
       search_type.onclick = function(){
@@ -53,8 +62,13 @@
       }
 
       function show(a){
+        if(a == 'Disease'){
+          document.querySelector('.disease-url').classList.remove('hidden');
+        }else{
+          document.querySelector('.disease-url').classList.add('hidden');
+        }
         document.querySelector('.text01').value = a;
-        document.querySelector('#search-input').setAttribute("placeholder",query_map.get(a));
+        document.querySelector('#search-input').setAttribute("value",query_map.get(a));
 
       }
 

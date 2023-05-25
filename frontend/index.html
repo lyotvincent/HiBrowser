@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <title>HiC Browser</title>
+    <link href="img/favicon.ico" rel="shortcut icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 
@@ -29,7 +30,6 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/layer/layer.js"></script>
 
-    <script src="js/stat.min.js"></script>
     <script type="module" src="js/app.js"></script>
     <script type="module" src="js/header.js"></script>
     <script type="module" src="js/tools.js"></script>
@@ -38,10 +38,10 @@
     
     
 </head>
-<body>
+<body style="background-color: #eee !important;">
   <header class="hic-header">
     <div class="hic-logo">
-      <span style="color: darkcyan;font-size: 2.5rem;font-weight: 900; cursor: pointer;">HiBrowser</span>
+      <span style="color: darkcyan;font-size: 2.5rem;font-weight: 900; cursor: pointer; text-shadow: 0.04em 0.05em 0 hsl(186deg 50% 30%);">HiBrowser</span>
     </div>
     <div class="hic-nav">
       <!-- A map -->
@@ -68,7 +68,7 @@
       </div>
 
       <!-- B map -->
-      <div class="dropdown">
+      <div id='dropdown-b-map'  class="dropdown">
         <button class="btn btn-danger dropdown-toggle radius-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
           B map
         </button>
@@ -272,19 +272,19 @@
             <div class="igv-flw-input-container">
               <div class="igv-flw-input-row">
                 <div class="igv-flw-input-label">fasta/fa URL</div>
-                <input type="text">
+                <input type="text" value="https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta">
               </div>
               <div class="igv-flw-input-row">
                 <div class="igv-flw-input-label">fai URL</div>
-                <input type="text">
+                <input type="text" value="https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta.fai">
               </div>
               <div class="igv-flw-input-row">
                 <div class="igv-flw-input-label">refGene URL</div>
-                <input type="text">
+                <input type="text" value="https://cdn.bioaimed.com/human/human_refGene.txt.gz">
               </div>
               <div class="igv-flw-input-row">
                 <div class="igv-flw-input-label">cytoBandIdeo URL</div>
-                <input type="text">
+                <input type="text" value="https://cdn.bioaimed.com/human/human_cytoBandIdeo.txt">
               </div>
             </div>
           </div>
@@ -309,7 +309,7 @@
             <div class="igv-flw-input-container">
               <div class="igv-flw-input-row">
                 <div class="igv-flw-input-label">.hic file URL</div>
-                <input id ="load-A-url" type="text">
+                <input id ="load-A-url" type="text" value="https://cdn.bioaimed.com/human/4DNFI1E6NJQJ.hic">
               </div>
             </div>
           </div>
@@ -325,7 +325,7 @@
       <div class="modal-dialog modal-large">
         <div class="modal-content">
           <div class="modal-header">
-              <div class="modal-title">Load A map from url</div>
+              <div class="modal-title">Load B map from url</div>
               <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -333,7 +333,7 @@
             <div class="igv-flw-input-container">
               <div class="igv-flw-input-row">
                 <div class="igv-flw-input-label">.hic file URL</div>
-                <input id="load-B-url" type="text">
+                <input id="load-B-url" type="text" value="https://cdn.bioaimed.com/human/4DNFICSTCJQZ.hic ">
               </div>
             </div>
           </div>
@@ -350,14 +350,14 @@
 
 
 
-  <div style="background-color: #F6F8F7; height: 300px;border-bottom: 1px solid white;">
-    <div class="footer-left">
+  <!--<div style="background-color: #eee; height: 300px;border-bottom: 1px solid white;">-->
+  <!--  <div class="footer-left">-->
 
-    </div>
-    <fiv class="footer-right">
+  <!--  </div>-->
+  <!--  <fiv class="footer-right">-->
 
-    </fiv>
-  </div>
+  <!--  </fiv>-->
+  <!--</div>-->
   <footer class="hic-footer">
     <div>Copyright © 2021-2022. Nankai University.</div>
     <div>Developed by the <a href="http://bio.nankai.edu.cn" target="_blank">Liu Lab</a></div>
@@ -370,11 +370,6 @@
           <i class="fa fa-magic"></i>
       </span>
      </div>
-     <div class="box" id = "ROI" data-toggle="tooltip" data-placement="left" title = "Region of Interest">
-      <span href="#" class="tool">
-          <i class="fa fa-square-o"></i>
-      </span>
-    </div>
     <div class="box" id ='browser-refresh' data-toggle="tooltip" data-placement="left" title = "refresh">
       <span class="tool">
           <i class="fa fa-rotate-left"></i>
@@ -382,7 +377,7 @@
     </div>
 
 
-    <div class="box" id ='setting'>
+    <div class="box" id ='setting' data-toggle="tooltip" data-placement="left" title = "setting">
       <span class="tool">
           <i class="fa fa-gear"></i>
       </span>
@@ -395,7 +390,7 @@
   </div>
 
   <div class="hic-tools-left">
-    <div class="box" id="3Ddisplay" data-toggle="tooltip" data-placement="left" title="3Ddisplay">
+    <div class="box" id="3Ddisplay" data-toggle="tooltip" data-placement="left" title="3D Display">
       <span href="#" class="tool" >
           <i class="fa fa-cube"></i>
       </span>
@@ -407,35 +402,26 @@
         </span>
     </div>
 
-    <div class="box" id='analyse'>
+    <div class="box" id='analyse' data-toggle="tooltip" data-placement="left" title = "Spatial Structure Analysis">
         <span href="#" class="tool">
             <i class="fa fa-bar-chart-o"></i>
         </span>
     </div>
-    
-   
-    <div class="box" id = "browser-zoom-in" data-toggle="tooltip" data-placement="left" title = "Browser Zoom In">
-        <span href="#" class="tool">
-            <i class="fa fa-plus"></i>
-        </span>
+    <div class="box" id = "ROI" data-toggle="tooltip" data-placement="left" title = "Region of Interest">
+      <span href="#" class="tool">
+          <i class="fa fa-square-o"></i>
+      </span>
     </div>
-
-    <div class="box" id = "browser-zoom-out" data-toggle="tooltip" data-placement="left" title = "Browser Zoom Out">
-        <span href="#" class="tool">
-            <i class="fa fa-minus"></i>
-        </span>
-    </div>
-
-    <div class="box" id ='browser-rotate' data-toggle="tooltip" data-placement="left" title = "display map in diagonal">
-      <span class="tool">
-          <i class="fa fa-caret-up"></i>
+    <div class="box" id = "delete_igv" data-toggle="tooltip" data-placement="left" title = "Delete Genome Browser">
+      <span href="#" class="tool">
+        <i class="fa fa-trash-o"></i>
       </span>
     </div>
   </div>
 
   <div style="display: none;">
     <input id="delete_panel">
-    <button id="delete_panel_button"/>
+    <button id="delete_panel_button"></button>
   </div>
 
 </body>

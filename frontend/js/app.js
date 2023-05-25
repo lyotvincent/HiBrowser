@@ -7,9 +7,11 @@ console.log('==========>initialize the browser viewer start');
 
 const browser0 = await hic.init(container, {});
 const browser1 = await hic.createBrowser(container, {});
+const browser2 = await hic.createBrowser(container, {});
 
 live_browser.set(browser0.id,browser0);
 live_browser.set(browser1.id,browser1);
+live_browser.set(browser2.id,browser2);
 await browser0.reset();
 console.log('==========>initialize the browser viewer end');
 AlertSingleton.init(container) // 弹窗
@@ -94,6 +96,10 @@ window.getAllBrowser = function(){
   return [live_browser, live_igv_browser];
 }
 
+window.removeIGV = function(browser){
+  if(browser === undefined) return;
+  igv.removeBrowser(browser);
+}
 
 
 
@@ -240,10 +246,21 @@ window.loadHiC = async function(url, type, selected_browser){
         return
       }
     );
-    $('#hic-control-map-dropdown').removeClass('disabled');
+    // $('#hic-control-map-dropdown').removeClass('disabled');
+    $('#dropdown-b-map').removeClass('disabled');
   }
   return;
 }
+
+function getRandomColor() {
+  let letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 
 window.initIGV = async function (ext){
   let _id = hic.getCurrentBrowser().id;
@@ -294,7 +311,9 @@ window.LoadHiCTrack = function(track_type, url, browser){
     },
     "url":url,
     "autoscale": true,
-    "displayMode": "COLLAPSED"
+    "color":getRandomColor(), 
+    "height":100,
+    "displayMode": "Expand"
   };
   browser.loadTracks([config]);
   return true;
@@ -316,24 +335,30 @@ window.LoadIGVTrack = async function(track_type, url, idx_url = undefined){
       "url" : url,
       "indexURL": idx_url,
       "name" : getNameAndExt(url)[0],
-      "track_type": track_type
+      "track_type": track_type,
+      "displayMode": "Expand"
     }
   }else if(track_type === 'auto'){
     config = {
       "url" : url,
       "indexURL": idx_url,
       "name" : getNameAndExt(url)[0],
-      "track_type": track_type
+      "track_type": track_type,
+      "color":getRandomColor(), 
+      "height":100,
+      "displayMode": "Expand"
     }
   }
   else{
     config = {
       "type": track_type,
-      "height":50,
       "url" : url,
       "indexURL": idx_url,
       "name" : getNameAndExt(url)[0],
-      "track_type": track_type
+      "track_type": track_type,
+      "color":getRandomColor(), 
+      "height":100,
+      "displayMode": "Expand"
     }
   }
 

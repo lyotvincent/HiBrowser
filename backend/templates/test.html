@@ -7,7 +7,57 @@
   <title>Document</title>
 </head>
 <body>
-  <div>{{hello}}</div>
-  <div>{{python}}</div>
+  <div class="card">
+  <img src="https://via.placeholder.com/150" alt="Placeholder Image">
+  <h3>{{msg}}</h3>
+  <p>{{author}}</p>
+  <a href="{{ doc }}" target="_blank">doc</a>
+</div>
+
 </body>
+<style>
+    .card {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.card h3 {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.card p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.card a {
+ text-decoration: none;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card a:hover {
+  background-color: #0056b3;
+}
+
+</style>
 </html>

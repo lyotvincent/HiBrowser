@@ -345,6 +345,16 @@ window.loadD3FromUrl = async function(val){
   });
 }
 
+function on_open_page(){
+    let val = "https://hic-1256812583.cos.ap-beijing.myqcloud.com/k562_1.nucle3d"
+    let [name, ext] = getNameAndExt(val);
+    loadD3FromUrl(val);
+    $(`#str-url`).val("")
+    $(`#str-url`).attr('placeholder', name);
+    $(`#str-url`).blur();
+}
+on_open_page();
+
 $(`#str-url`).keypress(function(e){
   if(e.which === 13){
     let val = $(this).val();
@@ -558,4 +568,3 @@ function showSegment(chr, s, e, color = color_hl, name = "highlight"){
 window.get3dFile = function(){
   return d3_file_url;
 }
-

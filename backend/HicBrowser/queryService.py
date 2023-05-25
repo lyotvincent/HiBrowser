@@ -20,14 +20,18 @@ return:
 '''
 
 db = os.path.dirname(__file__) + '/hic.db'
-const_loop_range = 1e5 # 100kb
+const_loop_range = 1e5  # 100kb
 
 
 def get_enhancer_by_gene(gene):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select chrom, txStart, txEnd from enhancer where gene like '%{}%' ".format(gene)
-    cursor.execute(sql)
+    sql = """
+    select chrom, txStart, txEnd
+    from enhancer 
+    where gene like ?
+    """
+    cursor.execute(sql, ('%' + gene + '%',))
     enhancer_logs = cursor.fetchall()
     enhancer_info = ''
     for enhancer_log in enhancer_logs:
@@ -40,12 +44,17 @@ def get_enhancer_by_gene(gene):
 def get_super_enhancer_by_gene(gene):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select  chrom, txStart, txEnd from superEnhancer where cloestactivegene like '%{}%' ".format(gene)
-    cursor.execute(sql)
+    sql = """
+    select chrom, txStart, txEnd 
+    from superEnhancer 
+    where cloestactivegene like ?
+    """
+    cursor.execute(sql, ('%' + gene + '%',))
     super_enhancer_logs = cursor.fetchall()
     super_enhancer_info = ''
     for super_enhancer_log in super_enhancer_logs:
-        super_enhancer_info += super_enhancer_log[0] + ':' + str(super_enhancer_log[1]) + '-' + str(super_enhancer_log[2]) + ','
+        super_enhancer_info += super_enhancer_log[0] + ':' + str(super_enhancer_log[1]) + '-' \
+                               + str(super_enhancer_log[2]) + ','
     conn.commit()
     conn.close()
     return super_enhancer_info[:-1]
@@ -54,10 +63,12 @@ def get_super_enhancer_by_gene(gene):
 def get_genes_by_name(name):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    # get gene info
-    sql = "select name1, chrom, strand, txStart, txEnd, name2 ,count(distinct name2) from refGene where name2 like '%{}%' group by  name2".format(
-        name)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2 ,count(distinct name2) 
+    from refGene
+    where name2 like ? group by name2
+    """
+    cursor.execute(sql, ('%' + name + '%', ))
     # ('NM_001136131', 'chr21', '-', 26174731, 26465317, 'APP', 1)
     gene_logs = cursor.fetchall()
     conn.commit()
@@ -103,8 +114,12 @@ def get_gene_by_disease_ids(q_disease):
 def get_disease_id_by_name(name):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select distinct diseaseId from diseaseAttributes where diseaseName like '%{}%' ".format(name)
-    cursor.execute(sql)
+    sql = """
+    select distinct diseaseId 
+    from diseaseAttributes 
+    where diseaseName like ?
+    """
+    cursor.execute(sql, ('%' + name + '%', ))
     conn.commit()
     logs = cursor.fetchall()
     conn.close()
@@ -114,8 +129,12 @@ def get_disease_id_by_name(name):
 def get_promoter_by_gene(gene):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select  chrom, txStart, txEnd, mode from epd where gene like '%{}%' ".format(gene)
-    cursor.execute(sql)
+    sql = """
+    select chrom, txStart, txEnd, mode 
+    from epd 
+    where gene like ?
+    """
+    cursor.execute(sql, ('%' + gene + '%', ))
     promoter_logs = cursor.fetchall()
     promoter_info = ''
     for promoter_log in promoter_logs:
@@ -130,32 +149,34 @@ def get_tf_target_by_gene(name):
     tf_target = {}
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select *, count(distinct Target) from TRRUST where TF='{}' group by Target".format(name)
-    cursor.execute(sql)
+    # 根据TF查target
+    sql = """
+    select t1.chrom, t1.txStart, t1.txEnd, t2.Target
+    FROM refGene t1
+    JOIN TRRUST t2 ON t1.name2 = t2.Target
+    where t2.TF= ? 
+    group by t2.Target
+    """
+    cursor.execute(sql, (name, ))
     targets = cursor.fetchall()
     target_info = ''
     for target in targets:
-        if target[2] == 'Activation':
-            mode = '+'
-        elif target[2] == 'Repression':
-            mode = '-'
-        else:
-            mode = '?'
-        target_info += target[1] + "({})".format(mode) + ','
+        target_info += f"{target[3]}({target[0]}:{target[1]}-{target[2]}),"
     target_info = target_info[:-1]
     tf_target['target'] = target_info
-    sql = "select *, count(distinct TF) from TRRUST where Target='{}' group by TF".format(name)
-    cursor.execute(sql)
+    # 根据 Target 查 TF
+    sql = """
+    select t1.chrom, t1.txStart, t1.txEnd, t2.TF
+    FROM refGene t1
+    JOIN TRRUST t2 ON t1.name2 = t2.TF
+    where t2.Target = ? 
+    group by t2.TF
+    """
+    cursor.execute(sql, (name, ))
     tfs = cursor.fetchall()
     tf_info = ''
     for tf in tfs:
-        if tf[2] == 'Activation':
-            mode = '+'
-        elif tf[2] == 'Repression':
-            mode = '-'
-        else:
-            mode = '?'
-        tf_info += tf[0] + "({})".format(mode) + ','
+        tf_info += f"{tf[3]}({tf[0]}:{tf[1]}-{tf[2]}),"
     tf_info = tf_info[:-1]
     tf_target['TF'] = tf_info
     conn.commit()
@@ -166,8 +187,12 @@ def get_tf_target_by_gene(name):
 def get_gene_locus_by_name(name):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select chrom, txStart, txEnd from refGene where name2='{}'".format(name)
-    cursor.execute(sql)
+    sql = """
+    select chrom, txStart, txEnd 
+    from refGene 
+    where name2= ?
+    """
+    cursor.execute(sql, (name, ))
     locus = ''
     logs = cursor.fetchall()
     if len(logs) >= 1:
@@ -218,21 +243,15 @@ def parse_locus(locus):
     return ch, s, e
 
 
-'''
-1. Cha xun gei ding fan wei shi fou shi yi ge ji yin de nei bu [get_external_gene]
-2. Cha xun gei ding fan wei nei bu shi fou you ji yin [get_internal_gene]
-3. Cha xun gei ding fan wei shi shi fou he ji yin zuo jiao cha [get_left_cross_gene]
-4. Cha xun gei ding fan wei shi shi fou he ji yin you jiao cha [get_right_cross_gene]
-
-he bing: chrome = chr and txStart <= x_e and txEnd >= x_s
-'''
-
-
 def get_external_gene(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) from refGene where chrom='{}' and txStart <= {} and txEnd >= {} group by name2".format(chr_x, x_s, x_e)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) 
+    from refGene 
+    where chrom= %s and txStart <= ? and txEnd >= ? group by name2
+    """
+    cursor.execute(sql, (chr_x, x_s, x_e))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -242,8 +261,13 @@ def get_external_gene(chr_x, x_s, x_e):
 def get_internal_gene(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) from refGene where chrom='{}' and txStart >= {} and txEnd <= {} group by name2".format(chr_x, x_s, x_e)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) 
+    from refGene 
+    where chrom= %s and txStart >= ? and txEnd <= ? 
+    group by name2
+    """
+    cursor.execute(sql, (chr_x, x_s, x_e))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -253,8 +277,13 @@ def get_internal_gene(chr_x, x_s, x_e):
 def get_left_cross_gene(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) from refGene where chrom='{}' and txStart >= {} and txStart <= {} and txEnd >= {} group by name2".format(chr_x, x_s, x_e, x_e)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) 
+    from refGene 
+    where chrom= ? and txStart >= ? and txStart <= ? and txEnd >= ? 
+    group by name2
+    """
+    cursor.execute(sql, (chr_x, x_s, x_e, x_e))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -264,8 +293,13 @@ def get_left_cross_gene(chr_x, x_s, x_e):
 def get_right_cross_gene(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2,count(distinct name2) from refGene where chrom='{}' and txStart <= {} and txEnd <= {} group by name2".format(chr_x, x_s, x_e)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2,count(distinct name2) 
+    from refGene 
+    where chrom= ? and txStart <= ? and txEnd <= ? 
+    group by name2
+    """
+    cursor.execute(sql, (chr_x, x_s, x_e))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -275,9 +309,13 @@ def get_right_cross_gene(chr_x, x_s, x_e):
 def get_left_close_gene(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) from refGene where chrom='{}' and txEnd < {} and txEnd > {} group by name2".format(chr_x, x_s, x_s - const_loop_range)
-    print(sql)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) 
+    from refGene
+    where chrom= ? and txEnd < ? and txEnd > ? 
+    group by name2
+    """
+    cursor.execute(sql, (chr_x, x_s, x_s - const_loop_range))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -287,8 +325,13 @@ def get_left_close_gene(chr_x, x_s, x_e):
 def get_right_close_gene(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) from refGene where chrom='{}' and txStart > {} and refGene.txStart < {} group by name2".format(chr_x, x_e, x_e + const_loop_range)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) 
+    from refGene 
+    where chrom= ? and txStart > ? and refGene.txStart < ? 
+    group by name2
+    """
+    cursor.execute(sql, (chr_x, x_e, x_e + const_loop_range))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -299,8 +342,13 @@ def get_right_close_gene(chr_x, x_s, x_e):
 def get_cross_gene_by_locus(chr_x, x_s, x_e):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    sql = "select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) from refGene where chrom='{}' and txStart <= {} and txEnd >= {} group by name2".format(chr_x, x_e, x_s)
-    cursor.execute(sql)
+    sql = """
+    select name1, chrom, strand, txStart, txEnd, name2, count(distinct name2) 
+    from refGene 
+    where chrom= ? and txStart <= ? and txEnd >= ? 
+    group by name2
+    """
+    cursor.execute(sql, (chr_x, x_e, x_s))
     logs = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -340,7 +388,6 @@ def query_by_disease(q_val):
         card['target'] = tf_target['target']
         res.append(card)
     return res
-
 
 
 def query_by_locus(chr_x, x_s, x_e):

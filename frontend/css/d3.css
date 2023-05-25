@@ -1,31 +1,31 @@
-
-html, body{
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
   overflow: hidden;
-  user-select:none;
+  user-select: none;
   -webkit-user-select: none;
 }
 
-div.canvas-container{
+div.canvas-container {
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: row;
 }
 
-.canvas{
+.canvas {
   height: 100%;
   width: 100%;
 }
 
-.top-menu{
+.top-menu {
   position: fixed;
   top: 0;
-  width:100%;
+  width: 100%;
   height: 48px;
   background-color: #5b5c6014;
   display: flex;
@@ -36,7 +36,7 @@ div.canvas-container{
 }
 
 
-.button-like-file-select{
+.button-like-file-select {
   width: 35px;
   border: 1px solid #eee;
   background: #fff;
@@ -49,7 +49,7 @@ div.canvas-container{
   margin-left: 10px;
 }
 
-.icon-folder{
+.icon-folder {
   width: 1rem;
   height: 1rem;
   position: relative;
@@ -57,7 +57,7 @@ div.canvas-container{
 }
 
 
-.setting-icon{
+.setting-icon {
   width: 1rem;
   height: 1rem;
   margin-top: auto;
@@ -65,7 +65,7 @@ div.canvas-container{
 }
 
 
-.input-card{
+.input-card {
   margin-left: 30px;
   margin-right: 30px;
   width: 60%;
@@ -73,19 +73,19 @@ div.canvas-container{
   border-radius: 8px;
 }
 
-.input-card input{
+.input-card input {
   outline: none;
   border: none;
   width: 100%;
   height: 100%;
   border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   padding-left: 10px;
 }
 
 
-.setting-bar{
+.setting-bar {
   margin-right: 10px;
   width: 35px;
   height: 35px;
@@ -97,7 +97,7 @@ div.canvas-container{
 }
 
 
-.info-card{
+.info-card {
   margin-left: auto;
   margin-right: auto;
   width: 90%;
@@ -108,14 +108,14 @@ div.canvas-container{
 
 
 
-.canvas-container{
+.canvas-container {
   width: 100%;
   height: 100%;
 }
 
 
 
-.left-info{
+.left-info {
   position: fixed;
   top: 50px;
   width: 100%;
@@ -127,24 +127,28 @@ div.canvas-container{
   margin-top: 10px;
 }
 
-.left-info div{
+.left-info div {
   font-size: 0.7rem;
   font-weight: 500;
   padding-top: 5px;
 }
 
-.setting-menu{
-  
+.setting-menu {
+
   position: fixed;
   right: -100%;
   top: 50px;
   width: 150px;
   height: 250px;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   transition: .3s ease-in-out;
 }
 
-.bg-setting, .chrom-setting,.width-setting,.canvas-setting,.sync-setting{
+.bg-setting,
+.chrom-setting,
+.width-setting,
+.canvas-setting,
+.sync-setting {
   margin-top: 10px;
   color: white;
   display: flex;
@@ -155,7 +159,8 @@ div.canvas-container{
   margin-left: 3px;
   margin-right: 3px;
 }
- .title{
+
+.title {
   width: 80px;
   height: 20px;
   background-color: #EDEDED;
@@ -168,7 +173,7 @@ div.canvas-container{
 
 }
 
-.bg-setting input{
+.bg-setting input {
   outline: none;
   border: none;
   width: 45px;
@@ -176,7 +181,7 @@ div.canvas-container{
 }
 
 
-.width-setting input{
+.width-setting input {
   outline: none;
   border: none;
   width: 38px;
@@ -184,14 +189,14 @@ div.canvas-container{
   border: 2px silver solid;
 }
 
-.chrom-setting select{
+.chrom-setting select {
   outline: none;
   border: none;
   width: 85px;
   height: 20px;
 }
 
-.width-setting select{
+.width-setting select {
   outline: none;
   border: none;
   width: 85px;
@@ -199,55 +204,55 @@ div.canvas-container{
 }
 
 
-.chrom-setting select::-webkit-scrollbar{
+.chrom-setting select::-webkit-scrollbar {
   width: 2px;
 }
 
-.chrom-setting select::-webkit-scrollbar-track{
+.chrom-setting select::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);
 }
 
-.chrom-setting select::-webkit-scrollbar-thumb{
+.chrom-setting select::-webkit-scrollbar-thumb {
   background: #738188c5;
 }
 
 
 
-.width-setting select::-webkit-scrollbar{
+.width-setting select::-webkit-scrollbar {
   width: 2px;
 }
 
-.width-setting select::-webkit-scrollbar-track{
+.width-setting select::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, .2);
 }
 
-.width-setting select::-webkit-scrollbar-thumb{
+.width-setting select::-webkit-scrollbar-thumb {
   background: #738188c5;
 }
 
-.chrom-setting input{
+.chrom-setting input {
   outline: none;
   border: none;
   width: 45px;
   height: 25px;
 }
 
-.active{
-  background-color: #23bae0 ;
+.active {
+  background-color: #23bae0;
 }
 
-.canvas-setting input{
+.canvas-setting input {
   width: 15px;
   height: 15px;
 }
 
 
-.sync-setting input{
+.sync-setting input {
   width: 15px;
   height: 15px;
 }
 
-.page-setting{
+.page-setting {
   margin-top: 10px;
   color: white;
   display: flex;
@@ -259,7 +264,7 @@ div.canvas-container{
   margin-right: 3px;
 }
 
-.page-setting button{
-  width:85px;
+.page-setting button {
+  width: 85px;
   height: 22px;
 }

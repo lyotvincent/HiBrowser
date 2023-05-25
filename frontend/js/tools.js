@@ -1,4 +1,5 @@
 import hic from "./juicebox.esm.js";
+import igv from "./igv.esm.js"
 import {AlertSingleton} from './igv-widgets.js'
 import {live_browser,live_igv_browser, swap, formatLocus,
    parseLocus,min_chromosome,inter_locus_range,
@@ -65,56 +66,138 @@ $('#cursor-guide').on('click',async function(e){
 
 
 /*===============================search=============================================*/
-// a =[locus1,locus2], name = [name1,name2]
-window.drawCanvas = function(a, name, b){
+function go_and_draw_1(locus,name, b){
+  let [chr, s, e] = parseLocus(locus); // 基因的位置
+  let data = chr + '\t' + s + '\t' + e + '\t' + chr + '\t' + s + '\t' + e + '\t69,132,1' ;
+  let gap = e - s;
+  s -= parseInt(gene_locus_range / 4); // 浏览器的位置
+  e += parseInt(gene_locus_range * 0.75 - gap);
+  let cor = chr + ':' + Number(s).toLocaleString() + '-' + Number(e).toLocaleString()
+  let config = {
+    "name":name,
+    "data":data,
+    "autoscale": true,
+    "displayMode": "COLLAPSED",
+    "track_type": "fragment"
+  }
+  b.loadTrackDatas([config])
+  browser_goto_locus(cor, b);
+}
+
+function go_and_draw_2(locus1, locus2, b){
+  let [chrx,xs,xe] = parseLocus(locus1);
+  let [chry,ys,ye] = parseLocus(locus2);
+  let data = chrx + '\t' + xs + '\t' + xe + '\t' + chry + '\t' + ys + '\t' + ye; + '\t0,0,0'
+  let xgap = xe - xs;
+  let ygap = ye - ys;
+  let range;
+  if (chrx === chry){
+    range = intra_locus_range;
+  }else{
+    range = inter_locus_range;
+  }
+  xs -= range / 4;
+  xe += range * 0.75 - xgap;
+  ys -= range / 4;
+  ye += range * 0.75 - ygap;
+  let cor = chrx + ':' + Number(xs).toLocaleString() + '-' + Number(xe).toLocaleString() + ' ' + chry + ':' + Number(ys).toLocaleString() + '-' + Number(ye).toLocaleString();
+  
+  let config = {
+    "name": 'Arcs',
+    "data":data,
+    "autoscale": true,
+    "displayMode": "COLLAPSED"
+  }
+  b.loadTrackDatas([config])
+  browser_goto_locus(cor);
+}
+
+window.drawCanvas1 = function(a, name, b){
+  $(`body`).css('overflow','');
   if(!b || b === undefined){
     b = hic.getCurrentBrowser();
   }
-  if (a.length === 1){
-    let [chr, s, e] = parseLocus(a[0]); // 基因的位置
-    let data = chr + '\t' + s + '\t' + e + '\t' + chr + '\t' + s + '\t' + e + '\t69,132,1' ;
-    let gap = e - s;
-    s -= parseInt(gene_locus_range / 4); // 浏览器的位置
-    e += parseInt(gene_locus_range * 0.75 - gap);
-    let cor = chr + ':' + Number(s).toLocaleString() + '-' + Number(e).toLocaleString()
-    let config = {
-      "name":name[0],
-      "data":data,
-      "autoscale": true,
-      "displayMode": "COLLAPSED",
-      "track_type": "fragment"
-    }
-    b.loadTrackDatas([config])
-    browser_goto_locus(cor, b);
-  }else{
-    let [chrx,xs,xe] = parseLocus(a[0]);
-    let [chry,ys,ye] = parseLocus(a[1]);
-    let data = chrx + '\t' + xs + '\t' + xe + '\t' + chry + '\t' + ys + '\t' + ye; + '\t0,0,0'
-    let xgap = xe - xs;
-    let ygap = ye - ys;
-    let range;
-    if (chrx === chry){
-      range = intra_locus_range;
-    }else{
-      range = inter_locus_range;
-    }
-    xs -= range / 4;
-    xe += range * 0.75 - xgap;
-    ys -= range / 4;
-    ye += range * 0.75 - ygap;
-    let cor = chrx + ':' + Number(xs).toLocaleString() + '-' + Number(xe).toLocaleString() + ' ' + chry + ':' + Number(ys).toLocaleString() + '-' + Number(ye).toLocaleString();
-    
-    let config = {
-      "name":name[0] + '___' + name[1],
-      "data":data,
-      "autoscale": true,
-      "displayMode": "COLLAPSED"
-    }
-    b.loadTrackDatas([config])
-    browser_goto_locus(cor);
+  go_and_draw_1(a,name, b);
+}
+
+window.drawCanvas2 = function(a, name, b){
+  $(`body`).css('overflow','');
+  if(!b || b === undefined){
+    b = hic.getCurrentBrowser();
   }
+  let [chrx,xs,xe] = parseLocus(a[0]);
+  let [chry,ys,ye] = parseLocus(a[1]);
+  let _id = b.id;
+  if(live_igv_browser.has(_id) && chrx == chry){
+    let _igv_b = live_igv_browser.get(_id)
+    createBedpe(a, name, _igv_b);
+  }else{
+    go_and_draw_2(a[0], a[1], b);
+  }
+}
+
+
+window.drawCanvas3 = function(a, name, b){
+  $(`body`).css('overflow','');
+  if (a.length == 1) {
+    drawCanvas1(a[0], name[0], b);
+    return;
+  }
+  else if (a.length == 2){
+    drawCanvas2(a, name.slice(0, 2), b);
+  } 
+  else{
+    if(!b || b === undefined){
+      b = hic.getCurrentBrowser();
+    }
+    let _id = b.id;
+    if(live_igv_browser.has(_id)){
+      let _igv_b = live_igv_browser.get(_id)
+      createBedpe(a, name, _igv_b);
+    }else{
+      drawCanvas1(a[0], name, b);
+    }
+  }
+}
+
+
+window.RemoveBodyOverflow = function(){
   $(`body`).css('overflow','');
 }
+
+// a =[locus1,locus2], name = [name1,name2]
+window.drawCanvas = function(a, name, b){
+  alert('Something goes wrong!')
+  $(`body`).css('overflow','');
+}
+
+async function createBedpe(a, name, b){
+  let s = 'chr1\tx1\tx2\tchr2\t\y1\ty2\tcREs\n';
+  let [base_chr, base_s, base_e] = parseLocus(a[0]);
+  for(let i = 1;i < a.length; i ++){
+    let [ano_chr, ano_s, ano_e] = parseLocus(a[i]);
+    s += base_chr + '\t' + base_s + '\t' + (base_s + 1000) + '\t' + ano_chr + '\t' + ano_s  + '\t' + (ano_s + 1000) + '\t' + name[i] +'\n';
+  }
+  let blob = new Blob([s]);
+  let url = window.URL.createObjectURL(blob);
+  console.log(url);
+  let config = {
+    "track_type": "one_to_all_interact",
+    "type": "interact",
+    "url":url,
+    "name":"all_interact",
+    "arcOrientation":false,
+    "height":100,
+    "color":"rgb(255,44,28)",
+    "format":"bedpe"
+  }
+  // b = live_igv_browser.values().next().value;
+  // console.log(b)
+  b.removeTrackByName('all_interact');
+  b.loadTrackList([config]);
+  browser_goto_locus(a[0]);
+}
+
 
 function openSearch(){
   ShowBodyCover();
@@ -356,7 +439,7 @@ function createROI(){
   selected_div.after(div);
   // 创建完glass canvas后，要旋转
   if(b.isDiag === true){
-    showGlassDiag();
+    showGlassDiag(selected_browser_id);
   }
 
 
@@ -482,30 +565,30 @@ $('#ROI').on('click', function(e){
 })
 
 /*============================================================================*/
-$('#browser-zoom-in').on('click',async function(e){
-  let selected_browser_id = get_selected_id();
-  let cur_locus = get_goto_input();
-  if (cur_locus === ""){
-    if (live_igv_browser.has(selected_browser_id)){
-      live_igv_browser.get(selected_browser_id).zoomIn();
-      return;
-    }
-    return;
-  }
-  if(cur_locus === 'All'){
-    browser_goto_locus('1');
-  }else{
-    let xy = cur_locus.split(' ');
-    let [chrx, xs, xe] = parseLocus(xy[0]);
-    let [chry, ys, ye] = parseLocus(xy[1]);
-    let xns = xs + parseInt((xe - xs) / 4);
-    let xne = xe - parseInt((xe - xs) / 4);
-    let yns = ys + parseInt((ye - ys) / 4);
-    let yne = ye - parseInt((ye - ys) / 4);
-    let new_loc = generate_locus(chrx,xns,xne,chry, yns, yne);
-    browser_goto_locus(new_loc);
-  }
-})
+// $('#browser-zoom-in').on('click',async function(e){
+//   let selected_browser_id = get_selected_id();
+//   let cur_locus = get_goto_input();
+//   if (cur_locus === ""){
+//     if (live_igv_browser.has(selected_browser_id)){
+//       live_igv_browser.get(selected_browser_id).zoomIn();
+//       return;
+//     }
+//     return;
+//   }
+//   if(cur_locus === 'All'){
+//     browser_goto_locus('1');
+//   }else{
+//     let xy = cur_locus.split(' ');
+//     let [chrx, xs, xe] = parseLocus(xy[0]);
+//     let [chry, ys, ye] = parseLocus(xy[1]);
+//     let xns = xs + parseInt((xe - xs) / 4);
+//     let xne = xe - parseInt((xe - xs) / 4);
+//     let yns = ys + parseInt((ye - ys) / 4);
+//     let yne = ye - parseInt((ye - ys) / 4);
+//     let new_loc = generate_locus(chrx,xns,xne,chry, yns, yne);
+//     browser_goto_locus(new_loc);
+//   }
+// })
 
 /*============================================================================*/
 $('#browser-zoom-out').on('click',async function(e){
@@ -533,75 +616,7 @@ $('#browser-zoom-out').on('click',async function(e){
 })
 
 /*============================================================================*/
-function showDiag(browser){
-  // 修改状态
-  browser.isDiag = true;
-  let _id = browser.id;
-
-  // 旋转iewport
-  let viewport = $(`#${_id}-viewport`);
-  let ow = viewport.width();
-  viewport.css('transform','rotate(315deg)');
-  viewport.css('clip-path','polygon(0 0, 100% 100%, 100% 0%)');
-  viewport.css('background','transparent');
-  viewport.css('margin-left','20px');
-
-
-  //.hic-browser-div
-  $('.hic-browser-div').css('padding-bottom','135px');
-
-
-  // 隐藏axis
-  $(`#${_id}-y-axis`).hide();
-  $(`#${_id}-x-axis`).hide();
-
-  // 缩小canvas
-  let canvas = $(`#${_id}-viewport > canvas`);
-  canvas.css('transform','scale(0.707)'); // 根号2 分之1
-
-    // 将igV div往上提
-  let igv_div = $(`#igv-${_id}`);
-  igv_div.css('margin-top',`${-ow / 2}px`);
-  igv_div.css('padding-bottom',`${-ow / 2}px`);
-
-
-  //修改locus
-  let locus = get_goto_input();
-  locus = locus.split(' ');
-  locus = locus[0] + ' ' + locus[0];
-  browser_goto_locus(locus);
-}
-
-function hideDiag(browser){
-// 修改状态
-  browser.isDiag = false;
-  let _id = browser.id;
-
-  // 旋转iewport
-  let viewport = $(`#${_id}-viewport`);
-  let ow = viewport.width();
-  viewport.css('transform','');
-  viewport.css('clip-path','');
-  viewport.css('background','');
-  viewport.css('margin-left','');
-
-
-  //.hic-browser-div
-  $('.hic-browser-div').css('padding-bottom','');
-
-  $(`#${_id}-y-axis`).show();
-  $(`#${_id}-x-axis`).show();
-
-  let canvas = $(`#${_id}-viewport > canvas`);
-  canvas.css('transform',''); 
-
-  let igv_div = $(`#igv-${_id}`);
-  igv_div.css('margin-top',`15px`);
-  igv_div.css('padding-bottom',``);
-}
-
-function showGlassDiag(){
-  let _id = get_selected_id();
+function showGlassDiag(_id){
   // 旋转iewport
   let glass_div = $(`#glass_canvas_${_id}`);
   glass_div.css('transform','rotate(315deg)');
@@ -613,55 +628,9 @@ function showGlassDiag(){
   canvas.css('transform','scale(0.707)'); // 根号2 分之1
 }
 
-function hideGlassDiag(){
-  let _id = get_selected_id();
-  // 旋转iewport
-  let glass_div = $(`#glass_canvas_${_id}`);
-  glass_div.css('transform','');
-  glass_div.css('clip-path','');
-  glass_div.css('background','');
-  glass_div.css('margin-left','');
-  // 缩小canvas
-  let canvas = $(`#glass_canvas_${_id} > canvas`);
-  canvas.css('transform',''); // 根号2 分之1
-}
-
 function browser_diag_show(browser){
-  if(browser.dataset === undefined){
-    AlertSingleton.present('Load HiC map first');
-    return;
-  }
-  let locus = get_goto_input();
-  let _id = browser.id;
-  if(locus === 'All' || locus === 'all'){
-    AlertSingleton.present('select chromosome first');
-    return;
-  }
-  showDiag(browser);
-  if($(`#glass_canvas_${_id}`).length > 0){
-    showGlassDiag();
-  }
-  $(`#browser-rotate`).addClass('active');
+  $(`display-mode-${browser.id}`).click();
 }
-
-function browser_diag_hide(browser){
-  hideDiag(browser);
-  let _id = browser.id;
-  if($(`#glass_canvas_${_id}`).length > 0){
-    hideGlassDiag();
-  }
-  $(`#browser-rotate`).removeClass('active');
-}
-
-$(`#browser-rotate`).on('click', function(e){
-  let browser = hic.getCurrentBrowser();
-  if($(this).hasClass('active')){
-    browser_diag_hide(browser);
-  }else{
-    browser_diag_show(browser);
-  }
-});
-
 
 window.toggleColor = function(e){
   let cp = $(`.color_picks`);
@@ -925,4 +894,12 @@ $(`#browser-refresh`).click(() => {
     localStorage.setItem('session', JSON.stringify(session));
   }
   location.reload();
+})
+
+$(`#delete_igv`).click(() => {
+  let _id = get_selected_id();
+  if(live_igv_browser.has(_id)){
+    igv.removeBrowser(live_igv_browser.get(_id));
+    live_igv_browser.delete(_id);
+  }
 })
