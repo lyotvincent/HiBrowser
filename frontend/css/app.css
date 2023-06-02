@@ -157,7 +157,9 @@ body::-webkit-scrollbar-thumb {
   margin-right: 10px;
 }
 
-.hic-header .hic-clone {
+.hic-header .hic-clone,
+.hic-header .hic-config
+ {
   margin-left: 10px;
 }
 
@@ -531,6 +533,12 @@ body::-webkit-scrollbar-thumb {
   border-top: 1px solid rgb(245, 238, 238);
   color: #ccc;
   cursor: initial;
+}
+
+.btn-setting{
+  color: #fff;
+  background-color: #cf29c7;
+  border-color: #cf29c7;
 }
 
 .setting-container {

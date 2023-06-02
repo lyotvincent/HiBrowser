@@ -261,8 +261,7 @@ window.loadHiC = async function (url, type, selected_browser) {
         return
       }
     );
-    // $('#hic-control-map-dropdown').removeClass('disabled');
-    $('#dropdown-b-map').removeClass('disabled');
+    hic.setCurrentBrowser(selected_browser)
   }
   return;
 }
@@ -434,18 +433,6 @@ window.LoadIGVTrack = async function (track_type, url, idx_url = undefined) {
   return true;
 }
 
-window.browser_shift = function(dx){
-  let b = hic.getCurrentBrowser();
-  b.shiftPixels(dx, dx);
-}
-
-window.igv_shift = function(_id, dx){
-  if (!live_igv_browser.has(_id)) return;
-  let b = live_igv_browser.get(_id);
-  b.IGVShift(dx);
- 
-}
-
 window.browser_goto_locus = function (locus, b, is_igv) {
   if (!b || b === undefined) {
     b = hic.getCurrentBrowser();
@@ -458,19 +445,20 @@ window.browser_goto_locus = function (locus, b, is_igv) {
   b.gotoLocus(locus, is_igv);
 }
 
-
-window.igv_goto_locus = function (locus, _id) {
-  //console.log('igv goto:', locus);
+/*
+locus == 'all'
+locus = '5:1-181538,259,500000';
+*/ 
+window.igv_goto_locus = function (locus, _id, bpPerBin) {
+  // console.log('igv goto:', locus, bpPerBin);
   if (!live_igv_browser.has(_id)) return;
   let b = live_igv_browser.get(_id);
-  if (locus === 'ALL' || locus === 'all' || locus === 0 || locus === '0' || typeof locus === 'number') {
-    b.goto(locus);
+  if (locus === 'all') {
+    b.gotoLocus(0, 0, 0, bpPerBin);
     return;
   }
-  locus = locus.split(' ')[0];
   let [chr, s, e] = parseLocus(locus)
-  // b.IGVShift(3);
-  b.goto(chr, s, e);
+  b.gotoLocus(chr, s, e, bpPerBin);
 
 }
 

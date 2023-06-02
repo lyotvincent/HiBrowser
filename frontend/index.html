@@ -10,31 +10,27 @@
 
 
 
-    <!-- Font Awesome CSS-->
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
 
-    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
 
-    <!-- site CSS -->
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/igv_browser.css">
-
-    <!-- Juicebox CSS-->
     <link rel="stylesheet" href="css/juicebox.css"/>
 
-    <!-- Bootstrap 4 and Dependancies -->
    
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/layer/layer.js"></script>
+    <script src="js/canvas2svg.js"></script>
+
 
     <script type="module" src="js/app.js"></script>
     <script type="module" src="js/header.js"></script>
     <script type="module" src="js/tools.js"></script>
     <script type="module" src="js/example.js"></script>
-    <script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+
 
 </head>
 <body style="background-color: #eee !important;">
@@ -120,6 +116,10 @@
 
       <div class="hic-clone">
         <button name="hic-clone" type="button" class="btn btn-info radius-1">Clone</button>
+      </div>
+
+      <div class="hic-config">
+        <button name="global-config" type="button" class="btn btn-setting radius-1">Config</button>
       </div>
       <!-- <div class="hic-clone">
         <button name="export" type="button" class="btn btn-info radius-1">Export</button>

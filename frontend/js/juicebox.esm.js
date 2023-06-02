@@ -41602,31 +41602,20 @@ class LocusGoto {
 
       this.$resolution_selector.val(xy);
 
-      let _id = this.browser.id;
 
+      // 这里触发igv的移动,
+      let _id = this.browser.id;
       let igv_selector = $('#igv-goto-input-' + _id);
-      if (xy === 'All') {
-        x = 'all';
-      }
-      if (check_equal(x,))
-        if (x.startsWith('chr')) {
-          x = x.substring(3, x.length);
-        }
-      // 为了防止递归调用，需要判断chrx == x 
       let igv_locus = $(igv_selector).val();
       if ($(igv_selector).val() === undefined) return;
-      if (igv_locus.startsWith('chr')) {
-        igv_locus = igv_locus.substring(3, x.length);
-      }
-      if (igv_locus === x || igv_locus.split('-')[0] === x.split('-')[0]) {
-        return;
-      }
-      else {
-        igv_goto_locus(x, _id);
-        return;
-      }
+      if (xy === 'All') x = 'all';
+      if (x.startsWith('chr')) x = x.substring(3, x.length);
 
-
+      // 为了防止递归调用，需要判断chrx == x 
+      if (igv_locus.startsWith('chr')) igv_locus = igv_locus.substring(3, x.length);
+      if (igv_locus === x || igv_locus.split('-')[0] === x.split('-')[0]) return;
+      let bpPerBin = this.browser.dataset.bpResolutions[state.zoom];
+      igv_goto_locus(x, _id, bpPerBin);
     }
   }
 }
@@ -42270,7 +42259,6 @@ class ContactMatrixView {
   async getImageTile(ds, dsControl, zd, zdControl, row, column, state) {
 
     const key = `${zd.chr1.name}_${zd.chr2.name}_${zd.zoom.binSize}_${zd.zoom.unit}_${row}_${column}_${state.normalization}_${this.displayMode}`;
-
     if (this.imageTileCache.hasOwnProperty(key)) {
       return this.imageTileCache[key]
     } else {
@@ -42402,7 +42390,7 @@ class ContactMatrixView {
           // console.log(track2D)
           if (track2D.isVisible) {
             let track_type = track2D.config.track_type
-            if(track_type === 'tad') tad_num ++;
+            if (track_type === 'tad') tad_num++;
             const chr1Name = zd.chr1.name;
             const chr2Name = zd.chr2.name;
             const features = track2D.getFeatures(chr1Name, chr2Name);
@@ -42423,8 +42411,8 @@ class ContactMatrixView {
                 if (px2 > 0 && px1 < dim && py2 > 0 && py1 < dim) {
                   ctx.strokeStyle = track2D.color ? track2D.color : color;
                   ctx.fillStyle = `#d4d4d487`;
-                  if(this.displayMode === 'AMB'){
-                    if(tad_num == 1){
+                  if (this.displayMode === 'AMB') {
+                    if (tad_num == 1) {
                       ctx.beginPath();
                       ctx.moveTo(px1, py1);
                       ctx.lineTo(px1, py1 + h);
@@ -42432,7 +42420,7 @@ class ContactMatrixView {
                       ctx.strokeStyle = track2D.color ? track2D.color : color;
                       ctx.stroke();
                       ctx.fill();
-                    }else{
+                    } else {
                       ctx.beginPath();
                       ctx.moveTo(px1, py1);
                       ctx.lineTo(px1 + w, py1);
@@ -42441,7 +42429,7 @@ class ContactMatrixView {
                       ctx.stroke();
                       ctx.fill();
                     }
-                  }else{
+                  } else {
                     ctx.strokeRect(px1, py1, w, h);
                     ctx.fillRect(px1, py1, w, h);
                     if (sameChr && row === column) {
@@ -44859,14 +44847,14 @@ class HICBrowser {
     this.$menu.hide();
 
     const that = this;
-    for(let igv_set_item of ['Ideogram', 'Ruler', 'Sequence', 'Gear', 'Scroller']){
+    for (let igv_set_item of ['Ideogram', 'Ruler', 'Sequence', 'Gear', 'Scroll']) {
       let set_igv = this.$menu.find(`#set_${igv_set_item}`);
-      set_igv.change(function(){
-          let check = $(this).is(':checked');
-          that.config[`hide${igv_set_item}`]= check;
-          updateIGV(that.id,igv_set_item, check);
+      set_igv.change(function () {
+        let check = $(this).is(':checked');
+        that.config[`hide${igv_set_item}`] = check;
+        updateIGV(that.id, igv_set_item, check);
       })
-    } 
+    }
     this.chromosomeSelector = new ChromosomeSelectorWidget(this, this.$menu.find('.hic-chromosome-selector-widget-container'));
 
     const annotation2DWidgetConfig =
@@ -45209,30 +45197,6 @@ class HICBrowser {
 
 
   async gotoLocus(locus, is_igv) {
-    // console.log(this.state);
-    // this.clamp();
-
-    // const locusChangeEvent = HICEvent("LocusChange", {
-    //   state: this.state,
-    //   resolutionChanged: false,
-    //   dragging: true,
-    //   chrChanged: false
-    // });
-    // locusChangeEvent.dragging = true;
-
-    // this.update(locusChangeEvent);
-    // this.eventBus.post(locusChangeEvent);
-
-
-    // this.$resolution_selector.val(locus);
-    // let event = HICEvent("LocusChange", {
-    //   state: this.state,
-    //   resolutionChanged: !is_igv,
-    //   chrChanged: !is_igv
-    // });
-
-    // this.update(event);
-    // this.eventBus.post(event);
     await this.parseGotoInput(locus, is_igv);
     return;
   }
@@ -45679,7 +45643,7 @@ class HICBrowser {
 
     const locusObject = {};
     const parts = locus.trim().split(':');
-    if(this.genome === undefined) return undefined;
+    if (this.genome === undefined) return undefined;
     let chromosome = this.genome.getChromosome(parts[0].toLowerCase());
     if (chromosome === undefined) {
       chromosome = this.genome.getChromosome(parts[0].substr(3));
@@ -46108,7 +46072,7 @@ class HICBrowser {
 
   goto(chr1, bpX, bpXMax, chr2, bpY, bpYMax, minResolution, is_igv) {
     // console.log(is_igv);
-    if(is_igv === undefined) is_igv = false;
+    if (is_igv === undefined) is_igv = false;
     // goto按钮触发
     const viewDimensions = this.contactMatrixView.getViewDimensions();
     const bpResolutions = this.getResolutions();
@@ -46158,7 +46122,7 @@ class HICBrowser {
     this.state.y = newYBin;
     this.state.pixelSize = newPixelSize;
 
-    if(!is_igv)this.contactMatrixView.clearImageCaches();
+    if (!is_igv) this.contactMatrixView.clearImageCaches();
 
 
     let event = HICEvent("LocusChange", {

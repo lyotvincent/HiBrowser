@@ -48517,6 +48517,7 @@ class ReferenceFrame {
         }
 
         this.end = this.start + viewportWidth * this.bpPerPixel;
+        // console.log(this, this.start, this.end);
 
         return currentStart !== this.start
     }
@@ -52340,16 +52341,37 @@ class Browser {
         this.$searchInput.val(loc); // 先更新自己的信息，在移动hic
         this.fireEvent('locuschange', [this.referenceFrameList]);
        
-        // 为了防止本来是hic触发的，反过来触发HiC
+        // 为了防止本来是hic触发的，反过来触发HiC,不知道为什么会有1个碱基的差距
         let hic_locus = get_goto_input();
         hic_locus = hic_locus.split(' ')[0];
-        if(hic_locus == 'ALL') hic_locus = 'all';
-        if(loc == 'all') return;
-        if(hic_locus == loc) return;
-        if(hic_locus.startsWith('chr')) hic_locus = hic_locus.substring(3, hic_locus.length);
-        if(loc.startsWith('chr') && hic_locus == loc.substring(3, loc.length)) return;
-        browser_goto_locus(loc.substring(3, loc.length) + ' ' + loc.substring(3, loc.length), undefined, isDrag);
+        if(hic_locus.startsWith('chr')) hic_locus = hic_locus.substr(3); // 2:125,488-456,895
+        if(hic_locus == 'All' && loc == 'all') return;
 
+        // 将hic_locus 转为数字
+        hic_locus = hic_locus.split(':');
+        let hic_chr = hic_locus[0];
+        if(hic_locus[1] == undefined) return;
+        let scale = hic_locus[1].split('-');
+        let hic_start =  parseInt(scale[0].split(",").join(""));
+        let hic_end =  parseInt(scale[1].split(",").join(""));
+
+        // 将loc转为数字
+        if(loc.startsWith('chr')) loc = loc.substr(3)
+        loc = loc.split(':');
+        let loc_chr = loc[0];
+        scale = loc[1].split('-');
+        let loc_start =  parseInt(scale[0].split(",").join(""));
+        let loc_end =  parseInt(scale[1].split(",").join(""));
+
+        if( hic_chr == loc_chr &&
+            Math.abs(hic_start - loc_start) <= 1 &&
+            Math.abs(hic_end - loc_end) <= 1
+        ){
+            // console.log('igv not touch HiC');
+            return;
+        }
+        // console.log('igv touch HiC');
+        browser_goto_locus(`${loc_chr}:${loc_start}-${loc_end}`, undefined, isDrag);
     }
 
     // 计算track width
@@ -52537,17 +52559,41 @@ class Browser {
 
     }
 
-    /**
-     * @deprecated  This is a deprecated method with no known usages.  To be removed in a future release.
-     * 跳转,移动
-     */
-    async goto(chr, start, end) {
-        if(chr == 'all'){
-            await this.search("all");
-        } 
-        else{
-            await this.search(chr + ":" + start + "-" + end);
+    async gotoLocus(chr, start, end, bpPerBin){
+        if(chr === 0){
+            await this.search("all", false);
+            return;
         }
+        // 下面判断是跳转还是拖动
+        let referenceFrame =  this.referenceFrameList[this.referenceFrameList.length - 1];
+        // console.log(this.referenceFrameList);
+        let old_chr = referenceFrame.chr;
+        if(old_chr.startsWith('chr')) old_chr = old_chr.substring(3);
+
+        let old_start = referenceFrame.start;
+        let old_end = referenceFrame.end;
+        let old_gap = old_end - old_start;
+        let gap = end - start + 1;
+        if(old_chr == chr && Math.abs(old_gap - gap) <= 1){
+            // console.log('drag');
+            referenceFrame.start = start - 1;
+            referenceFrame.end = end;
+            this.updateViews();
+            return;
+        }else{
+            let providedLoci = [
+                {
+                    chr:`chr${chr}`,
+                    start: start - 1,
+                    end: end,
+                    locusSearchString: `${chr}:${start}-${end}`
+                }
+            ]
+            await this.search(`${chr}:${start}-${end}`, false, providedLoci);
+        }
+        
+        
+        //console.log(referenceFrame, chr, start, end);
     }
 
     /**
@@ -52575,10 +52621,10 @@ class Browser {
      * @param init  true if called during browser initialization
      * @returns {Promise<boolean>}  true if found, false if not
      */
-    async search(string, init) {
-
-        const loci = await search(this, string);
-
+    async search(string, init, providedLoci) {
+        let loci;
+        if (providedLoci === undefined) loci = await search(this, string);
+        else loci = providedLoci;
         if (loci && loci.length > 0) {
 
             // create reference frame list based on search loci
@@ -53111,7 +53157,9 @@ function handleMouseMove(e) {
         if (this.dragObject) {
             const clampDrag = !this.isSoftclipped();
             let deltaX = this.vpMouseDown.lastMouseX - x;
+            // clampDrag是一直true,viewChanged移动到顶头后为false
             const viewChanged = referenceFrame.shiftPixels(deltaX, viewport.$viewport.width(), clampDrag);
+            //console.log(viewChanged, clampDrag, deltaX);
             if (viewChanged) {
                 this.updateViews(true);
             }
