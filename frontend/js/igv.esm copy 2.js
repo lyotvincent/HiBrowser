@@ -24447,8 +24447,13 @@ class TrackViewport extends Viewport {
                         }
 
                         this.browser.search(string);
+                        let _chr = string;
+                        if(_chr.startsWith('chr')) _chr = _chr.substring(3, _chr.length);
+                        // let locus = chr + ':' + parseInt(this.start) + '-' + parseInt(this.end);
+                        browser_goto_locus(_chr);
 
                     } else {
+                        
                         this.browser.zoomWithScaleFactor(0.5, centerBP, this.referenceFrame);
                     }
 
@@ -48561,10 +48566,14 @@ class ReferenceFrame {
         this.clampStart(viewportWidth);
 
         this.end = this.start + widthBP;
-
+        // console.log(this, this.start, this.end);
         const viewChanged = start !== this.start || bpPerPixel !== this.bpPerPixel;
         if (viewChanged) {
-            await browser.updateViews(false);
+            let chr = this.chr;
+            if(chr.startsWith('chr')) chr = chr.substring(3, chr.length);
+            let locus = chr + ':' + parseInt(this.start) + '-' + parseInt(this.end);
+            browser_goto_locus(locus);
+            await browser.updateViews(true);
         }
 
     }
@@ -48680,7 +48689,6 @@ const DEFAULT_SEARCH_CONFIG = {
  * @param string
  * @returns {Promise<*>}
  */
-//搜索
 async function search(browser, string) {
 
     if (undefined === string || '' === string.trim()) {
@@ -51187,7 +51195,7 @@ class Browser {
             dragThreshold: 3,
             scrollThreshold: 5,
             defaultColor: "rgb(0,0,150)",
-            doubleClickDelay: config.doubleClickDelay || 1000
+            doubleClickDelay: config.doubleClickDelay || 500
         };
 
         // Map of event name -> [ handlerFn, ... ]
@@ -52246,11 +52254,9 @@ class Browser {
         await this.updateViews();
     }
 
-    async updateViews(isDrag) {
-        if(isDrag === undefined) isDrag = false;
+    async updateViews() {
         const trackViews = this.trackViews;
-
-        this.updateLocusSearchWidget(isDrag);
+        this.updateLocusSearchWidget();
         for (let centerGuide of this.centerLineList) {
             centerGuide.repaint();
         }
@@ -52324,7 +52330,8 @@ class Browser {
         }
     }
 
-    updateLocusSearchWidget(isDrag) {
+    updateLocusSearchWidget() {
+
         const referenceFrameList = this.referenceFrameList;
 
         // Update end position of reference frames based on pixel widths.  This is hacky, but its been done here
@@ -52341,14 +52348,14 @@ class Browser {
         this.fireEvent('locuschange', [this.referenceFrameList]);
        
         // 为了防止本来是hic触发的，反过来触发HiC
-        let hic_locus = get_goto_input();
-        hic_locus = hic_locus.split(' ')[0];
-        if(hic_locus == 'ALL') hic_locus = 'all';
-        if(loc == 'all') return;
-        if(hic_locus == loc) return;
-        if(hic_locus.startsWith('chr')) hic_locus = hic_locus.substring(3, hic_locus.length);
-        if(loc.startsWith('chr') && hic_locus == loc.substring(3, loc.length)) return;
-        browser_goto_locus(loc.substring(3, loc.length) + ' ' + loc.substring(3, loc.length), undefined, isDrag);
+        // let hic_locus = get_goto_input();
+        // hic_locus = hic_locus.split(' ')[0];
+        // if(hic_locus == 'ALL') hic_locus = 'all';
+        // if(loc == 'all') return;
+        // if(hic_locus == loc) return;
+        // if(hic_locus.startsWith('chr')) hic_locus = hic_locus.substring(3, hic_locus.length);
+        // if(loc.startsWith('chr') && hic_locus == loc.substring(3, loc.length)) return;
+        // browser_goto_locus(loc.substring(3, loc.length) + ' ' + loc.substring(3, loc.length), undefined, true);
 
     }
 
@@ -52539,12 +52546,11 @@ class Browser {
 
     /**
      * @deprecated  This is a deprecated method with no known usages.  To be removed in a future release.
-     * 跳转,移动
      */
     async goto(chr, start, end) {
-        if(chr == 'all'){
-            await this.search("all");
-        } 
+        if(chr === 'all' || typeof chr === 'number' || chr === 'ALL'){
+            await this.search(parseString(chr));
+        }
         else{
             await this.search(chr + ":" + start + "-" + end);
         }
@@ -52602,8 +52608,6 @@ class Browser {
             for (let trackView of this.trackViews) {
                 trackView.addDOMToColumnContainer(this, this.columnContainer, this.referenceFrameList);
             }
-
-            // console.log(123);
 
             this.updateUIWithReferenceFrameList();
 
@@ -53022,17 +53026,17 @@ class Browser {
             this.circularViewControl.setState(isVisible);
         }
     }
-
     IGVShift(dx){
         //console.log(this);
         let referenceFrame = this.referenceFrameList[this.referenceFrameList.length - 1];
-        // let deltaX = dx
+        let deltaX = dx
         let viewport = this.trackViews[0].viewports[0];
-        // const viewChanged = referenceFrame.shiftPixels(deltaX, viewport.$viewport.width(), true);
+        const viewChanged = referenceFrame.shiftPixels(deltaX, viewport.$viewport.width(), true);
         // console.log(viewChanged);
         this.updateViews();
         this.fireEvent('trackdrag');
     }
+    
 }
 
 /**
@@ -53112,8 +53116,9 @@ function handleMouseMove(e) {
             const clampDrag = !this.isSoftclipped();
             let deltaX = this.vpMouseDown.lastMouseX - x;
             const viewChanged = referenceFrame.shiftPixels(deltaX, viewport.$viewport.width(), clampDrag);
+            browser_shift(deltaX);
             if (viewChanged) {
-                this.updateViews(true);
+                this.updateViews();
             }
             this.fireEvent('trackdrag');
         }

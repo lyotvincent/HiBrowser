@@ -54,7 +54,7 @@
   width: 860px;
   height: 1020px;
   margin: 4px;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   border-radius: 15px;
   background-color: white;
   /*
@@ -79,10 +79,10 @@
 .hic-menu {
   position: absolute;
   background: white;
-  bottom: 50%;
+  bottom: 40%;
   left: 20%;
   width: 60%;
-  height: 25%;
+  height: 37%;
   z-index: 4096;
   display: flex;
   flex-flow: column;
@@ -90,7 +90,25 @@
   justify-content: unset;
   align-items: center;
   border-radius: 7px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid gray;
+}
+
+.hic-menu .hic-igv-setting-container{
+  width: 70%;
+  padding-left: 0px;
+  margin-right: 20%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 8px;
+}
+.hic-menu .hic-igv-setting-container div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.hic-menu .hic-igv-setting-container span{
+  font-size: 14px;
+
 }
 
 .hic-menu .hic-chromosome-selector-widget-container {
@@ -143,8 +161,6 @@
   color: #00000073;
   background: #fff;
 }
-
-
 
 
 .hic-menu .hic-chromosome-selector-widget-container div div {
@@ -324,9 +340,9 @@
   align-items: center;
   width: 100%;
   height: 32px;
-  margin-top: 4px;
   margin-bottom: 4px;
   padding-right: 8px;
+  background: dddddd59;
 }
 
 .hic-menu-close-button i.fa {
@@ -351,13 +367,13 @@
   position: absolute;
   top: 25%;
   left: 15%;
-  width: 500px;
+  width: 292px;
   background-color: white;
   z-index: 5000;
   color: #0f0f0f;
   font-size: 12px;
   font-weight: 600;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  
 }
 
 .hic-annotation-panel-container .hic-annotation-panel-header {
@@ -371,7 +387,12 @@
   border-bottom-style: solid;
   border-bottom-width: thin;
   border-bottom-color: #dddddd;
-  background-color: #dddddd;
+  background-color: dddddd59;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .hic-annotation-panel-container .hic-annotation-panel-header div:first-child {
@@ -425,6 +446,11 @@
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .hic-annotation-panel-container .hic-annotation-modal-row {
@@ -437,6 +463,8 @@
   height: 40px;
   background-color: white;
   cursor: default;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .hic-annotation-panel-container .hic-annotation-modal-row>div:first-child {
@@ -520,6 +548,11 @@
   align-items: center;
   width: 100% !important;
   background-color: white;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
 }
 
 .hic-color-swatch-container div:first-child {
@@ -558,11 +591,11 @@
   color: #5f5f5f;
   font-size: 14px;
   font-weight: 400;
-  border-top-left-radius: 10px;
+  /* border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border-top: 1px solid #eee;
   border-left: 1px solid #eee;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #eee; */
   border-bottom: 1px solid #eee;
 }
 
@@ -582,14 +615,14 @@
   white-space: nowrap;
   overflow: hidden;
   vertical-align: middle;
-  line-height: 36px;
+  line-height: 40px;
   background-color: transparent;
   z-index: 0;
 }
 
 .hic-navbar-container div[id$="hic-nav-bar-map-container"] .hic-nav-bar-button-container {
   height: 100%;
-  width: 10%;
+  width: 20%;
   display: flex;
   flex-flow: row;
   flex-wrap: nowrap;
@@ -602,7 +635,6 @@
   display: block;
   margin-top: 8px;
 }
-
 
 .delete-browser-panel{
   width: 15px;
@@ -617,6 +649,30 @@
   background-image: url(./img/menu.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+}
+
+.sync-close{
+  width: 15px;
+  height: 15px;
+  background-image: url(./img/syncclose.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.sync-open{
+  width: 15px;
+  height: 15px;
+  background-image: url(./img/syncopen.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.sync-close:hover, 
+.sync-open:hover,
+.delete-browser-panel:hover,
+.present-menu:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 
@@ -647,7 +703,15 @@
 
 .hic-chromosome-goto-container {
   display: flex;
-  width: 80%;
+  width: 75%;
+  align-items: center;
+  border: 1px #eee solid;
+  border-radius: 5px;
+  padding-left: 5px;
+}
+.hic-chromosome-goto-container .fa-search{
+  color: #d1d1d1;
+  padding-right: 10px;
 }
 
 .hic-browser-sync {
@@ -656,26 +720,32 @@
   justify-content: flex-end;
 }
 
+
 .hic-chromosome-goto-container input {
   display: block;
   height: 30px;
   width: 100%;
-  padding-left: 15px;
+  padding-left: 0px;
   font-weight: 400;
   color: #5f5f5f;
   text-align: left;
   outline: none;
-  border-style: solid;
-  border-width: thin;
-  border-color: #a6a6a638;
-  background-color: white;
-  border-radius: 4px;
+  border: none;
   font-size: 12px;
+  text-indent: 0px;
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
+.hic-chromosome-goto-container input:focus{
+  box-shadow: 0 0 0 1px #929ba3, 0 0 3px 1px #929ba3;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 .hic-chromosome-goto-container button {
   color: #d3ceced9;
-  margin-left: 13px;
+  /* margin-left: 13px; */
   border-style: solid;
   border-width: 1px;
   border-color: #bfbfbf00;
@@ -699,93 +769,111 @@
 
 .hic-colorscale-widget-container input {
   display: block;
-  margin-right: 4px;
-  width: 20%;
-  height: 30px;
-  padding: 4px;
+  width: calc(100% - 50px);
+  height: 25px;
   font-weight: 400;
-  color: #5f5f5f;
-  text-align: left;
+  color: #000;
   outline: none;
-  border-style: solid;
-  border-width: thin;
-  border-color: #a6a6a638;
+  border: none;
   background-color: white;
-  border-radius: 5px;
   font-size: 12px;
+  text-align: center;
 }
 
 .hic-colorscale-widget-container span.zoom-out {
   display: block;
-  margin-left: 5%;
-  margin-right: 1%;
   width: 15px;
   height: 15px;
   background-image: url(./img/zoom-out.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .hic-colorscale-widget-container span.zoom-in {
   display: block;
-  margin-left: 1%;
-  margin-right: 1%;
   width: 15px;
   height: 15px;
   background-image: url(./img/zoom-in.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.hic-colorscale-widget-container span.line {
+  width: 1px;
+  height: 100%;
+  background-color: #eee;
 }
 
 
-.hic-colorscale-widget-container span.thresh-minus {
-  display: block;
-  margin-left: 1%;
-  margin-right: 1%;
-  width: 15px;
-  height: 15px;
-  background-image: url(./img/minus.png);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+.hic-colorscale-widget-container .thresh{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px #eee solid;
+  width: 40%;
+  border-radius: 5px;
+  height: 30px;
 }
 
-.hic-colorscale-widget-container span.thresh-plus {
+
+.hic-colorscale-widget-container .zoom{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  border: 1px #eee solid;
+  width: 30%;
+  border-radius: 5px;
+  height: 30px;
+  margin-left: 5px;
+}
+
+
+.hic-colorscale-widget-container i.fa-minus {
   display: block;
-  margin-left: 1%;
-  margin-right: 5%;
-  width: 15px;
-  height: 15px;
-  background-image: url(./img/plus.png);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  margin-left: 10px;
+  color: #a7a7a7;
+  cursor: pointer;
+}
+
+.hic-colorscale-widget-container i.fa-plus {
+  display: block;
+  margin-right: 10px;
+  color: #a7a7a7;
+  cursor: pointer;
 }
 
 
 .hic-colorscale-widget-container span.triangle {
-  display: block;
-  margin-left: 5%;
-  margin-right: 1%;
-  width: 15px;
-  height: 15px;
   background-image: url(./img/triangle.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .hic-colorscale-widget-container span.diagonal {
-  display: block;
-  margin-left: 5%;
-  margin-right: 1%;
-  width: 15px;
-  height: 15px;
   background-image: url(./img/diagonal.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 
 .hic-control-map-selector-container {
-  margin-left: 20px;
+  margin-left: 5px;
   width: 15%;
   display: flex;
   flex-flow: row;
@@ -796,14 +884,25 @@
 
 .hic-control-map-selector-container select {
   text-align: center;
-  display: block;
   height: 30px;
-  border-radius: 5px;
+  border-radius: 3px;
   width: 100%;
-  font-weight: 400;
   border-color: #a6a6a638;
   color: #00000073;
   background: #fff;
+  display: inline-block;
+  box-sizing: border-box;
+  /* padding: 0.5em 0.5em 0.5em 0em; */
+  border: 1px solid #eee;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 10px top 1em, right 5px top 1em;
+  background-size: 5px 5px, 5px 5px;
+
 
 }
 
@@ -818,7 +917,7 @@
   display: flex;
   flex-flow: row;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -830,19 +929,31 @@
 }
 
 .hic-normalization-selector-container select {
-  display: block;
   height: 30px;
-  width: 55%;
+  margin-left: 5px;
+  width: calc(100% - 5px);
   font-size: 12px;
-  font-weight: 400;
   color: #00000073;
   background: #fff;
   border-radius: 5px;
   border-color: #a6a6a638;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0.5em 2em 0.5em 0.5em;
+  border: 1px solid #eee;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 15px top 1em, right 10px top 1em;
+  background-size: 5px 5px, 5px 5px;
+
 }
 
 .hic-resolution-selector-container {
-  width: 20%;
+  width: 25%;
   display: flex;
   flex-flow: row;
   flex-wrap: nowrap;
@@ -863,7 +974,7 @@
   display: block;
   font-size: 12px;
   padding-top: 4px;
-  padding-left: 25px;
+  padding-left: 10px;
 }
 
 .hic-resolution-selector-container div#hic-resolution-label-container i.fa:hover,
@@ -874,7 +985,6 @@
 }
 
 .hic-resolution-selector-container select {
-  display: block;
   height: 30px;
   font-weight: 400;
   color: #00000073;
@@ -883,7 +993,19 @@
   margin-left: 5%;
   font-size: 12px;
   border-color: #a6a6a638;
-  border-radius: 5px;
+  border-radius: 2px;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0.5em 2em 0.5em 0.5em;
+  border: 1px solid #eee;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 15px top 1em, right 10px top 1em;
+  background-size: 5px 5px, 5px 5px;
 }
 
 div[id$="x-track-container"] {
@@ -1039,6 +1161,7 @@ div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] {
   width: 100%;
   height: calc(100% - (40px + 20px));
   background-color: white;
+  overflow: hidden;
 }
 
 div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div[id$="y-tracks"] {

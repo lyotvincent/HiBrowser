@@ -591,29 +591,29 @@ $('#ROI').on('click', function(e){
 // })
 
 /*============================================================================*/
-$('#browser-zoom-out').on('click',async function(e){
-  let selected_browser_id = get_selected_id();
-  let cur_locus = get_goto_input();
-  if (cur_locus === 'All') return;
-  if (cur_locus === ''){
-    if (live_igv_browser.has(selected_browser_id)){
-      live_igv_browser.get(selected_browser_id).zoomOut();
-      return;
-    }
-    return;
-  }
-  let xy = cur_locus.split(' ');
-  let [chrx, xs, xe] = parseLocus(xy[0]);
-  let [chry, ys, ye] = parseLocus(xy[1]);
-  let xns = xs - parseInt((xe - xs) / 2);
-  if (xns < 1) xns = 1;
-  let xne = xe + parseInt((xe - xs) / 2);
-  let yns = ys - parseInt((ye - ys) / 2);
-  if (yns < 1) yns = 1;
-  let yne = ye + parseInt((ye - ys) / 2);
-  let new_loc = generate_locus(chrx,xns,xne,chry, yns, yne);
-  browser_goto_locus(new_loc);
-})
+// $('#browser-zoom-out').on('click',async function(e){
+//   let selected_browser_id = get_selected_id();
+//   let cur_locus = get_goto_input();
+//   if (cur_locus === 'All') return;
+//   if (cur_locus === ''){
+//     if (live_igv_browser.has(selected_browser_id)){
+//       live_igv_browser.get(selected_browser_id).zoomOut();
+//       return;
+//     }
+//     return;
+//   }
+//   let xy = cur_locus.split(' ');
+//   let [chrx, xs, xe] = parseLocus(xy[0]);
+//   let [chry, ys, ye] = parseLocus(xy[1]);
+//   let xns = xs - parseInt((xe - xs) / 2);
+//   if (xns < 1) xns = 1;
+//   let xne = xe + parseInt((xe - xs) / 2);
+//   let yns = ys - parseInt((ye - ys) / 2);
+//   if (yns < 1) yns = 1;
+//   let yne = ye + parseInt((ye - ys) / 2);
+//   let new_loc = generate_locus(chrx,xns,xne,chry, yns, yne);
+//   browser_goto_locus(new_loc);
+// })
 
 /*============================================================================*/
 function showGlassDiag(_id){
@@ -710,7 +710,7 @@ async function restoreOneSession(sesseion, browser){
   await wait(1.5);
   browser.isForce =  hic['isForce'];
   if(hic['isSync']){
-    $(`#sync-${browser.id}`).click();
+    $(`#sync_browser_${browser.id}`).click();
   }
   
   let track2d = sesseion['track2d'];

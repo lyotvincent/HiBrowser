@@ -269,9 +269,10 @@ function createBedpe(){
 
 window.ShowArcs = function(){
   // alert(1)
+  let _id = parent.getSelectId();
   let [_, live_igv_browser] =  parent.getAllBrowser();
   // console.log(live_igv_browser)
-  if(live_igv_browser.size == 0){
+  if(!live_igv_browser.has(_id)){
     alert('No Gene Browser Loaded!'); 
     return;
   }
@@ -286,7 +287,8 @@ window.ShowArcs = function(){
     "color":"rgb(255,44,28)",
     "format":"bedpe"
   }
-  let b = live_igv_browser.values().next().value;
+  
+  let b = live_igv_browser.get(_id);
   b.removeTrackByName('all_interact');
   b.loadTrackList([config]);
   parent.browser_goto_locus(base_locus);

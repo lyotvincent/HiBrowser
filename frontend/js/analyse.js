@@ -1173,7 +1173,8 @@ $('#display').on('click', async function(){
     "altColor":"rgb(160, 159, 160)",
     "format":"bedGraph"
   }
-  let b = live_igv_browser.values().next().value;
+  let _id = parent.getSelectId();
+  let b = live_igv_browser.get(_id);
   b.loadTrackList([config]);
   layer.msg('load success, go to the gene browser and view it.')
   return;

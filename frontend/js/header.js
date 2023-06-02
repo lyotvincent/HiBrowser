@@ -1,6 +1,6 @@
 import hic from "./juicebox.esm.js";
 import {AlertSingleton} from './igv-widgets.js'
-import {live_browser, getFileExt,container, mm10_ext, hg19_ext, sample_map} from "./global.js"
+import {live_browser, getFileExt,container, mm10_ext, hg19_ext, sample_map,getNameAndExt} from "./global.js"
 
 
 
@@ -70,8 +70,16 @@ for(let sample of b_samples){
 
 //============================CLONE======================================
 window.cloneBrowser = async function(){
+  let old = hic.getCurrentBrowser();
   let new_browser = await hic.createBrowser(container, {});
   live_browser.set(new_browser.id,new_browser);
+  if(old.dataset != undefined && old.dataset.url!==undefined){
+    let url = old.dataset.url;
+    const [name, ext] = getNameAndExt(url);
+    const isControl = ('control-map' === 'contact-map');
+    await new_browser.loadHicFile({'url':url, name, isControl})
+
+  }
   return new_browser;
 }
 

@@ -41566,6 +41566,17 @@ class LocusGoto {
         $(this).blur();
       }
     })
+    // this.$resolution_selector_button.on('click',function(e){
+    //   let id = $(this).attr('id');
+    //   let _id = id.substring(id.length - 4, id.length);
+    //   let _val = $(`#hic-chromosome-goto-container-browser_${_id} input`).val();
+    //   if (_val == ''){
+    //     //Alert.presentAlert("Load Map first");
+    //     return;
+    //   }
+    //   browser.parseGotoInput(_val);
+    //   $(this).blur();
+    // })
     this.browser.eventBus.subscribe("LocusChange", this);
   }
 
@@ -41573,6 +41584,7 @@ class LocusGoto {
 
     // 移动HiC contact map
     if (event.type === "LocusChange") {
+      console.log(this.browser.id);
       // 
       // setCurrentBrowser(this.browser);
       let x, y, xy;
@@ -41602,29 +41614,29 @@ class LocusGoto {
 
       this.$resolution_selector.val(xy);
 
-      let _id = this.browser.id;
+      // let _id = this.browser.id;
 
-      let igv_selector = $('#igv-goto-input-' + _id);
-      if (xy === 'All') {
-        x = 'all';
-      }
-      if (check_equal(x,))
-        if (x.startsWith('chr')) {
-          x = x.substring(3, x.length);
-        }
-      // 为了防止递归调用，需要判断chrx == x 
-      let igv_locus = $(igv_selector).val();
-      if ($(igv_selector).val() === undefined) return;
-      if (igv_locus.startsWith('chr')) {
-        igv_locus = igv_locus.substring(3, x.length);
-      }
-      if (igv_locus === x || igv_locus.split('-')[0] === x.split('-')[0]) {
-        return;
-      }
-      else {
-        igv_goto_locus(x, _id);
-        return;
-      }
+      // let igv_selector = $('#igv-goto-input-' + _id);
+      // if (xy === 'All') {
+      //   x = 'all';
+      // }
+      // if (check_equal(x,))
+      //   if (x.startsWith('chr')) {
+      //     x = x.substring(3, x.length);
+      //   }
+      // // 为了防止递归调用，需要判断chrx == x 
+      // let igv_locus = $(igv_selector).val();
+      // if ($(igv_selector).val() === undefined) return;
+      // if (igv_locus.startsWith('chr')) {
+      //   igv_locus = igv_locus.substring(3, x.length);
+      // }
+      // if (igv_locus === x || igv_locus.split('-')[0] === x.split('-')[0]) {
+      //   return;
+      // }
+      // else {
+      //   igv_goto_locus(x, _id);
+      //   return;
+      // }
 
 
     }
@@ -42758,7 +42770,7 @@ class ContactMatrixView {
         }, 1000);
       });
 
-      $viewport.dblclick((e) => {
+      $viewport.dblclick(async (e) => {
         clearTimeout(time);
         e.preventDefault;
         e.stopPropagation();
@@ -42767,7 +42779,9 @@ class ContactMatrixView {
         if (this.browser.isDiag || this.browser.contactMatrixView.displayMode === 'AMB') {
           mouseY = mouseX;
         }
-        this.browser.zoomAndCenter(1, mouseX, mouseY);
+        // console.log(this.browser.$resolution_selector.val());
+        await this.browser.zoomAndCenter(1, mouseX, mouseY);
+        // console.log(this.browser.$resolution_selector.val());
       });
 
       $viewport.on('mouseover', (e) => mouseOver = true);
@@ -42845,6 +42859,7 @@ class ContactMatrixView {
               dy = dx;
             }
             this.browser.shiftPixels(dx, dy);
+            igv_shift(this.browser.id, dx);
           }
 
           mouseLast = coords;
@@ -44683,6 +44698,7 @@ class ScrollbarWidget {
       percentages;
 
     if (!this.isDragging && event.type === "LocusChange") {
+      // console.log(this);
 
       var state = event.data.state,
         dataset = self.browser.dataset;
@@ -44884,7 +44900,7 @@ class HICBrowser {
 
     this.hideCrosshairs();
 
-    //this.eventBus.subscribe("LocusChange", this);
+    this.eventBus.subscribe("LocusChange", this);
   }
 
   // HiC 浏览器init
@@ -45208,32 +45224,8 @@ class HICBrowser {
   }
 
 
-  async gotoLocus(locus, is_igv) {
-    // console.log(this.state);
-    // this.clamp();
-
-    // const locusChangeEvent = HICEvent("LocusChange", {
-    //   state: this.state,
-    //   resolutionChanged: false,
-    //   dragging: true,
-    //   chrChanged: false
-    // });
-    // locusChangeEvent.dragging = true;
-
-    // this.update(locusChangeEvent);
-    // this.eventBus.post(locusChangeEvent);
-
-
-    // this.$resolution_selector.val(locus);
-    // let event = HICEvent("LocusChange", {
-    //   state: this.state,
-    //   resolutionChanged: !is_igv,
-    //   chrChanged: !is_igv
-    // });
-
-    // this.update(event);
-    // this.eventBus.post(event);
-    await this.parseGotoInput(locus, is_igv);
+  async gotoLocus(locus) {
+    await this.parseGotoInput(locus);
     return;
   }
 
@@ -45611,8 +45603,7 @@ class HICBrowser {
 
 
 
-  async parseGotoInput(string, is_igv) {
-    // console.log(is_igv)
+  async parseGotoInput(string) {
     let xLocus;
     let yLocus;
     const loci = string.split(' ');
@@ -45647,7 +45638,7 @@ class HICBrowser {
         await this.setChromosomes(xLocus.chr, yLocus.chr);
         //call3d(this.id, xLocus.chr, yLocus.chr,true);
       } else {
-        this.goto(xLocus.chr, xLocus.start, xLocus.end, yLocus.chr, yLocus.start, yLocus.end, undefined, is_igv);
+        this.goto(xLocus.chr, xLocus.start, xLocus.end, yLocus.chr, yLocus.start, yLocus.end);
       }
     }
 
@@ -45825,8 +45816,10 @@ class HICBrowser {
       const chrX = this.genome.getChromsosomeForCoordinate(genomeCoordX);
       const chrY = this.genome.getChromsosomeForCoordinate(genomeCoordY);
       this.setChromosomes(chrX.index, chrY.index);
+      // console.log(this, chrX, chrY);
       //call3d(this.id,chrX.index, chrY.index,true);
-    } else {
+    } 
+    else {
       const resolutions = this.getResolutions();
       const viewDimensions = this.contactMatrixView.getViewDimensions();
       const dx = centerPX === undefined ? 0 : centerPX - viewDimensions.width / 2;
@@ -45855,6 +45848,14 @@ class HICBrowser {
           resolutionChanged: false,
           chrChanged: false
         });
+        const chr1 = this.dataset.chromosomes[state.chr1];
+        const bpPerBin = this.dataset.bpResolutions[state.zoom];
+        const dimensionsPixels = this.contactMatrixView.getViewDimensions();
+        const pixelsPerBin = state.pixelSize;
+        const startBP1 = 1 + Math.round(state.x * bpPerBin);
+        const endBP1 = Math.min(chr1.size, Math.round(((dimensionsPixels.width / pixelsPerBin) * bpPerBin)) + startBP1 - 1);
+        let x = chr1.name + ":" + numberFormatter(startBP1) + "-" + numberFormatter(endBP1)
+        igv_goto_locus(x, this.id);
 
         this.update(event);
         //this.eventBus.post(event);
@@ -45901,8 +45902,10 @@ class HICBrowser {
       state.y = Math.max(0, newYCenter - viewDimensions.height / (2 * newPixelSize));
       state.pixelSize = newPixelSize;
       this.clamp();
+      //console.log(this.$resolution_selector.val());
 
       await this.contactMatrixView.zoomIn();
+      // console.log(this.$resolution_selector.val());
 
       let event = HICEvent("LocusChange", {
         state: state,
@@ -45910,7 +45913,16 @@ class HICBrowser {
         chrChanged: false
       });
 
+      const chr1 = this.dataset.chromosomes[state.chr1];
+      const bpPerBin = this.dataset.bpResolutions[state.zoom];
+      const dimensionsPixels = this.contactMatrixView.getViewDimensions();
+      const pixelsPerBin = state.pixelSize;
+      const startBP1 = 1 + Math.round(state.x * bpPerBin);
+      const endBP1 = Math.min(chr1.size, Math.round(((dimensionsPixels.width / pixelsPerBin) * bpPerBin)) + startBP1 - 1);
+      let x = chr1.name + ":" + numberFormatter(startBP1) + "-" + numberFormatter(endBP1)
+      igv_goto_locus(x, this.id);
       this.update(event);
+      // console.log(this.$resolution_selector.val());
       //this.eventBus.post(event);
 
     } finally {
@@ -45937,7 +45949,9 @@ class HICBrowser {
       let event = HICEvent("LocusChange", { state: this.state, resolutionChanged: true, chrChanged: true });
 
       this.update(event);
-      //this.eventBus.post(event);
+      this.eventBus.post(event);
+
+      igv_goto_locus(this.state.chr1, this.id);
 
     } finally {
       this.stopSpinner();
@@ -46106,9 +46120,7 @@ class HICBrowser {
     this.eventBus.post(locusChangeEvent);
   }
 
-  goto(chr1, bpX, bpXMax, chr2, bpY, bpYMax, minResolution, is_igv) {
-    // console.log(is_igv);
-    if(is_igv === undefined) is_igv = false;
+  goto(chr1, bpX, bpXMax, chr2, bpY, bpYMax, minResolution) {
     // goto按钮触发
     const viewDimensions = this.contactMatrixView.getViewDimensions();
     const bpResolutions = this.getResolutions();
@@ -46137,7 +46149,7 @@ class HICBrowser {
 
     let zoomChanged;
     let newZoom;
-    if (is_igv || (true === this.resolutionLocked && minResolution === undefined)) {
+    if (true === this.resolutionLocked && minResolution === undefined) {
       zoomChanged = false;
       newZoom = this.state.zoom;
     } else {
@@ -46158,7 +46170,7 @@ class HICBrowser {
     this.state.y = newYBin;
     this.state.pixelSize = newPixelSize;
 
-    if(!is_igv)this.contactMatrixView.clearImageCaches();
+    this.contactMatrixView.clearImageCaches();
 
 
     let event = HICEvent("LocusChange", {
@@ -46166,6 +46178,16 @@ class HICBrowser {
       resolutionChanged: zoomChanged,
       chrChanged: chrChanged
     });
+
+    const _chr1 = this.dataset.chromosomes[chr1];
+    const bpPerBin = this.dataset.bpResolutions[this.state.zoom];
+    const dimensionsPixels = this.contactMatrixView.getViewDimensions();
+    const pixelsPerBin = this.state.pixelSize;
+    const startBP1 = 1 + Math.round(this.state.x * bpPerBin);
+    const endBP1 = Math.min(_chr1.size, Math.round(((dimensionsPixels.width / pixelsPerBin) * bpPerBin)) + startBP1 - 1);
+    let x = _chr1.name + ":" + numberFormatter(startBP1) + "-" + numberFormatter(endBP1);
+    //console.log(x);
+    igv_goto_locus(x, this.id);
 
     this.update(event);
     //this.eventBus.post(event);

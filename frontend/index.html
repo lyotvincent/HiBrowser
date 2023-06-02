@@ -34,9 +34,8 @@
     <script type="module" src="js/header.js"></script>
     <script type="module" src="js/tools.js"></script>
     <script type="module" src="js/example.js"></script>
+    <script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
 
-    
-    
 </head>
 <body style="background-color: #eee !important;">
   <header class="hic-header">
@@ -60,7 +59,7 @@
                     Local File
                 </div>
                 <div>
-                    <input name="local-contact-map" type="file" style="display: none;">
+                    <input name="local-contact-map" type="file"  accept=".hic" style="display: none;">
                 </div>
             </div>
           </label>
@@ -83,7 +82,7 @@
                     Local File
                 </div>
                 <div>
-                    <input name="local-control-map" type="file" style="display: none;">
+                    <input name="local-control-map" type="file"  accept=".hic" style="display: none;">
                 </div>
             </div>
           </label>
@@ -91,7 +90,7 @@
       </div>
 
       <!-- Ref GENE -->
-      <div class="dropdown">
+      <div id='dropdown-genome' class="dropdown">
         <button class="btn btn-warning dropdown-toggle radius-1"  type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
           Genome
         </button>
@@ -113,7 +112,7 @@
       </div>
 
 
-      <div class="hic-track">
+      <div class="hic-track" id="hic-track">
         <button class="btn btn-success radius-1" type="button" data-toggle="modal" data-target="#load-track-modal">
           Track
         </button>
@@ -122,6 +121,9 @@
       <div class="hic-clone">
         <button name="hic-clone" type="button" class="btn btn-info radius-1">Clone</button>
       </div>
+      <!-- <div class="hic-clone">
+        <button name="export" type="button" class="btn btn-info radius-1">Export</button>
+      </div> -->
 
     </div>
   </header>
@@ -359,7 +361,7 @@
   <!--  </fiv>-->
   <!--</div>-->
   <footer class="hic-footer">
-    <div>Copyright © 2021-2022. Nankai University.</div>
+    <div>Copyright © 2021-2023. Nankai University.</div>
     <div>Developed by the <a href="http://bio.nankai.edu.cn" target="_blank">Liu Lab</a></div>
     <div>All rights reserved.</div>
   </footer>
