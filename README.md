@@ -4,7 +4,7 @@
 <b>https://hic.bioaimed.com</b>
 
 
-> Alrough the instance we host at https://hic.bioaimed.com is an end-user application, you need to realize that your data will be flowing on the Interet [except for visualizing your local file]
+> Although the instance we host at https://hic.bioaimed.com is an end-user application, you need to realize that your data will be flowing on the Interet [except for visualizing your local file]
 >
 >Besides, multi-omics data, especially Hi-C data, is often very large. Therefor, in our host instace, the case may spend few minutes to fetching data.
 >
