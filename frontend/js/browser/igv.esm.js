@@ -43676,7 +43676,6 @@ class WigTrack extends TrackBase {
             if (this.dataRange.max > this.dataRange.min) {
 
                 const y0 = yScale(0);
-                if(this.graphType === 'line') ctx.moveTo(0, 0);
                 for (let f of features) {
 
                     if (f.end < bpStart) continue
@@ -43698,16 +43697,7 @@ class WigTrack extends TrackBase {
                         const px = x + width / 2;
                         IGVGraphics.fillCircle(ctx, px, y, pointSize / 2, {"fillStyle": color, "strokeStyle": color});
 
-                    }else if(this.graphType === 'line'){
-                        let height = y - y0;
-                        const pixelEnd = x + width;
-                        if (pixelEnd > lastPixelEnd || (f.value >= 0 && f.value > lastValue) || (f.value < 0 && f.value < lastNegValue)) {
-                            ctx.lineTo(x + width, yScale(lastValue));
-                            ctx.lineTo(x + width, y);
-                        }
-                        lastValue = f.value;
-                        lastPixelEnd = pixelEnd;
-                    } 
+                    }
                     else {
                         let height = y - y0;
                         const pixelEnd = x + width;
@@ -43718,11 +43708,6 @@ class WigTrack extends TrackBase {
                         lastPixelEnd = pixelEnd;
                     }
                 }
-                if(this.graphType === 'line'){
-                    ctx.strokeStyle = posColor;
-                    ctx.stroke();
-                } 
-
                 // If the track includes negative values draw a baseline
                 if (this.dataRange.min < 0) {
                     const basepx = (this.dataRange.max / (this.dataRange.max - this.dataRange.min)) * options.pixelHeight;

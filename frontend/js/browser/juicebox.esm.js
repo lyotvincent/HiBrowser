@@ -43353,7 +43353,7 @@ function _showDiag(browser) {
   canvas.css('border','1px gray solid');
   let igv_div = $(`#igv-${_id}`);
   igv_div.css('margin-top', `${-ow / 2}px`);
-  igv_div.css('padding-bottom', `${ow / 2}px`);
+  // igv_div.css('padding-bottom', `${ow / 2}px`);
   let locus = get_goto_input();
   locus = locus.split(' ');
   locus = locus[0] + ' ' + locus[0];

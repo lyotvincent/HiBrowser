@@ -664,7 +664,7 @@ div.ana-container {
   text-align: left;
   width: 10px;
   height: 10px;
-  background-image: url(./img/ncbi.png);
+  background-image: url(../img/ncbi.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   cursor: pointer;

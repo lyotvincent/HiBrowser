@@ -48,10 +48,10 @@
                 "height": 40
             }
         ],
-        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta",
-        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai",
-        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_cytoBandIdeo.txt",
-        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_refGene.txt.gz",
+        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/hg38.fasta",
+        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/hg38.fasta.fai",
+        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com//hg38/cytoBandIdeo.txt",
+        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/refGene.txt.gz",
         "track": [
             {
                 "type": "wig",
@@ -151,10 +151,10 @@
                 "height": 40
             }
         ],
-        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta",
-        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai",
-        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_cytoBandIdeo.txt",
-        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_refGene.txt.gz",
+        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/hg38.fasta",
+        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/hg38.fasta.fai",
+        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com//hg38/cytoBandIdeo.txt",
+        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/refGene.txt.gz",
         "track": [
             {
                 "type": "wig",
@@ -251,10 +251,10 @@
                 "height": 40
             }
         ],
-        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta",
-        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai",
-        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_cytoBandIdeo.txt",
-        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_refGene.txt.gz",
+        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/hg38.fasta",
+        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/hg38.fasta.fai",
+        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com//hg38/cytoBandIdeo.txt",
+        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/hg38/refGene.txt.gz",
         "track": [
             {
                 "type": "wig",
