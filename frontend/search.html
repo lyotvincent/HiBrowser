@@ -9,12 +9,12 @@
   <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootstrap-table.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/search.css">
+  <link rel="stylesheet" href="css/page/search.css">
  
-  <script src="js/jquery-3.6.0.min.js"></script>
+  <script src="js/jquery/jquery-3.6.0.min.js"></script>
   <script src="js/layer/layer.js"></script>
-  <script src="js/bootstrap-table.min.js"></script>
-  <script type="module" src="js/search.js"></script>
+  <script src="js/jquery/bootstrap-table.min.js"></script>
+  <script type="module" src="js/page/search.js"></script>
 </head>
 <body>
     <div class="search-header">
@@ -40,6 +40,9 @@
       <span class="show-arcs hidden" onclick="ShowArcs()">
         <a>Click to view all interact</a>
       </span>
+      <span class="show-roi hidden" onclick="ShowROI()">
+        <a>Set as Region Of Interest</a>
+      </span>
 
 
     </div>
@@ -64,8 +67,12 @@
       function show(a){
         if(a == 'Disease'){
           document.querySelector('.disease-url').classList.remove('hidden');
-        }else{
+        }else if(a == 'Locus'){
+          document.querySelector('.show-roi').classList.remove('hidden');
+        }
+        else{
           document.querySelector('.disease-url').classList.add('hidden');
+          document.querySelector('.show-roi').classList.add('hidden');
         }
         document.querySelector('.text01').value = a;
         document.querySelector('#search-input').setAttribute("value",query_map.get(a));

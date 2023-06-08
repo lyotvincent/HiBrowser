@@ -27,6 +27,8 @@ urlpatterns = [
     re_path(r'^api/query', view.query),
     re_path(r'^api/getGeneLocus', view.query_gene_locus),
     re_path(r'^api/test', view.analyse_single),
-    re_path(r'^api/switch', view.analyse_switch)
+    re_path(r'^api/switch', view.analyse_switch),
+    re_path(r'^api/genev', view.gene_variant)
+
 
 ]

@@ -53,3 +53,11 @@ def analyse_switch(request):
     return HttpResponse(json.dumps({
         "data": data
     }))
+
+
+@csrf_exempt
+def gene_variant(request):
+    data = queryService.gene_variant(request)
+    return HttpResponse(json.dumps({
+        "data": data
+    }))

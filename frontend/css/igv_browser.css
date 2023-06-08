@@ -971,6 +971,7 @@
   height: 12px;
   width: 12px;
   color: #7F7F7F;
+  margin-bottom: 10px;
 }
 
 .igv-menu-popup-header div:hover {
@@ -1131,12 +1132,9 @@
 .igv-roi-menu-next-gen>div:first-child {
   height: 24px;
   border-top-color: transparent;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  border-bottom-color: #7F7F7F;
-  border-bottom-style: solid;
-  border-bottom-width: thin;
-  background-color: #eee;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color: #f6f8f7;
   display: flex;
   flex-flow: row;
   flex-wrap: nowrap;
@@ -1176,9 +1174,6 @@
 .igv-roi-menu-next-gen>div:last-child>div {
   height: 24px;
   padding-left: 4px;
-  border-bottom-style: solid;
-  border-bottom-width: thin;
-  border-bottom-color: #7f7f7f;
 }
 
 .igv-roi-menu-next-gen>div:last-child>div:not(:first-child):hover {
@@ -1193,6 +1188,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: 1px solid #eee;
 }
 
 .igv-roi-menu-next-gen>div:last-child>div:last-child {
@@ -1730,12 +1726,11 @@
 */
   overflow-x: hidden;
   overflow-y: hidden;
-  margin-bottom: 2px;
 }
 
-.igv-column div:nth-child(2) {
-  border: none !important;
-}
+/* .igv-viewport:hover{
+  border: 1px dashed #0f0f0f;
+} */
 
 .igv-viewport-content {
   position: relative;
@@ -1793,7 +1788,6 @@
 
 .igv-axis-column>div {
   width: 100%;
-  margin-bottom: 2px;
 }
 
 .igv-sample-name-column {
@@ -1921,8 +1915,7 @@
 
 .igv-ui-1_3_0-popover {
   border: 1px solid #7f7f7f42;
-  border-radius: 8px;
-
+  border-radius: 5px;
   cursor: default;
   position: absolute;
   z-index: 2048;
@@ -1952,9 +1945,10 @@
 
 .igv-ui-1_3_0-popover>div:first-child>div:last-child {
   margin-right: 4px;
-  height: 12px;
-  width: 12px;
-  color: #7F7F7F;
+  height: 10px;
+  width: 10px;
+  color: #665f5f;
+  margin-bottom: 10px;
 }
 
 .igv-ui-1_3_0-popover>div:first-child>div:last-child:hover {

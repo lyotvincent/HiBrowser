@@ -33416,8 +33416,9 @@ class LayoutController {
     <canvas></canvas>
     <i class="fa fa-spinner fa-spin" style="font-size: 48px; position: absolute; left: 40%; top: 40%; display: none;"></i>
     <div id="${browser.id}-sweep-zoom-container" style="display: none;"></div>
-    <div id="${browser.id}-x-guide" style="display: none;"></div>
-    <div id="${browser.id}-y-guide" style="display: none;"></div>
+    <div id="${browser.id}-x-guide" style="display: block;"></div>
+    <div id="${browser.id}-y-guide" style="display: block;"></div>
+    <div id="${browser.id}-pointer-block" class="pointer-block"></div>
   </div>`;
 
     $y_tracks_y_axis_viewport_y_scrollbar.append($(html_viewport));
@@ -40350,17 +40351,17 @@ class HicFile {
     const idx2 = this.chromosomeIndexMap[chr2];
 
     if (idx1 === undefined) {
-      console.log("No chromosome named: " + region1.chr);
+      // console.log("No chromosome named: " + region1.chr);
       return []
     }
     if (idx2 === undefined) {
-      console.log("No chromosome named: " + region2.chr);
+      // console.log("No chromosome named: " + region2.chr);
       return []
     }
 
     const matrix = await this.getMatrix(idx1, idx2);
     if (!matrix) {
-      console.log("No matrix for " + region1.chr + "-" + region2.chr);
+      // console.log("No matrix for " + region1.chr + "-" + region2.chr);
       return []
     }
 
@@ -41573,7 +41574,7 @@ class LocusGoto {
 
     // 移动HiC contact map
     if (event.type === "LocusChange") {
-      // 
+      // console.log(this.browser.id, this.browser.$resolution_selector.val());
       // setCurrentBrowser(this.browser);
       let x, y, xy;
       const state = event.data.state || this.browser.state;
@@ -41952,6 +41953,7 @@ class RatioColorScale {
   getColor(score) {
 
     var logScore = Math.log(score);
+    // var logScore = score;
 
     if (logScore < 0) {
       return this.negativeScale.getColor(-logScore);
@@ -42022,7 +42024,8 @@ class ContactMatrixView {
 
     this.$x_guide = $viewport.find("div[id$='-x-guide']");
     this.$y_guide = $viewport.find("div[id$='-y-guide']");
-
+    this.$pointer_block = $viewport.find("div[id$='-pointer-block']");
+  
     this.displayMode = 'A';
     this.imageTileCache = {};
     this.imageTileCacheKeys = [];
@@ -42273,7 +42276,6 @@ class ContactMatrixView {
           image: image,
           inProgress: true
         }  // TODO return an image at a coarser resolution if avaliable
-
       }
       this.drawsInProgress.add(key);
 
@@ -42282,46 +42284,47 @@ class ContactMatrixView {
         const sameChr = zd.chr1.index === zd.chr2.index;
         const transpose = sameChr && row < column;
         const averageCount = zd.averageCount;
+        // console.log(zd);
         const ctrlAverageCount = zdControl ? zdControl.averageCount : 1;
-        const averageAcrossMapAndControl = (averageCount + ctrlAverageCount) / 2;
-
         const imageSize = imageTileDimension;
         const image = document.createElement('canvas');
         image.width = imageSize;
         image.height = imageSize;
         const ctx = image.getContext('2d');
-        setCanvasWidth(image, 3);
-        //ctx.clearRect(0, 0, image.width, image.height);
-        // Get blocks
+
         const widthInBP = imageTileDimension * zd.zoom.binSize;
         const x0bp = column * widthInBP;
         const region1 = { chr: zd.chr1.name, start: x0bp, end: x0bp + widthInBP };
         const y0bp = row * widthInBP;
         const region2 = { chr: zd.chr2.name, start: y0bp, end: y0bp + widthInBP };
-
         const records = await ds.getContactRecords(state.normalization, region1, region2, zd.zoom.unit, zd.zoom.binSize);
-
+        let low_bound = this.browser.config.low_bound == 0 ? 0:computePercentile(records, this.browser.config.low_bound);
+        let up_bound = this.browser.config.up_bound == 100 ? Number.MAX_VALUE:computePercentile(records, this.browser.config.up_bound);
         let cRecords;
         if (zdControl) {
           cRecords = await dsControl.getContactRecords(state.normalization, region1, region2, zdControl.zoom.unit, zdControl.zoom.binSize);
+          // control_low_bound = this.browser.config.low_bound == 0 ? 0:computePercentile(cRecords, this.browser.config.low_bound);
+          // control_up_bound = this.browser.config.up_bound == 100 ? Number.MAX_VALUE:computePercentile(cRecords, this.browser.config.up_bound);
         }
+        let id = ctx.getImageData(0, 0, image.width, image.height);
         if (this.displayMode === 'AMB') {
-          let id = ctx.getImageData(0, 0, image.width, image.height);
           const x0 = column * imageTileDimension;
           const y0 = row * imageTileDimension;
           for (let i = 0; i < records.length; i++) {
             let rec = records[i];
+            let t = (rec.counts >= low_bound && rec.counts <= up_bound) ? rec.counts:0;
             let x = Math.floor((rec.bin1 - x0));
             let y = Math.floor((rec.bin2 - y0));
-            let rgba = this.diffColorScale.negativeScale.getColor(rec.counts);
+            let rgba = this.diffColorScale.negativeScale.getColor(t);
             setPixel(id, x, y, rgba.red, rgba.green, rgba.blue, rgba.alpha);
           }
           // x可能会小于0，y不会小于0
           for (let i = 0; i < cRecords.length; i++) {
             let rec = cRecords[i];
+            let t = (rec.counts >= low_bound && rec.counts <= up_bound) ? rec.counts:0;
             let x = Math.floor((rec.bin1 - x0));
             let y = Math.floor((rec.bin2 - y0));
-            let rgba = this.diffColorScale.positiveScale.getColor(rec.counts);
+            let rgba = this.diffColorScale.positiveScale.getColor(t);
             if (sameChr && row === column) {
               setPixel(id, y, x, rgba.red, rgba.green, rgba.blue, rgba.alpha);
             } else {
@@ -42329,7 +42332,6 @@ class ContactMatrixView {
               y = Math.floor((rec.bin2 - x0));
               setPixel(id, y, x, rgba.red, rgba.green, rgba.blue, rgba.alpha);
             }
-
           }
           ctx.putImageData(id, 0, 0);
         }
@@ -42341,7 +42343,6 @@ class ContactMatrixView {
                 controlRecords[record.getKey()] = record;
               }
             }
-            let id = ctx.getImageData(0, 0, image.width, image.height);
             const x0 = transpose ? row * imageTileDimension : column * imageTileDimension;
             const y0 = transpose ? column * imageTileDimension : row * imageTileDimension;
             for (let i = 0; i < records.length; i++) {
@@ -42362,6 +42363,8 @@ class ContactMatrixView {
                   if (!controlRec) {
                     continue;    // Skip
                   }
+                  // let tr = (rec.counts >= low_bound && rec.counts <= up_bound) ? rec.counts:0;
+                  // let tc = (controlRec.counts >= control_low_bound && controlRec.counts <= control_up_bound) ? controlRec.counts:0;
                   score = (rec.counts / averageCount) / (controlRec.counts / ctrlAverageCount);
                   rgba = this.ratioColorScale.getColor(score);
                   setPixel(id, x, y, rgba.red, rgba.green, rgba.blue, rgba.alpha);
@@ -42370,13 +42373,15 @@ class ContactMatrixView {
                   }
                   break;
                 default:    // Either 'A' or 'B'
-                  rgba = this.colorScale.getColor(rec.counts);
+                  let t = (rec.counts >= low_bound && rec.counts <= up_bound) ? rec.counts:0;
+                  rgba = this.colorScale.getColor(t);
                   setPixel(id, x, y, rgba.red, rgba.green, rgba.blue, rgba.alpha);
                   if (sameChr && row === column) {
                     setPixel(id, y, x, rgba.red, rgba.green, rgba.blue, rgba.alpha);
                   }
               }
             }
+            // console.log(id.data);
             ctx.putImageData(id, 0, 0);
           }
         }
@@ -42410,7 +42415,7 @@ class ContactMatrixView {
                 const dim = Math.max(image.width, image.height);
                 if (px2 > 0 && px1 < dim && py2 > 0 && py1 < dim) {
                   ctx.strokeStyle = track2D.color ? track2D.color : color;
-                  ctx.fillStyle = `#d4d4d487`;
+                  ctx.fillStyle = `#d4d4d450`;
                   if (this.displayMode === 'AMB') {
                     if (tad_num == 1) {
                       ctx.beginPath();
@@ -42442,8 +42447,13 @@ class ContactMatrixView {
             }
           }
         }
+        // ctx.moveTo(0, imageSize/2);
+        // ctx.lineTo(imageSize, imageSize/2);
+        // ctx.setLineDash([5]);
+        // ctx.stroke();
         ctx.restore();
         var imageTile = { row: row, column: column, blockBinCount: imageTileDimension, image: image };
+        // console.log(imageTile)
         if (this.imageTileCacheLimit > 0) {
           if (this.imageTileCacheKeys.length > this.imageTileCacheLimit) {
             delete this.imageTileCache[this.imageTileCacheKeys[0]];
@@ -42468,9 +42478,6 @@ class ContactMatrixView {
     }
 
   };
-
-
-
 
   /**
    * Return a promise to adjust the color scale, if needed.  This function might need to load the contact
@@ -42528,6 +42535,9 @@ class ContactMatrixView {
     }
 
   }
+
+
+  
 
   async zoomIn() {
     const state = this.browser.state;
@@ -42588,7 +42598,10 @@ class ContactMatrixView {
       this.ctx.fillStyle = this.backgroundRGBString;
       this.ctx.fillRect(offsetX, offsetY, scaledWidth, scaledHeight);
       if (scale === 1) {
-        this.ctx.drawImage(image, offsetX, offsetY);
+        // let id = this.$viewport[0].id;
+        this.ctx.drawImage(image, offsetX, offsetY);        
+        // let slicedArr = record_arr.slice(0, offsetX).map(row => row.slice(0, offsetY));
+        // this.heatmap_display(slicedArr, id);
       } else {
         this.ctx.drawImage(image, offsetX, offsetY, scaledWidth, scaledHeight);
       }
@@ -42627,10 +42640,24 @@ class ContactMatrixView {
     let e = scale.split('-')[1];
     e = e.replaceAll(',', '');
     e = parseInt(e);
-
     return { chr, s, e };
-
   }
+
+  getCoordinatebyOffset = (xy) => {
+    const state = this.browser.state;
+    const resolution = this.browser.resolution();
+    const posX = xy.x
+    const posY = xy.y
+    const x = parseInt((state.x + (posX / state.pixelSize)) * resolution);
+    const xMax = parseInt((state.x + ((posX + 1) / state.pixelSize)) * resolution);
+    
+    const y = parseInt((state.y + (posY / state.pixelSize)) * resolution);
+    const yMax = parseInt((state.y + ((posY + 1) / state.pixelSize)) * resolution);
+    let chr1 = state.chr1, chr2 = state.chr2;
+    return {chr1,x,xMax, chr2, y, yMax};
+  }
+
+
   addMouseHandlers($viewport) {
 
     let isMouseDown = false;
@@ -42730,7 +42757,7 @@ class ContactMatrixView {
               }
             }
             if (item_list.length < 1) {
-              console.log('show record');
+              //console.log('show record');
               return;
             };
             let content = getPopContent(b_id, item_list)
@@ -42765,6 +42792,7 @@ class ContactMatrixView {
       $viewport.on('mousedown', (e) => {
         ismove = false;
         //console.log('down:',ismove)
+        setCurrentBrowser(this.browser);
         e.preventDefault;
         e.stopPropagation();
 
@@ -42785,11 +42813,10 @@ class ContactMatrixView {
 
       });
 
-      $viewport.on('mousemove', (e) => {
+      $viewport.on('mousemove', async (e) => {
+        let colorScale = this.browser.contactMatrixView.colorScale.getColorComponents();
+        let color = `rgb(${colorScale.r},${colorScale.g}, ${colorScale.b})`;
         ismove = true;
-        // 十字架
-        //e.preventDefault;
-        //e.stopPropagation();
         const coords =
         {
           x: e.offsetX,
@@ -42804,28 +42831,82 @@ class ContactMatrixView {
           x: eFixed.pageX - $viewport.offset().left,
           y: eFixed.pageY - $viewport.offset().top
         };
+        if(this.browser.config.focus && this.browser.state != '0' && !this.browser.isDiag){
+          let $pointer = $viewport.find("div[id$='-pointer-block']");
+          $pointer.css('border-color',color);
+          let _left = (xy.x + 10) / $viewport.width();
+          if(_left > 0.53) _left -= 0.45;
+          $pointer.css('left', `${_left * 100}%`);
+          let _top =  (xy.y + 10) / $viewport.height();
+          if(_top > 0.8) _top -= 0.18
+          $pointer.css('top', `${_top * 100}%`);
+          let {chr1, x, xMax, chr2, y, yMax} = this.getCoordinatebyOffset(xy);
+          let dataset, controlDataset;
+          switch (this.browser.contactMatrixView.displayMode){
+            case 'A':
+              dataset = this.browser.dataset;
+              break;
+            case 'AOB':
+              dataset = this.browser.dataset;
+              controlDataset = this.browser.controlDataset;
+              break;
+            case 'B': 
+              dataset = this.browser.controlDataset;
+              break;
+            case 'BOA':
+              dataset = this.browser.controlDataset;
+              controlDataset = this.browser.dataset;
+              break;
+            case 'AMB':
+              dataset = xy.x > xy.y ? this.browser.controlDataset : this.browser.dataset;
+              break;
+            default:
+              dataset = this.browser.dataset;
+          }
+          let score =  await dataset.getContactRecords(
+            this.browser.state.normalization, 
+            {chr: chr1, start:x, end:xMax}, 
+            {chr: chr2, start:y, end:yMax},
+            'BP', 
+            this.browser.resolution()
+          );
 
+          $pointer.empty();
+          $pointer.append(
+            `
+            <span>${chr1}:${Number(x).toLocaleString()} - ${Number(xMax).toLocaleString()}</span></br>
+            <span>${chr2}:${Number(y).toLocaleString()} - ${Number(yMax).toLocaleString()}</span></br>
+            <span> Records1:  ${score.length == 0 ? 0:score[0].counts.toFixed(2)}
+            `
+          )
+          let cScore;
+          if(this.browser.contactMatrixView.displayMode == 'AOB' || this.browser.contactMatrixView.displayMode == 'BOA'){
+            cScore =  await controlDataset.getContactRecords(
+              this.browser.state.normalization, 
+              {chr: chr1, start:x, end:xMax}, 
+              {chr: chr2, start:y, end:yMax},
+              'BP', 
+              this.browser.resolution()
+            );
+            $pointer.append(`</br><span>Records2: ${cScore.length == 0 ? 0:cScore[0].counts.toFixed(2)}`);
+          }
+          let $x_guide = $viewport.find("div[id$='-x-guide']");
+          let $y_guide = $viewport.find("div[id$='-y-guide']");
+          $x_guide.css('top', xy.y / $viewport.height() * 100 + '%');
+          $y_guide.css('left', xy.x / $viewport.width() * 100 + '%');
+        }
         const { width, height } = $viewport.get(0).getBoundingClientRect();
         xy.xNormalized = xy.x / width;
         xy.yNormalized = xy.y / height;
 
 
         this.browser.eventBus.post(HICEvent("UpdateContactMapMousePosition", xy, false));
-
-        /*
-        if (true === this.willShowCrosshairs) {
-            this.browser.updateCrosshairs(xy);
-            this.browser.showCrosshairs();
-        }
-        */
-
         if (isMouseDown) { // Possibly dragging
           if (isSweepZooming) {
-
             this.sweepZoom.update({ x: eFixed.pageX, y: eFixed.pageY });
-
           } else if (mouseDown.x && Math.abs(coords.x - mouseDown.x) > DRAG_THRESHOLD) {
             // 拖动
+            if(this.browser.config.disableDrag) return;
             this.isDragging = true;
             let dx = mouseLast.x - coords.x;
             let dy = mouseLast.y - coords.y;
@@ -42834,39 +42915,18 @@ class ContactMatrixView {
             }
             this.browser.shiftPixels(dx, dy);
           }
-
           mouseLast = coords;
         }
       });
-
       $viewport.on('mouseup', panMouseUpOrMouseOut);
 
+      $viewport.on('mouseenter', ()=>{if(this.browser.config.focus && !this.browser.isDiag) this.browser.showCrosshairs()});
       $viewport.on('mouseleave', () => {
+        this.browser.hideCrosshairs();
         this.browser.layoutController.xAxisRuler.unhighlightWholeChromosome();
         this.browser.layoutController.yAxisRuler.unhighlightWholeChromosome();
         panMouseUpOrMouseOut();
       });
-
-
-      // Mousewheel events -- ie exposes event only via addEventListener, no onwheel attribute
-      // NOte from spec -- trackpads commonly map pinch to mousewheel + ctrl
-      // $viewport[0].addEventListener("wheel", mouseWheelHandler, 250, false);
-
-      // document level events
-      /*
-      $(document).on('keydown.contact_matrix_view', (e) => {
-          if (undefined === this.willShowCrosshairs && true === mouseOver && true === e.shiftKey) {
-              this.willShowCrosshairs = true;
-              this.browser.eventBus.post(HICEvent('DidShowCrosshairs', 'DidShowCrosshairs', false));
-          }
-      });
-
-      $(document).on('keyup.contact_matrix_view', (e) => {
-          this.browser.hideCrosshairs();
-          this.willShowCrosshairs = undefined;
-          this.browser.eventBus.post(HICEvent('DidHideCrosshairs', 'DidHideCrosshairs', false));
-      });
-      */
       // for sweep-zoom allow user to sweep beyond viewport extent
       // sweep area clamps since viewport mouse handlers stop firing
       // when the viewport boundary is crossed.
@@ -42875,6 +42935,7 @@ class ContactMatrixView {
         e.stopPropagation();
         if (isSweepZooming) {
           isSweepZooming = false;
+          // console.log(123);
           this.sweepZoom.commit();
         }
       });
@@ -43103,8 +43164,6 @@ function getPopContent(id, itemList) {
     }
   }
   return _html;
-
-
 }
 
 /**
@@ -43276,29 +43335,25 @@ function _showDiag(browser) {
   // 修改状态
   browser.isDiag = true;
   let _id = browser.id;
-
+  browser.hideCrosshairs();
   // 旋转iewport
-  let viewport = $(`#${_id}-viewport`);
+  let viewport = browser.contactMatrixView.$viewport;
   let ow = viewport.width();
+  
   viewport.css('transform', 'rotate(315deg)');
   viewport.css('clip-path', 'polygon(0 0, 100% 100%, 100% 0%)');
   viewport.css('background', 'transparent');
   viewport.css('margin-left', '20px');
 
-  //.hic-browser-div
-  //$('.hic-browser-div').css('padding-bottom','135px');
-
-  // 隐藏axis
   $(`#${_id}-y-axis`).hide();
   $(`#${_id}-x-axis`).hide();
-  // 缩小canvas
+
   let canvas = $(`#${_id}-viewport > canvas`);
-  canvas.css('transform', 'scale(0.707)'); // 根号2 分之1
-  // 将igV div往上提
+  canvas.css('transform', 'scale(0.707)');
+  canvas.css('border','1px gray solid');
   let igv_div = $(`#igv-${_id}`);
   igv_div.css('margin-top', `${-ow / 2}px`);
-  igv_div.css('padding-bottom', `${-ow / 2}px`);
-  //修改locus
+  igv_div.css('padding-bottom', `${ow / 2}px`);
   let locus = get_goto_input();
   locus = locus.split(' ');
   locus = locus[0] + ' ' + locus[0];
@@ -43306,72 +43361,34 @@ function _showDiag(browser) {
 }
 
 function _hideDiag(browser) {
-  // 修改状态
   browser.isDiag = false;
   let _id = browser.id;
-
-  // 旋转iewport
+  if(browser.config.focus) browser.showCrosshairs();
   let viewport = $(`#${_id}-viewport`);
-  let ow = viewport.width();
   viewport.css('transform', '');
   viewport.css('clip-path', '');
   viewport.css('background', '');
   viewport.css('margin-left', '');
 
-
   //.hic-browser-div
   $('.hic-browser-div').css('padding-bottom', '');
-
   $(`#${_id}-y-axis`).show();
   $(`#${_id}-x-axis`).show();
 
   let canvas = $(`#${_id}-viewport > canvas`);
   canvas.css('transform', '');
-
+  canvas.css('border', 'none');
   let igv_div = $(`#igv-${_id}`);
   igv_div.css('margin-top', `15px`);
   igv_div.css('padding-bottom', ``);
 }
 
-function _showGlassDiag(_id) {
-  // 旋转iewport
-  let glass_div = $(`#glass_canvas_${_id}`);
-  glass_div.css('transform', 'rotate(315deg)');
-  glass_div.css('clip-path', 'polygon(0 0, 100% 100%, 100% 0%)');
-  glass_div.css('background', 'transparent');
-  glass_div.css('margin-left', '5px');
-  // 缩小canvas
-  let canvas = $(`#glass_canvas_${_id} > canvas`);
-  canvas.css('transform', 'scale(0.707)'); // 根号2 分之1
-}
-
-function _hideGlassDiag(_id) {
-  // 旋转iewport
-  let glass_div = $(`#glass_canvas_${_id}`);
-  glass_div.css('transform', '');
-  glass_div.css('clip-path', '');
-  glass_div.css('background', '');
-  glass_div.css('margin-left', '');
-  // 缩小canvas
-  let canvas = $(`#glass_canvas_${_id} > canvas`);
-  canvas.css('transform', ''); // 根号2 分之1
-}
-
-
 function _browser_diag_show(browser) {
-  let _id = browser.id;
   _showDiag(browser);
-  if ($(`#glass_canvas_${_id}`).length > 0) {
-    _showGlassDiag(_id);
-  }
 }
 
 function _browser_diag_hide(browser) {
   _hideDiag(browser);
-  let _id = browser.id;
-  if ($(`#glass_canvas_${_id}`).length > 0) {
-    _hideGlassDiag(_id);
-  }
 }
 
 
@@ -44543,23 +44560,25 @@ class SweepZoom {
       dx = Math.abs(pageCoords.x - anchor.x),
       dy = Math.abs(pageCoords.y - anchor.y);
 
-    // Adjust deltas to conform to aspect ratio
+      
+    // 确保是正方形
     if (dx / dy > this.aspectRatio) {
       dy = dx / this.aspectRatio;
     } else {
-      dx = dy * this.aspectRatio;
+        dx = dy * this.aspectRatio;
     }
 
-    this.sweepRect.width = dx;
-    this.sweepRect.height = dy;
-    this.sweepRect.x = anchor.x < pageCoords.x ? anchor.x : anchor.x - dx;
-    this.sweepRect.y = anchor.y < pageCoords.y ? anchor.y : anchor.y - dy;
-
+    if(this.browser.isDiag){
+      return;
+    }else{
+      this.sweepRect.width = dx;
+      this.sweepRect.height = dy;
+      this.sweepRect.x = anchor.x < pageCoords.x ? anchor.x : anchor.x - dx;
+      this.sweepRect.y = anchor.y < pageCoords.y ? anchor.y : anchor.y - dy;
+    }
 
     this.$rulerSweeper.width(this.sweepRect.width);
     this.$rulerSweeper.height(this.sweepRect.height);
-
-
     this.$rulerSweeper.offset(
       {
         left: this.sweepRect.x,
@@ -44567,39 +44586,167 @@ class SweepZoom {
       }
     );
     this.$rulerSweeper.show();
+    // ctx.fillRect(box_start_y, box_start_y, box_end_y - box_start_y, box_end_y - box_start_y);
+  }
 
+  generate_canvas_right_menu(ofx,ofy){
+    let _html = $(`
+      <ul class="canvas_right_menu" id="canvas_right_menu" style="left:${ ofx }px;top:${ ofy}px">
+        <span></span>
+        <li class="getCoordinate">Get Coordinate</li>
+        <li class="gotoSelectArea">Goto selected Area</li>
+        <li class="dispaltIn3D">Display in 3D model</li>
+        <li class="project">Project</li>
+        <li class="cancel">Cancel</li>
+      </ul>
+    `)
+    $('body').append(_html);
+    $(_html).css('display','block');
+
+    $(_html).find('.getCoordinate').on('click', ()=> this.getCoordinate());
+    $(_html).find('.gotoSelectArea').on('click', ()=> this.gotoSelectArea());
+    $(_html).find('.dispaltIn3D').on('click', ()=> this.displayIn3D());
+    $(_html).find('.cancel').on('click', ()=> this.cancel());
+    $(_html).find('.project').on('click', ()=> this.project());
+  }
+
+  project(){
+    let curBro = this.browser;
+    if(curBro.isSync){
+      layer.msg('Stop this View Sync Status');
+      return;
+    }
+    let otherBrowser;
+    let allBrowsers = getAllBrowsers();
+    for(let b of allBrowsers){
+      if(b === curBro) continue;
+      if(b.dataset === undefined) continue;
+      otherBrowser = b;
+      break;
+    }
+    if(otherBrowser === undefined){
+      layer.msg('You should clone another one and load the a Hi-C data!');
+      return;
+    } 
+
+    $('#canvas_right_menu').remove();
+    let $canvas = this.browser.contactMatrixView.$viewport;
+    let $rulerSweeper = this.$rulerSweeper
+    var wrapx = $canvas.offset().left;
+    var wrapy = $canvas.offset().top;
+    // 大盒子的宽高，小盒子的宽高
+    var wrapw = $canvas.width();
+    var wraph = $canvas.height();
+    var boxw = this.$rulerSweeper.width();
+    var boxh = this.$rulerSweeper.height();
+
+    $rulerSweeper.mousedown( event => {
+      this.browser.hideCrosshairs();
+      if(event.which == 3){
+        $rulerSweeper.hide();
+        return ;
+      }
+      event.stopPropagation();
+      event.preventDefault();
+      var xbox = event.pageX - $rulerSweeper.offset().left;
+      var ybox = event.pageY - $rulerSweeper.offset().top;
+      // console.log(xbox, ybox);
+      $rulerSweeper.mousemove( eve => {
+        eve.stopPropagation();
+        eve.preventDefault();
+        var x0 = eve.pageX;
+        var y0 = eve.pageY;
+        var movex = x0 - xbox - wrapx;
+        var movey = y0 - ybox - wrapy;
+        movex = Math.max(0, movex); // left
+        movex = Math.min(wrapw - boxw, movex); // right
+        movey = Math.max(0, movey); // top
+        movey = Math.min(wraph - boxh, movey); // bottom
+
+        // 这里是project的核心代码
+        $rulerSweeper.css({
+            "left": movex + "px",
+            "top": movey + "px"
+        });
+        // 求Sweeprt的区域
+        let state = this.browser.state;
+        let resolution = this.browser.resolution();
+
+        // Convert page -> offset coordinates
+        // this.$target.offset().left 是canvas的左上角坐标
+        // this.sweepRect.x 是矩阵左上角的坐标
+        // this.sweepRect.width是矩阵的宽 
+        let posX = movex;
+        let posY = movey;
+        let x = (state.x + (posX / state.pixelSize)) * resolution;
+        let y = (state.y + (posY / state.pixelSize)) * resolution;
+        let width = (this.sweepRect.width / state.pixelSize) * resolution;
+        let height = (this.sweepRect.height / state.pixelSize) * resolution;
+        let xMax = x + width;
+        let yMax = y + height;
+        const minimumResolution = this.browser.dataset.bpResolutions[this.browser.dataset.bpResolutions.length - 1];
+        // console.log(state.chr1, x, xMax, state.chr2, y, yMax, minimumResolution);
+        otherBrowser.goto(state.chr1, x, xMax, state.chr2, y, yMax, minimumResolution, true);
+      });
+    });
+    $(document).mouseup(function () {
+      $rulerSweeper.off("mousemove");
+    });
+  }
+
+  cal = () =>{
+    let state = this.browser.state;
+    let resolution = this.browser.resolution();
+
+    // Convert page -> offset coordinates
+    // this.$target.offset().left 是canvas的左上角坐标
+    // this.sweepRect.x 是矩阵左上角的坐标
+    // this.sweepRect.width是矩阵的宽 
+    let posX = this.sweepRect.x - this.$target.offset().left; // x
+    let posY = this.sweepRect.y - this.$target.offset().top; // y
+    let x = (state.x + (posX / state.pixelSize)) * resolution;
+    let y = (state.y + (posY / state.pixelSize)) * resolution;
+    let width = (this.sweepRect.width / state.pixelSize) * resolution;
+    let height = (this.sweepRect.height / state.pixelSize) * resolution;
+    let xMax = x + width;
+    let yMax = y + height;
+    // console.log({x, xMax, y, yMax});
+    return {x, xMax, y, yMax};
+  }
+
+  cancel() {
+    this.$rulerSweeper.hide();
+    $('#canvas_right_menu').remove();
+  }
+
+  getCoordinate() {
+    const state = this.browser.state;
+    let {x, xMax, y, yMax} = this.cal();
+    let cor = `${state.chr1}:${parseInt(x)}-${parseInt(xMax)} ${state.chr2}:${parseInt(y)}-${parseInt(yMax)}`
+    navigator.clipboard.writeText(cor); 
+    layer.msg(cor + ('(The clipboard has been written!)'));
+  }
+
+  gotoSelectArea() {
+    const state = this.browser.state;
+    let {x, xMax, y, yMax} = this.cal();
+    const minimumResolution = this.browser.dataset.bpResolutions[this.browser.dataset.bpResolutions.length - 1];
+    this.browser.goto(state.chr1, x, xMax, state.chr2, y, yMax, minimumResolution);
+    this.cancel();
+  }
+
+  displayIn3D() {
+    const state = this.browser.state;
+    let {x, xMax, y, yMax} = this.cal();
+    // let cor = `${state.chr1}:${parseInt(x)}-${parseInt(xMax)} ${state.chr2}:${parseInt(y)}-${parseInt(yMax)}`
+    let locus_x = `${state.chr1}:${parseInt(x)}-${parseInt(xMax)}`
+    let locus_y = `${state.chr2}:${parseInt(y)}-${parseInt(yMax)}`
+    call3d(this.browser.id, locus_x,locus_y,false,false);
+    // this.cancel();
   }
 
   commit() {
-
-
-    this.$rulerSweeper.hide();
-
-    const state = this.browser.state;
-
-    // bp-per-bin
-    const resolution = this.browser.resolution();
-
-    // Convert page -> offset coordinates
-    const posX = this.sweepRect.x - this.$target.offset().left;
-    const posY = this.sweepRect.y - this.$target.offset().top;
-
-
-    // bp = ((bin + pixel/pixel-per-bin) / bp-per-bin)
-    const x = (state.x + (posX / state.pixelSize)) * resolution;
-    const y = (state.y + (posY / state.pixelSize)) * resolution;
-
-    // bp = ((bin + pixel/pixel-per-bin) / bp-per-bin)
-    const width = (this.sweepRect.width / state.pixelSize) * resolution;
-    const height = (this.sweepRect.height / state.pixelSize) * resolution;
-
-    // bp = bp + bp
-    const xMax = x + width;
-    const yMax = y + height;
-
-    const minimumResolution = this.browser.dataset.bpResolutions[this.browser.dataset.bpResolutions.length - 1];
-    this.browser.goto(state.chr1, x, xMax, state.chr2, y, yMax, minimumResolution);
-
+    this.generate_canvas_right_menu(this.sweepRect.x  + this.sweepRect.width , this.sweepRect.y + this.sweepRect.height );
   }
 }
 
@@ -44763,10 +44910,14 @@ class HICBrowser {
     this.config.hideGear = false;
     this.config.hideRuler = true;
     this.config.hideSequence = true;
-    this.config.hideScroll = false;
+    this.config.hideScroll = true;
+    this.config.disableDrag = false;
+    this.config.focus = true;
     this.isSync = false; // 同步
     this.isDiag = false; // 对角线
     this.isForce = false; // 强制同步
+    this.config.low_bound = 0;
+    this.config.up_bound = 100;
 
     //console.log("config:",config);
     this.figureMode = config.figureMode || config.miniMode;    // Mini mode for backward compatibility
@@ -44848,13 +44999,30 @@ class HICBrowser {
 
     const that = this;
     for (let igv_set_item of ['Ideogram', 'Ruler', 'Sequence', 'Gear', 'Scroll']) {
-      let set_igv = this.$menu.find(`#set_${igv_set_item}`);
+      let set_igv = this.$menu.find(`.set_${igv_set_item}`);
       set_igv.change(function () {
         let check = $(this).is(':checked');
         that.config[`hide${igv_set_item}`] = check;
         updateIGV(that.id, igv_set_item, check);
       })
     }
+    let $set_low_bound = this.$menu.find(`.low_bound`);
+    $set_low_bound.bind('input propertychange change', function(){
+      let v = $(this).val();
+      if(v == "" || v > 100) v = 100;
+      that.config.low_bound = v;
+    });
+    let $set_up_bound = this.$menu.find(`.up_bound`);
+    $set_up_bound.bind('input propertychange change', function(){
+      let v = $(this).val();
+      if(v == "" || v > 100) v = 100;
+      that.config.up_bound = v;
+    });
+    let $set_focus= this.$menu.find(`.set_focus`);
+    $set_focus.change(function(){
+      let check = $(this).is(':checked');
+      that.config.focus = check;
+    });
     this.chromosomeSelector = new ChromosomeSelectorWidget(this, this.$menu.find('.hic-chromosome-selector-widget-container'));
 
     const annotation2DWidgetConfig =
@@ -44974,25 +45142,34 @@ class HICBrowser {
         </div>
         <div class="hic-igv-setting-container">
             <div>
-              <span>Hide Ideogram</span>
-              <input id="set_Ideogram" type="checkbox" name="", value="", checked="checked" />
+              <span>Data Range</span>
+              <input class='low_bound' type="number"  max="100" min="0" value="0" onkeyup="this.value = this.value.replace(/\D/g,'') > 100 ? 100:this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+              <input class='up_bound' type="number"  max="100" min="0" value="100" onkeyup="this.value = this.value.replace(/\D/g,'') > 100 ? 100:this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
             </div>
             <div>
-              <span>Hide Ruler</span>
-              <input id="set_Ruler"  type="checkbox" name="", value="", checked="checked" />
+              <span>Hide Ideogram</span>
+              <input class="set_Ideogram" type="checkbox" checked="checked" />
+            </div>
+            <div>
+              <span>Hide Ref Ruler</span>
+              <input class="set_Ruler"  type="checkbox" checked="checked" />
             </div>
             <div>
               <span>Hide Sequence</span>
-              <input id="set_Sequence" type="checkbox" name="", value="", checked="checked" />
+              <input class="set_Sequence" type="checkbox" checked="checked" />
             </div>
             <div>
-              <span>Hide Gear</span>
-              <input id="set_Gear" type="checkbox" name="", value="" />
+              <span>Hide Gear Icon</span>
+              <input class="set_Gear" type="checkbox"/>
             </div>
             <div>
-              <span>Hide Scroll</span>
-              <input id="set_Scroll" type="checkbox" name="", value="" />
+              <span>Hide Scroll bar</span>
+              <input class="set_Scroll" type="checkbox" checked="checked"/>
             </div>
+            <div>
+              <span>Show Tooltip</span>
+              <input class="set_focus" type="checkbox" checked="checked"/>
+          </div>
         </div>
         <div class="hic-annotation-presentation-button-container">
           <button type="button">2D Annotations</button>
@@ -45002,7 +45179,12 @@ class HICBrowser {
     $root.append($(html));
 
     const $menu = $root.find(".hic-menu");
+    const $header = $menu.find(".hic-menu-close-button");
     const $fa = $root.find(".fa-times");
+
+    makeDraggable($menu.get(0), $header.get(0));
+    
+
     $fa.on('click', () => this.toggleMenu());
 
     return $menu;
@@ -45145,8 +45327,8 @@ class HICBrowser {
   }
 
   hideCrosshairs() {
-
     this.contactMatrixView.$x_guide.hide();
+    this.contactMatrixView.$pointer_block.hide();
     this.layoutController.$x_track_guide.hide();
 
     this.contactMatrixView.$y_guide.hide();
@@ -45157,6 +45339,7 @@ class HICBrowser {
   showCrosshairs() {
 
     this.contactMatrixView.$x_guide.show();
+    this.contactMatrixView.$pointer_block.show();
     this.layoutController.$x_track_guide.show();
 
     this.contactMatrixView.$y_guide.show();
@@ -45447,6 +45630,7 @@ class HICBrowser {
       this.$contactMaplabel.text(prefix + name);
       this.$contactMaplabel.attr('title', name);
       config.name = name;
+      if(config.focus) this.showCrosshairs();
 
       this.dataset = await Dataset.loadDataset(config);
       this.dataset.name = name;
@@ -45991,6 +46175,8 @@ class HICBrowser {
    * @param state  browser state
    */
   syncState(syncState) {
+    // console.log(syncState);
+    // console.log(this.id);
 
     if (!syncState || false === this.synchable) return;
 
@@ -46388,7 +46574,7 @@ function presentError(prefix, error) {
 */
 // 默认长宽
 let cur_container_width = (document.documentElement.clientWidth * 0.89) / 3
-if (cur_container_width < 450) cur_container_width = (document.documentElement.clientWidth * 0.8) / 2
+if (cur_container_width < 500) cur_container_width = (document.documentElement.clientWidth * 0.85) / 2
 const defaultSize = { width: cur_container_width, height: cur_container_width };
 //const defaultSize = {width: default_w > cur_container_width ? cur_container_width : default_w, height: default_w > cur_container_width ? cur_container_width : default_w};
 let allBrowsers = [];

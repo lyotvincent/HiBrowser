@@ -62,4 +62,24 @@ def query_gene_by_disease(disease):
         return gda_response.json()
     return None
 
+
+def query_snp_by_gene(gene):
+    api_key = get_token()
+    print(api_key)
+    s = requests.Session()
+    if api_key:
+        s.headers.update({"Authorization": "Bearer %s" % api_key})
+        gda_response = s.get(
+            api_host +
+            '/vda/gene/' + gene,
+            params={
+                'limit': 20
+            }
+        )
+
+        s.close()
+        return gda_response.json()
+    return None
+
+
 # print(query_disease_by_gene('APP'))

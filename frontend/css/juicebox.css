@@ -82,7 +82,7 @@
   bottom: 40%;
   left: 20%;
   width: 60%;
-  height: 37%;
+  height: 45%;
   z-index: 4096;
   display: flex;
   flex-flow: column;
@@ -94,12 +94,11 @@
 }
 
 .hic-menu .hic-igv-setting-container{
-  width: 70%;
+  width: 80%;
   padding-left: 0px;
-  margin-right: 20%;
+  margin-right: 5%;
   display: flex;
   flex-direction: column;
-  padding-left: 8px;
 }
 .hic-menu .hic-igv-setting-container div{
   display: flex;
@@ -108,7 +107,16 @@
 }
 .hic-menu .hic-igv-setting-container span{
   font-size: 14px;
+}
 
+.hic-menu .hic-igv-setting-container .low_bound,
+.hic-menu .hic-igv-setting-container .up_bound{
+    width: 55px;
+    height: 25px;
+    outline: none;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    text-align: center;
 }
 
 .hic-menu .hic-chromosome-selector-widget-container {
@@ -326,11 +334,6 @@
   outline: none;
 }
 
-.hic-menu>div:hover,
-.hic-menu>div:focus,
-.hic-menu>div:active {
-  cursor: pointer;
-}
 
 .hic-menu-close-button {
   display: flex;
@@ -342,7 +345,8 @@
   height: 32px;
   margin-bottom: 4px;
   padding-right: 8px;
-  background: dddddd59;
+  background: #dddddd59;
+  cursor: move;
 }
 
 .hic-menu-close-button i.fa {
@@ -1257,11 +1261,33 @@ div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div
   top: 0;
   width: calc(100% - (0px + 40px + 20px));
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  /* overflow-x: hidden;
+  overflow-y: hidden; */
   background-color: white;
-  cursor: grabbing;
+  cursor: pointer;
 }
+
+.pointer-block{
+  position: absolute;
+  width: auto;
+  padding: 2px 10px 2px 10px;
+  line-height: 15px;
+  height: auto;
+  border: 1px solid rgb(165, 159, 158);
+  border-radius: 4px;
+  top: 0%;
+  left: 0%;
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.601);
+  pointer-events: none;
+}
+.pointer-block span{
+  font-size: 10px;
+  pointer-events: none;
+}
+
 
 div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div[id$="viewport"] div[id$="viewport-spinner-container"] {
   display: table-cell;
@@ -1285,7 +1311,9 @@ div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div
   width: 1px;
   height: 1px;
   z-index: 512;
-  background-color: rgba(68, 134, 247, 0.25);
+  background-color: rgb(255 234 219 / 43%);
+  cursor: move;
+  border: 1px solid #000;
 }
 
 div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div[id$="viewport"] div[id$="x-guide"] {
@@ -1301,6 +1329,7 @@ div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div
   -moz-user-select: none;
   -webkit-user-select: none;
   z-index: 555;
+  pointer-events: none;
 }
 
 div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div[id$="viewport"] div[id$="y-guide"] {
@@ -1316,6 +1345,7 @@ div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div
   -moz-user-select: none;
   -webkit-user-select: none;
   z-index: 666;
+  pointer-events: none;
 }
 
 div[id$="content-container"] div[id$="y-tracks-y-axis-viewport-y-scrollbar"] div[id$="y-axis-scrollbar-container"] {

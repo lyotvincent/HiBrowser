@@ -17917,31 +17917,34 @@ const MenuUtils = {
             //menuItems.push('<hr/>');
             menuItems.push(visibilityWindowMenuItem(trackView));
         }
+        if(trackView.track.config.type == 'wig'){
+            menuItems.push(trackGuideLineMenuItem(trackView));
+        }
+        if(trackView.track.config.type == 'interact'){
+            menuItems.push(trackThicknessMenuItem(trackView));
+        }
+        
 
         if (trackView.track.removable !== false) {
             //menuItems.push('<hr/>');
+            menuItems.push(trackMoveUpMenuItem(trackView));
+            menuItems.push(trackMoveDownMenuItem(trackView));
             menuItems.push(trackRemovalMenuItem(trackView));
         }
-
         return menuItems
     },
 
     numericDataMenuItems: function (trackView) {
-
         const menuItems = [];
-
         //menuItems.push('<hr/>');
-
         // Data range
         const object = $$1('<div>');
         object.text('Set data range');
-
         const click = () => {
             trackView.browser.dataRangeDialog.configure(trackView);
             trackView.browser.dataRangeDialog.present($$1(trackView.browser.columnContainer));
         };
         menuItems.push({object, click});
-
         if (trackView.track.logScale !== undefined) {
             menuItems.push({
                     object: $$1(createCheckbox$1("Log scale", trackView.track.logScale)),
@@ -17961,8 +17964,6 @@ const MenuUtils = {
                 }
             }
         );
-
-
         return menuItems
     },
 
@@ -18074,13 +18075,24 @@ function visibilityWindowMenuItem(trackView) {
 }
 
 function trackRemovalMenuItem(trackView) {
-
     const object = $$1('<div>');
     object.text('Remove track');
-
     return {object, click: () => trackView.browser.removeTrack(trackView.track)}
-
 }
+
+function trackMoveUpMenuItem(trackView) {
+    const object = $$1('<div>');
+    object.text('Move up track');
+    return {object, click: () => trackView.browser.moveUpTrack(trackView)}
+}
+
+function trackMoveDownMenuItem(trackView) {
+    const object = $$1('<div>');
+    object.text('Move down track');
+    return {object, click: () => trackView.browser.moveDownTrack(trackView)}
+}
+
+
 
 function colorPickerMenuItem({trackView, label, option}) {
 
@@ -18116,24 +18128,69 @@ function trackRenameMenuItem(trackView) {
             value = ('' === value || undefined === value) ? 'untitled' : value.trim();
             trackView.track.name = value;
         };
-
         const config =
             {
                 label: 'Track Name',
                 value: (getTrackLabelText(trackView.track) || 'unnamed'),
                 callback
             };
-
         trackView.browser.inputDialog.present(config, e);
 
     };
-
     const object = $$1('<div>');
     object.text('Set track name');
     return {object, click}
-
-
 }
+
+
+function trackGuideLineMenuItem(trackView) {
+    const click = e => {
+        const callback = function () {
+            let value = trackView.browser.inputDialog.input.value;
+            value = ('' === value || undefined === value) ? 'untitled' : value.trim();
+            value = value.split(',');
+            let g = [];
+            for(let v of value){
+                g.push({color: 'red', dotted: true, y: parseInt(v)});
+            }
+            if(g.length) trackView.track.config.guideLines = g;
+        };
+        const config =
+            {
+                label: 'GuideLine (commas)',
+                value: (getTrackGuideLine(trackView.track)),
+                callback
+            };
+        trackView.browser.inputDialog.present(config, e);
+
+    };
+    const object = $$1('<div>');
+    object.text('Add track guideLine');
+    return {object, click}
+}
+
+
+function trackThicknessMenuItem(trackView) {
+    const click = e => {
+        const callback = function () {
+            let value = trackView.browser.inputDialog.input.value;
+            value = ('' === value || undefined === value) ? 'untitled' : value.trim();
+            trackView.track.config.thickness = value;
+        };
+        const config =
+            {
+                label: 'thickness',
+                value: (trackView.track.config.thickness || 2),
+                callback
+            };
+        trackView.browser.inputDialog.present(config, e);
+
+    };
+    const object = $$1('<div>');
+    object.text('Set Thickness');
+    return {object, click}
+}
+
 
 function trackHeightMenuItem(trackView) {
 
@@ -18190,6 +18247,17 @@ function getTrackLabelText(track) {
     txt = vp.$trackLabel.text();
 
     return txt
+}
+
+function getTrackGuideLine(track) {
+    let g = track.config.guideLines;
+    if(g == undefined) return undefined;
+    let r = [];
+    for(let l of g){
+        r.push(l.y);
+    }
+    return r.join();
+
 }
 
 /*
@@ -24386,6 +24454,7 @@ class TrackViewport extends Viewport {
 
             //menuItems.push({label: 'Save Image (PNG)', click: () => this.savePNG()});
             menuItems.push({label: 'Save Image (SVG)', click: () => this.saveSVG()});
+            menuItems.push({label: 'Reload', click: async () => {this.trackView.updateViews(true)}});
 
             this.browser.menuPopup.presentTrackContextMenu(event, menuItems);
         });
@@ -41703,7 +41772,7 @@ class TrackView {
         this.createTrackScrollbar(browser);
 
         // Track Drag
-        this.createTrackDragHandle(browser);
+        // this.createTrackDragHandle(browser);
 
         // Track Gear
         this.createTrackGearPopup(browser);
@@ -41780,8 +41849,8 @@ class TrackView {
         this.outerScroll.remove();
 
         // empty trackDrag Column
-        this.removeTrackDragMouseHandlers();
-        this.dragHandle.remove();
+        // this.removeTrackDragMouseHandlers();
+        // this.dragHandle.remove();
 
         // empty trackGear Column
         this.removeTrackGearMouseHandlers();
@@ -41899,7 +41968,7 @@ class TrackView {
             this.updateScrollbar();
         }
 
-        this.dragHandle.style.height = `${newHeight}px`;
+        // this.dragHandle.style.height = `${newHeight}px`;
         this.gearContainer.style.height = `${newHeight}px`;
 
     }
@@ -41995,7 +42064,8 @@ class TrackView {
      * @param force - if true, force a repaint even if no new data is loaded
      * @returns {Promise<void>}
      */
-    async updateViews() {
+    async updateViews(force) {
+        if(force === undefined) force = false;
 
         if (!(this.browser && this.browser.referenceFrameList)) return
 
@@ -42010,13 +42080,16 @@ class TrackView {
         }
 
         // Filter zoomed out views.  This has the side effect or turning off or no the zoomed out notice
-        const viewportsToRepaint = visibleViewports.filter(vp => vp.needsRepaint()).filter(viewport => viewport.checkZoomIn());
+        let viewportsToRepaint, viewportsToReload;
+        if(force){
+            viewportsToRepaint = visibleViewports;
+            viewportsToReload = visibleViewports;
 
-        // Get viewports that require a data load
-        const viewportsToReload = viewportsToRepaint.filter(viewport => viewport.needsReload());
-
-        // Trigger viewport to load features needed to cover current genomic range
-        // NOTE: these must be loaded synchronously, do not user Promise.all,  not all file readers are thread safe
+        }else{
+            viewportsToRepaint = visibleViewports.filter(vp => vp.needsRepaint()).filter(viewport => viewport.checkZoomIn());
+            viewportsToReload = viewportsToRepaint.filter(viewport => viewport.needsReload());
+        }
+       
         for (let viewport of viewportsToReload) {
             await viewport.loadFeatures();
         }
@@ -42385,7 +42458,7 @@ class TrackView {
     removeTrackDragMouseHandlers() {
 
         if ('ideogram' === this.track.id || 'ruler' === this.track.id) ; else {
-            this.dragHandle.removeEventListener('mousedown', this.boundTrackDragMouseDownHandler);
+            // this.dragHandle.removeEventListener('mousedown', this.boundTrackDragMouseDownHandler);
             document.removeEventListener('mouseup', this.boundDocumentTrackDragMouseUpHandler);
             this.dragHandle.removeEventListener('mouseup', this.boundTrackDragMouseEnterHandler);
             this.dragHandle.removeEventListener('mouseout', this.boundTrackDragMouseOutHandler);
@@ -42433,8 +42506,8 @@ class TrackView {
         this.removeTrackScrollMouseHandlers();
         this.outerScroll.remove();
 
-        this.removeTrackDragMouseHandlers();
-        this.dragHandle.remove();
+        // this.removeTrackDragMouseHandlers();
+        // this.dragHandle.remove();
 
         this.removeTrackGearMouseHandlers();
         this.gearContainer.remove();
@@ -43603,6 +43676,7 @@ class WigTrack extends TrackBase {
             if (this.dataRange.max > this.dataRange.min) {
 
                 const y0 = yScale(0);
+                if(this.graphType === 'line') ctx.moveTo(0, 0);
                 for (let f of features) {
 
                     if (f.end < bpStart) continue
@@ -43624,7 +43698,17 @@ class WigTrack extends TrackBase {
                         const px = x + width / 2;
                         IGVGraphics.fillCircle(ctx, px, y, pointSize / 2, {"fillStyle": color, "strokeStyle": color});
 
-                    } else {
+                    }else if(this.graphType === 'line'){
+                        let height = y - y0;
+                        const pixelEnd = x + width;
+                        if (pixelEnd > lastPixelEnd || (f.value >= 0 && f.value > lastValue) || (f.value < 0 && f.value < lastNegValue)) {
+                            ctx.lineTo(x + width, yScale(lastValue));
+                            ctx.lineTo(x + width, y);
+                        }
+                        lastValue = f.value;
+                        lastPixelEnd = pixelEnd;
+                    } 
+                    else {
                         let height = y - y0;
                         const pixelEnd = x + width;
                         if (pixelEnd > lastPixelEnd || (f.value >= 0 && f.value > lastValue) || (f.value < 0 && f.value < lastNegValue)) {
@@ -43634,6 +43718,10 @@ class WigTrack extends TrackBase {
                         lastPixelEnd = pixelEnd;
                     }
                 }
+                if(this.graphType === 'line'){
+                    ctx.strokeStyle = posColor;
+                    ctx.stroke();
+                } 
 
                 // If the track includes negative values draw a baseline
                 if (this.dataRange.min < 0) {
@@ -44596,6 +44684,7 @@ class InteractionTrack extends TrackBase {
         this.color = config.color;
         this.alpha = config.alpha || 0.02;  // was: 0.15
         this.painter = {flipAxis: !this.arcOrientation, dataRange: this.dataRange, paintAxis: paintAxis};
+        this.config = config;
 
         if (config.valueColumn) {
             this.valueColumn = config.valueColumn;
@@ -44711,7 +44800,7 @@ class InteractionTrack extends TrackBase {
                     }
                 }
 
-                ctx.lineWidth = feature.thickness || this.thickness || 1;
+                ctx.lineWidth = this.config.thickness || feature.thickness || 1;
 
                 if (feature.chr1 === feature.chr2 || feature.chr === 'all') {
 
@@ -50278,7 +50367,6 @@ class ROIManager {
         await this.initialize();
 
     }
-
     clearROIs() {
 
         this.roiTable.clearTable();
@@ -50406,19 +50494,21 @@ class ROIManager {
 
     createRegionElement(columnContainer, pixelTop, pixelX, pixelWidth, roiSet, regionKey, name) {
 
-        const regionElement = div$1({class: 'igv-roi-region'});
+        const regionElement = div$1({class: 'igv-roi-region', title: `${roiSet.name}`});
 
-        regionElement.style.top = `${pixelTop}px`;
+
+        regionElement.style.top = `-47px`;
         regionElement.style.left = `${pixelX}px`;
         regionElement.style.width = `${pixelWidth}px`;
         regionElement.style.backgroundColor = roiSet.color;
         regionElement.dataset.region = regionKey;
 
         const header = div$1();
+        header.innerHTML += `<span style="font-size:12px; text-decoration:underline;">${roiSet.name}</span>`;
+
         regionElement.appendChild(header);
 
         header.style.backgroundColor = roiSet.headerColor;
-
         if (true === roiSet.isUserDefined) {
             header.addEventListener('click', event => {
                 event.preventDefault();
@@ -50483,9 +50573,11 @@ class ROIManager {
     }
 
     async findUserDefinedRegionWithKey(regionKey) {
+        //console.log(regionKey);
 
         const {chr, start, end} = parseRegionKey(regionKey);
         const set = await this.getUserDefinedROISet();
+        //console.log(set)
 
         if (set) {
             const features = await set.getFeatures(chr, start, end);
@@ -50818,6 +50910,7 @@ class ROIMenu {
         this.body.appendChild(_description_copy_);
 
         const placeholder = 'Description';
+        console.log(feature);
         const str = (feature.name || placeholder);
 
         _description_copy_.innerText = str;
@@ -51188,7 +51281,7 @@ class Browser {
             dragThreshold: 3,
             scrollThreshold: 5,
             defaultColor: "rgb(0,0,150)",
-            doubleClickDelay: config.doubleClickDelay || 1000
+            doubleClickDelay: config.doubleClickDelay || 500
         };
 
         // Map of event name -> [ handlerFn, ... ]
@@ -51942,6 +52035,7 @@ class Browser {
      * @returns {Promise<void>}
      */
     async loadROI(config) {
+        //console.log(config);
         await this.roiManager.loadROI(config, this.genome);
     }
 
@@ -52097,7 +52191,7 @@ class Browser {
             sampleNameViewport.viewport.remove();
 
             outerScroll.remove();
-            dragHandle.remove();
+            // dragHandle.remove();
             gearContainer.remove();
         }
 
@@ -52117,7 +52211,7 @@ class Browser {
 
             this.columnContainer.querySelector('.igv-scrollbar-column').appendChild(outerScroll);
 
-            this.columnContainer.querySelector('.igv-track-drag-column').appendChild(dragHandle);
+            // this.columnContainer.querySelector('.igv-track-drag-column').appendChild(dragHandle);
 
             this.columnContainer.querySelector('.igv-gear-menu-column').appendChild(gearContainer);
         }
@@ -52170,6 +52264,47 @@ class Browser {
             track.trackView.dispose();
         }
     }
+
+
+    moveUpTrack(trackView){
+        let track = trackView.track;
+        let order = track.order;
+        if(order <= 4){
+            return;
+        }
+        let idx = this.trackViews.indexOf(trackView);
+        // 交换 idx 和 idx - 1;
+        // trackView 和 order
+        let tmp = this.trackViews[idx].track.order;
+        this.trackViews[idx].track.order = this.trackViews[idx - 1].track.order;
+        this.trackViews[idx - 1].track.order = tmp;
+
+        tmp = this.trackViews[idx];
+        this.trackViews[idx] = this.trackViews[idx - 1];
+        this.trackViews[idx - 1] = tmp;
+        this.reorderTracks();
+    }
+
+    moveDownTrack(trackView){
+        let track = trackView.track;
+        let order = track.order;
+        let length = this.trackViews.length - 1;
+        if(order <= 3){
+            return;
+        }
+        let idx = this.trackViews.indexOf(trackView);
+        if(idx === length) return;
+
+        let tmp = this.trackViews[idx].track.order;
+        this.trackViews[idx].track.order = this.trackViews[idx + 1].track.order;
+        this.trackViews[idx + 1].track.order = tmp;
+
+        tmp = this.trackViews[idx];
+        this.trackViews[idx] = this.trackViews[idx + 1];
+        this.trackViews[idx + 1] = tmp;
+        this.reorderTracks();
+    }
+
 
     /**
      * API function
@@ -52944,6 +53079,7 @@ class Browser {
         if (this.dragTrack) {
             // this.dragTrack.$trackDragScrim.hide();
             this.dragTrack = undefined;
+            // console.log('drag end', [this.getTrackOrder()]);
             this.fireEvent('trackorderchanged', [this.getTrackOrder()]);
         } else {
             this.dragTrack = undefined;

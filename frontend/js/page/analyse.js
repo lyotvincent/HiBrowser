@@ -1,6 +1,6 @@
 import {create2bar, createDrilldown, createBoxPlot, createColumn, createStkColumn} from'./chart.js'
-import {gene_locus_range, parseLocus} from './global.js'
-import { api_url } from './setting.js';
+import {gene_locus_range, parseLocus} from '../global.js'
+import { api_url } from '../setting.js';
 
 
 //====================全局变量 start============================

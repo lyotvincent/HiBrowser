@@ -1,7 +1,7 @@
-import * as THREE from './three/three.module.js';
-import {OrbitControls} from './three/OrbitControls.js'
-import { CSS2DRenderer, CSS2DObject } from './three/CSS2DRenderer.js';
-import { parseLocus, getNameAndExt } from './global.js';
+import * as THREE from '../three/three.module.js';
+import {OrbitControls} from '../three/OrbitControls.js'
+import { CSS2DRenderer, CSS2DObject } from '../three/CSS2DRenderer.js';
+import { parseLocus, getNameAndExt } from '../global.js';
 
 
 // ===============================全局变量===============================

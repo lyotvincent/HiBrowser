@@ -1,6 +1,10 @@
-import hic from "./juicebox.esm.js";
-import {AlertSingleton} from './igv-widgets.js'
-import {live_browser, getFileExt,container, mm10_ext, hg19_ext, sample_map,getNameAndExt} from "./global.js"
+import hic from "./browser/juicebox.esm.js";
+import {AlertSingleton} from './browser/igv-widgets.js'
+import {
+  live_browser, container,
+  getFileExt,getNameAndExt, 
+  mm10_ext, mm39_ext, hg19_ext, hg38_ext,
+  sample_map,} from "./global.js"
 
 
 
@@ -12,6 +16,15 @@ $("[name = 'local-contact-map']").on("change", async function (e) {
   loadHiC(file, 'contact-map');
   return;
 })
+
+$('#load-A-sample > a').on('click', async function(){
+  let value = $(this).attr('value');
+  let url = sample_map.get(value);
+  await loadHiC(url, 'contact-map');
+  $(this).blur();
+  return;
+});
+
 
 $("#load-A-btn").on('click' ,async function(){
   let  url = $(`#load-A-url`).val();
@@ -26,17 +39,6 @@ $("#load-A-btn").on('click' ,async function(){
   return;
 })
 
-let a_samples =['load-a-human-sample1','load-a-human-sample2','load-a-mouse-sample1']
-for(let sample of a_samples){
-  $(`#${sample}`).on('click',async function(){
-    $(this).blur();
-    let url = sample_map.get(sample);
-    await loadHiC(url, 'contact-map');
-    return;
-  })
-}
-
-
 //============================Load B MAP======================================
 $("[name = 'local-control-map']").on("change", async function (e) {
   const file = ($(this).get(0).files)[0];
@@ -50,23 +52,18 @@ $("#load-B-btn").on('click' ,async function(){
   let url = $(`#load-B-url`).val();
   url = url.trim();
   $(this).blur();
-  if(url === undefined || url.length < 1){
-    AlertSingleton.present(`No url input`);
-  }else{
-    await loadHiC(url, 'control-map');
-  }
+  await loadHiC(url, 'control-map');
   $('#load-B-modal').modal('hide');
   return;
 })
-let b_samples =['load-b-human-sample1','load-b-human-sample2','load-b-mouse-sample1']
-for(let sample of b_samples){
-  $(`#${sample}`).on('click',async function(){
-    $(this).blur();
-    let url = sample_map.get(sample);
-    await loadHiC(url, 'control-map');
-    return;
-  })
-}
+
+$('#load-B-sample > a').on('click', async function(){
+  let value = $(this).attr('value');
+  let url = sample_map.get(value);
+  await loadHiC(url, 'control-map');
+  $(this).blur();
+  return;
+});
 
 //============================CLONE======================================
 window.cloneBrowser = async function(){
@@ -152,30 +149,49 @@ $("[name = 'local-ref-gene']").on("change", async function (e) {
 
 $(`#load-hg19-ref`).on('click', async function(){
   $(this).blur();
-  let  b = hic.getCurrentBrowser();
-  if (b.dataset == undefined){
-    AlertSingleton.present('Load HiC map first!');
-    return false;
-  }
   let loading = layer.load(1, {
     shade: [0.5,'#fff'] 
   });
+  let genomeId = hic.getCurrentBrowser().genome.id;
+  if(genomeId != 'hg19' && genomeId != 'GRCh37') layer.msg(`NOTE: The reference genome of Hi-C is ${genomeId}, which does not match the loaded genome hg19`);
   let res = await initIGV(hg19_ext);
   layer.close(loading);
   if(res) layer.msg('success');
 })
 
-$(`#load-mm10-ref`).on('click', async function(){
+$(`#load-hg38-ref`).on('click', async function(){
   $(this).blur();
-  let  b = hic.getCurrentBrowser();
-  if (b.dataset == undefined){
-    AlertSingleton.present('Load HiC map first!');
-    return false;
-  }
   let loading = layer.load(1, {
     shade: [0.5,'#fff'] 
   });
+  let genomeId = hic.getCurrentBrowser().genome.id;
+  if(genomeId != 'hg38' && genomeId != 'GRCh38') layer.msg(`NOTE: The reference genome of Hi-C is ${genomeId}, which does not match the loaded genome hg38`);
+  let res = await initIGV(hg38_ext);
+  layer.close(loading);
+  if(res) layer.msg('success');
+})
+
+
+$(`#load-mm10-ref`).on('click', async function(){
+  $(this).blur();
+  let loading = layer.load(1, {
+    shade: [0.5,'#fff'] 
+  });
+  let genomeId = hic.getCurrentBrowser().genome.id;
+  if(genomeId != 'mm10' && genomeId != 'GRCm38') layer.msg(`NOTE: The reference genome of Hi-C is ${genomeId}, which does not match the loaded genome mm10`);
   let res = await initIGV(mm10_ext);
+  layer.close(loading);
+  if(res) layer.msg('success');
+})
+
+$(`#load-mm39-ref`).on('click', async function(){
+  $(this).blur();
+  let loading = layer.load(1, {
+    shade: [0.5,'#fff'] 
+  });
+  let genomeId = hic.getCurrentBrowser().genome.id;
+  if(genomeId != 'mm39' && genomeId != 'GRCm39') layer.msg(`NOTE: The reference genome of Hi-C is ${genomeId}, which does not match the loaded genome mm39`);
+  let res = await initIGV(mm39_ext);
   layer.close(loading);
   if(res) layer.msg('success');
 })

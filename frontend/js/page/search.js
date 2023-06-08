@@ -1,6 +1,5 @@
-import {table_header, parseLocus} from "./global.js"
-import { AlertSingleton } from "./igv-widgets.js";
-import {api_url} from './setting.js'
+import {table_header, parseLocus} from "../global.js"
+import {api_url} from '../setting.js'
 
 
 // 全局的table data
@@ -70,7 +69,7 @@ class Table_bs {
                 </button>
               </td>`;
             }
-            else if (option.colNames[j] === 'name' || option.colNames[j] === 'strand') {
+            else if (option.colNames[j] === 'strand') {
               html_tbody += `<td data-toggle="tooltip" data-placement="top" title = "${v}">${v}</td>`;
             }
             else {
@@ -151,6 +150,25 @@ $('#search-btn').on('click',function(e){
 })
 
 
+function get_gene_variant(gene){
+  let v_info;
+  $.ajax({
+    type: "post",
+    url:api_url + '/genev',
+    dataType: 'json',
+    async:false,
+    data: JSON.stringify({'gene':gene}),
+    contentType: 'application/json',
+    success: function(data){
+      v_info = data.data.variants;
+    },
+    error: function(err){
+      console.log(err);
+    }
+  })
+  return v_info;
+}
+
 function generate_pop_html(title, idx){
   idx = parseInt(idx)
   let data = table_data[idx][title]
@@ -163,14 +181,23 @@ function generate_pop_html(title, idx){
         <span title='${d}'>${d}</span>
       </div>`
     }
+  }else if (title === 'name'){
+    alert('Loading gene associated Variants, please wait about 2 seconds!');
+    let gene_variant = get_gene_variant(data)[0];
+    for(let rs of gene_variant){
+      _html += `
+        <div class = "res_item">
+          <a title='${rs}' href = 'https://www.ncbi.nlm.nih.gov/snp/${rs}' target='_blank'>${rs}</a>
+        </div>`
+    }
   }
   else{
     for (let d of data){
       _html += `
       <div class = "res_item">
         <span title = '${d}'>${d}</span>
-        <div class="goto" title = "view this Locus in browser" onclick="goto1('${d}')"><i class="fa fa-level-up"></i></div>
-        <div class="goto" title = "view the contact of this and origin gene in browser" onclick="goto2(${idx}, '${d}')"><i class="fa fa-code-fork"></i></div>
+        <div class="goto" title = "view this Locus in browser" onclick="goto1('${d}','${title}')"><i class="fa fa-level-up"></i></div>
+        <div class="goto" title = "view the contact of this and origin gene in browser" onclick="goto2(${idx}, '${d}','${title}')"><i class="fa fa-code-fork"></i></div>
       </div>`
     }
   }
@@ -180,7 +207,7 @@ function generate_pop_html(title, idx){
 }
 
 window.ShowDetails = function(title, idx){
-  let _html = generate_pop_html(title, idx)
+  let _html = generate_pop_html(title, idx);
   layer.open({
     type: 1,
     title: title,
@@ -194,7 +221,7 @@ window.ShowDetails = function(title, idx){
 window.goto = function(idx){
   let data = table_data[idx];
   let locus = data['locus'];
-  let [base_chr, base_s, base_e] = parseLocus(locus);
+  // let [base_chr, base_s, base_e] = parseLocus(locus);
   let loci = [locus];
   let names = [data['name']];
 
@@ -229,17 +256,17 @@ function removeBrack(str){
 传2个及以上个坐标： 画弧线
 
 */
-window.goto1 = function(locus){
+window.goto1 = function(locus, title){
   locus = removeBrack(locus)
-  parent.drawCanvas1([locus],[locus]);
+  parent.drawCanvas1([locus],[title]);
   let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
   parent.layer.min(index);
 }
 
-window.goto2 = function(idx, locus2){
+window.goto2 = function(idx, locus2,title){
   let locus1 = table_data[idx]['locus']
   locus2 = removeBrack(locus2)
-  parent.drawCanvas2([locus1,locus2],[table_data[idx]['name'],locus2])
+  parent.drawCanvas2([locus1,locus2],[table_data[idx]['name'],locus2, title])
   let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
   parent.layer.min(index);
 }
@@ -268,7 +295,6 @@ function createBedpe(){
 }
 
 window.ShowArcs = function(){
-  // alert(1)
   let _id = parent.getSelectId();
   let [_, live_igv_browser] =  parent.getAllBrowser();
   // console.log(live_igv_browser)
@@ -295,4 +321,40 @@ window.ShowArcs = function(){
   let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
   parent.layer.min(index);
   parent.RemoveBodyOverflow();
+}
+
+window.ShowROI = function(){
+  let locus = document.querySelector('#search-input').value;
+  if(locus == undefined || locus == ''){
+    alert('No Locus Input');
+    return;
+  }
+  let _id = parent.getSelectId();
+  let [_, live_igv_browser] =  parent.getAllBrowser();
+  // console.log(live_igv_browser)
+  if(!live_igv_browser.has(_id)){
+    alert('No Gene Browser Loaded!'); 
+    return;
+  }
+  let [chr, s, e] = parseLocus(locus);
+  let b = live_igv_browser.get(_id);
+  let features = [
+    {
+      chr:`chr${chr}`,
+      start: s - 5000,
+      end: e + 5000,
+      name: `${chr}:${s}-${e}`
+    }
+  ]
+  b.loadROI([
+    {
+      name:  `${chr}:${s}-${e}`,
+      features: features,
+      indexed: false,
+      color: "rgba(184, 166, 255, 0.44)",
+      // isUserDefined:true
+    }
+  ]);
+  parent.browser_goto_locus(locus);
+  alert('success');
 }

@@ -1,6 +1,6 @@
-import hic from "./juicebox.esm.js";
-import igv from "./igv.esm.js"
-import { AlertSingleton } from './igv-widgets.js'
+import hic from "./browser/juicebox.esm.js";
+import igv from "./browser//igv.esm.js"
+import { AlertSingleton } from './browser/igv-widgets.js'
 import {
   live_browser, live_igv_browser, 
   container, isFile, 
@@ -8,6 +8,7 @@ import {
   sample_track, sample_track_index, 
   parseLocus
 } from "./global.js"
+
 
 console.log('==========>initialize the browser viewer start');
 
@@ -343,9 +344,9 @@ window.initIGV = async function (ext) {
           "url": ext[3],
           "indexed": false,
           "searchable": false,
-          "height": 100,
+          "height": 35,
           'color': getRandomColor(),
-          "displayMode": "EXPANDED",
+          "displayMode": "COLLAPSED",
           "track_type": "refseq",
         }
       ]
@@ -404,7 +405,7 @@ window.LoadIGVTrack = async function (track_type, url, idx_url = undefined) {
       "indexURL": idx_url,
       "name": getNameAndExt(url)[0],
       "track_type": track_type,
-      "height": 100,
+      "height": 70,
     }
   } else if (track_type === 'seg') {
     config = {
@@ -425,7 +426,7 @@ window.LoadIGVTrack = async function (track_type, url, idx_url = undefined) {
       "name": getNameAndExt(url)[0],
       "track_type": track_type,
       "color": getRandomColor(),
-      "height": 100
+      "height": 70
     }
   }
 

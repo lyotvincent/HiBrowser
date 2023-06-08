@@ -4,11 +4,10 @@
 
 }
 
-body html {
+html {
   height: auto;
   min-width: 1300px;
-
-
+  overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {
@@ -179,7 +178,7 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
   border-radius: 1rem;
   border: 1px solid #eee;
-  /*margin-bottom: 30px;*/
+  margin-bottom: 30px;
   min-height: 600px;
   flex-wrap: wrap;
   background-color: white;
@@ -194,10 +193,10 @@ body::-webkit-scrollbar-thumb {
   color: gray;
   bottom: 0px;
   width: 100%;
-  height: 150px;
-  margin: 0;
+  height: 50px;
   background-color: #eee;
   justify-content: center;
+  margin-top: 50px;
 }
 
 
@@ -206,7 +205,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: column;
   right: 5px;
-  bottom: 32%;
+  bottom: 45%;
 }
 
 .hide {
@@ -222,7 +221,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: column;
   left: 5px;
-  bottom: 30%;
+  bottom: 45%;
 }
 .hic-tools-right .box,
 .hic-tools-left .box {
@@ -401,9 +400,12 @@ body::-webkit-scrollbar-thumb {
   background-color: #fff;
   background-image: linear-gradient(to bottom, transparent 50%, #00000062 50%), linear-gradient(to right, transparent 50%, #00000062 50%);
   background-size: 4px 4px;
-  position: fixed;
+  position: absolute;
   left: 0;
-  z-index: 1;
+  z-index: 999;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .hic-cursor-y {
@@ -412,9 +414,12 @@ body::-webkit-scrollbar-thumb {
   background-color: #fff;
   background-image: linear-gradient(to bottom, transparent 50%, #00000062 50%), linear-gradient(to right, transparent 50%, #00000062 50%);
   background-size: 4px 4px;
-  position: fixed;
+  position: absolute;
   top: 0;
-  z-index: 1;
+  z-index: 999;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .active {
@@ -427,21 +432,30 @@ body::-webkit-scrollbar-thumb {
   font-size: 14px;
   position: absolute;
   text-align: left;
-  padding: 2px 0;
-  border: 1px solid #ccc;
+  padding: 0px 0;
+  border: 1px solid #7f7f7f;
   display: none;
   z-index: 100;
+  border-radius: 5px;
+}
+
+.canvas_right_menu span{
+  display: block;
+  height: 20px;
+  background-color: #f6f8f7;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .canvas_right_menu li {
   list-style: none;
   line-height: 25px;
-  padding-left: 25px;
+  padding-left: 10px;
   padding-right: 15px;
 }
 
 .canvas_right_menu li:hover {
-  background-color: #dcdcfc;
+  background-color: #efefef;
   cursor: pointer;
 }
 

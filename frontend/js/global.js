@@ -106,24 +106,7 @@ export function getNameAndExt(url){
 export const container = document.getElementById("app-container");
 export const table_header = ['id', 'name', 'locus', 'enhancer', 'promoter', 'super_enhancer', 'strand',  'TF', 'target', 'diseases'];
 
-/*
-ext[0] : fa
-ext[1] : fai
-ext[2] : cytobandURL,
-ext[3] : ref url
-*/
-export const mm10_ext = [
-  "https://cdn.bioaimed.com/mouse/Mus_musculus.GRCm39.dna.primary_assembly.fa",
-  "https://cdn.bioaimed.com/mouse/Mus_musculus.GRCm39.dna.primary_assembly.fa.fai",
-  "https://cdn.bioaimed.com/mouse/mouse_cytoBand.txt",
-  "https://cdn.bioaimed.com/mouse/mouse_refGene.txt.gz"
-]
-export const hg19_ext = [
-  "https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta",
-  "https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta.fai",
-  "https://cdn.bioaimed.com/human/human_cytoBandIdeo.txt",
-  "https://cdn.bioaimed.com/human/human_refGene.txt.gz"
-]
+
 
 const download_svg_icon = `
 <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 488.658 488.658" style="enable-background:new 0 0 488.658 488.658;" xml:space="preserve">
@@ -228,94 +211,76 @@ export function getQueryVariable(variable){
   }
   return undefined;
 }
+
+const accelerate_domain = 'https://hic-1256812583.cos.accelerate.myqcloud.com';
 /*
-https://cdn.bioaimed.com/human/4DNFI1E6NJQJ.hic
-https://cdn.bioaimed.com/human/4DNFICSTCJQZ.hic 
-
-https://cdn.bioaimed.com/human/H3H4k20me1.bigWig 
-
-
-https://cdn.bioaimed.com/human/MCF10a_ab.bedGraph 
-https://cdn.bioaimed.com/human/MCF10a_domin.txt 
-
-
-https://cdn.bioaimed.com/human/MCF7_ab.bedGraph 
-https://cdn.bioaimed.com/human/MCF7_domin.txt 
-
-
-https://cdn.bioaimed.com/human/human_loop.txt 
-
-
-https://cdn.bioaimed.com/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz
-https://cdn.bioaimed.com/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz.tbi 
-
-
-
-https://cdn.bioaimed.com/track/bw/GSM4636524_ATAC-SEM-CTCF-AID_no_IAA-Rep27.free.bigwig
-https://cdn.bioaimed.com/track/bw/WT_FE.bw
-
-https://cdn.bioaimed.com/track/gwas/gwas_sample.gwas 
-
-https://cdn.bioaimed.com/track/seg/GBM-TP.seg.gz 
-
-https://cdn.bioaimed.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz 
-https://cdn.bioaimed.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz.tbi 
-
-
-
-https://cdn.bioaimed.com/track/bw/GSM4636524_ATAC-SEM-CTCF-AID_no_IAA-Rep27.free.bigwig
-https://cdn.bioaimed.com/track/bw/GSM4636527_ATAC-SEM-CTCF-AID_with_IAA-Rep27.free.bigwig
-https://cdn.bioaimed.com/track/bw/GSM4636530_WGBS-SEM-CTCF-AID_no_IAA-Rep27.bigwig
-https://cdn.bioaimed.com/track/bw/GSM4636531_WGBS-SEM-CTCF-AID_with_IAA-Rep27.bigwig
-
-
-16:67563886-67625356
-https://cdn.bioaimed.com/track/bw/GSM3609942_JWH107-CutRun-35-minus-IAA-CTCF.bam.bw 	
-https://cdn.bioaimed.com/track/bw/GSM3609943_JWH108-CutRun-35-plus48-IAA-CTCF.bam.bw
-https://cdn.bioaimed.com/track/bw/GSM3609944_JWH110-CutRun-42-minus-IAA-CTCF.bam.bw 
-https://cdn.bioaimed.com/track/bw/GSM3609945_JWH111-CutRun-42-plus48-IAA-CTCF.bam.bw
-
-20:36,136,931-36,187,196 20:36,136,931-36,187,196
-
-https://cdn.bioaimed.com/track/bw/GSM4636526_ATAC-SEM-CTCF-AID_no_IAA-Rep42.free.bw 
-https://cdn.bioaimed.com/track/bw/GSM4636525_ATAC-SEM-CTCF-AID_no_IAA-Rep35.free.bw 
-https://cdn.bioaimed.com/track/bw/GSM4636524_ATAC-SEM-CTCF-AID_no_IAA-Rep27.free.bigwig
-https://cdn.bioaimed.com/track/bw/GSM4636529_ATAC-SEM-CTCF-AID_with_IAA-Rep42.free.bw 
-https://cdn.bioaimed.com/track/bw/GSM4636528_ATAC-SEM-CTCF-AID_with_IAA-Rep35.free.bw 
-https://cdn.bioaimed.com/track/bw/GSM4636527_ATAC-SEM-CTCF-AID_with_IAA-Rep27.free.bigwig 	
-https://cdn.bioaimed.com/track/bw/GSM4636530_WGBS-SEM-CTCF-AID_no_IAA-Rep27.bigwig 
-https://cdn.bioaimed.com/track/bw/GSM4636531_WGBS-SEM-CTCF-AID_with_IAA-Rep27.bigwig 
-https://cdn.bioaimed.com/track/bw/GSM3609945_JWH111-CutRun-42-plus48-IAA-CTCF.bam.bw 
+ext[0] : fa
+ext[1] : fai
+ext[2] : cytobandURL,
+ext[3] : ref url
 */
+export const mm10_ext = [
+  accelerate_domain + "/mouse/Mus_musculus.GRCm39.dna.primary_assembly.fa",
+  accelerate_domain + "/mouse/Mus_musculus.GRCm39.dna.primary_assembly.fa.fai",
+  accelerate_domain + "/mouse/mouse_cytoBand.txt",
+  accelerate_domain + "/mouse/mouse_refGene.txt.gz"
+]
+
+export const mm39_ext = [
+  accelerate_domain + "/mm39/mm39.fasta",
+  accelerate_domain + "/mm39/mm39.fasta.fai",
+  accelerate_domain + "/mm39/cytoBandIdeo.txt",
+  accelerate_domain + "/mm39/refGene.txt.gz"
+]
+
+export const hg19_ext = [
+  accelerate_domain + "/human/Homo_sapiens_assembly19.fasta",
+  accelerate_domain + "/human/Homo_sapiens_assembly19.fasta.fai",
+  accelerate_domain + "/human/human_cytoBandIdeo.txt",
+  accelerate_domain + "/human/human_refGene.txt.gz"
+]
+
+export const hg38_ext = [
+  accelerate_domain + "/hg38/hg38.fasta",
+  accelerate_domain + "/hg38/hg38.fasta.fai",
+  accelerate_domain + "/hg38/cytoBandIdeo.txt",
+  accelerate_domain + "/hg38/refGene.txt.gz"
+]
 
 export var sample_map = new Map();
-sample_map.set('load-a-human-sample1','https://cdn.bioaimed.com/human/4DNFI1E6NJQJ.hic')
-sample_map.set('load-a-human-sample2','https://cdn.bioaimed.com/human/4DNFICSTCJQZ.hic')
-sample_map.set('load-a-mouse-sample1','https://cdn.bioaimed.com/mouse/mouse.hic')
-sample_map.set('load-b-human-sample1','https://cdn.bioaimed.com/human/4DNFI1E6NJQJ.hic')
-sample_map.set('load-b-human-sample2','https://cdn.bioaimed.com/human/4DNFICSTCJQZ.hic')
-sample_map.set('load-b-mouse-sample1','https://cdn.bioaimed.com/mouse/mouse.hic')
+sample_map.set('A549', accelerate_domain + '/sample_hg38/A549.hic');
+sample_map.set('K562', accelerate_domain + '/sample_hg38/K562.hic');
+sample_map.set('KBM7', accelerate_domain + '/sample_hg38/KBM-7.hic');
+sample_map.set('Panc1', accelerate_domain + '/sample_hg38/panc1.hic');
+sample_map.set('SKNMC', accelerate_domain + '/sample_hg38/SK_N_MC.hic');
+sample_map.set('GM12878', accelerate_domain + '/sample_hg38/GM12878.hic');
+sample_map.set('human-sample1', accelerate_domain + '/human/4DNFI1E6NJQJ.hic');
+sample_map.set('human-sample2', accelerate_domain + '/human/4DNFICSTCJQZ.hic');
+sample_map.set('mouse-sample1', accelerate_domain + '/mouse/mouse.hic');
+
+
 
 export var sample_track = new Map();
-sample_track.set('tad','https://cdn.bioaimed.com/human/human_domain.txt');
-sample_track.set('loop', 'https://cdn.bioaimed.com/human/human_loop.txt');
-sample_track.set('ab','https://cdn.bioaimed.com/human/MCF7_ab.bedGraph ');
-sample_track.set('annotation', 'https://cdn.bioaimed.com/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz');
-sample_track.set('wig','https://cdn.bioaimed.com/human/H3H4k20me1.bigWig');
+sample_track.set('tad', accelerate_domain + '/human/human_domain.txt');
+sample_track.set('loop',  accelerate_domain + '/human/human_loop.txt');
+sample_track.set('ab', accelerate_domain + '/human/MCF7_ab.bedGraph ');
+sample_track.set('annotation', accelerate_domain + '/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz');
+sample_track.set('wig', accelerate_domain + '/human/H3H4k20me1.bigWig');
 sample_track.set('alignment','');
-sample_track.set('variant', 'https://cdn.bioaimed.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz');
-sample_track.set('seg', 'https://cdn.bioaimed.com/track/seg/GBM-TP.seg.gz');
+sample_track.set('variant', accelerate_domain + '/track/variant/nstd186.GRCh38.variant_call.vcf.gz');
+sample_track.set('seg', accelerate_domain + '/track/seg/GBM-TP.seg.gz');
 sample_track.set('mut','');
-sample_track.set('interact','https://cdn.bioaimed.com/human/human_loop.bedpe');
-sample_track.set('gwas', 'https://cdn.bioaimed.com/track/gwas/gwas_sample.gwas');
+sample_track.set('interact', accelerate_domain + '/human/human_loop.bedpe');
+sample_track.set('gwas', accelerate_domain + '/track/gwas/gwas_sample.gwas');
 sample_track.set('arc','');
 sample_track.set('junction','');
-sample_track.set('auto','https://cdn.bioaimed.com/track/auto/case1.bed.gz');
+sample_track.set('auto', accelerate_domain + '/track/auto/case1.bed.gz');
+
 export var sample_track_index = new Map();
-sample_track_index.set('annotation', 'https://cdn.bioaimed.com/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz.tbi');
+sample_track_index.set('annotation', accelerate_domain + '/track/annotation/Homo_sapiens.GRCh38.94.chr.gff3.gz.tbi');
 sample_track_index.set('alignment','');
-sample_track_index.set('variant', 'https://cdn.bioaimed.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz.tbi');
+sample_track_index.set('variant',  accelerate_domain + '/track/variant/nstd186.GRCh38.variant_call.vcf.gz.tbi');
 sample_track_index.set('mut','');
 sample_track_index.set('arc','');
 sample_track_index.set('junction','');
-sample_track_index.set('auto','https://cdn.bioaimed.com/track/auto/case1.bed.gz.tbi');
+sample_track_index.set('auto', accelerate_domain + '/track/auto/case1.bed.gz.tbi');

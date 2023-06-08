@@ -1,10 +1,9 @@
-import hic from "./juicebox.esm.js";
-import igv from "./igv.esm.js"
-import {AlertSingleton} from './igv-widgets.js'
-import {live_browser,live_igv_browser, swap, formatLocus,
-   parseLocus,min_chromosome,inter_locus_range,
-   intra_locus_range,gene_locus_range,generate_locus, 
-   get_hic_species,ShowBodyCover,svg_icons , generate_a_locus,
+import hic from "./browser/juicebox.esm.js";
+import {AlertSingleton} from './browser/igv-widgets.js'
+import {live_browser,live_igv_browser,
+   parseLocus,inter_locus_range,
+   intra_locus_range,gene_locus_range, 
+   get_hic_species,ShowBodyCover,svg_icons ,
    getQueryVariable
   } from "./global.js"
 
@@ -13,21 +12,16 @@ function get_selected_id(){
   return hic.getCurrentBrowser().id;
 }
 
-function get_canvas_size(){
-  let _id = get_selected_id();
-  let w = $(`#${_id}-viewport`).width();
-  let h = $(`#${_id}-viewport`).height();
-  return [w, h];
-}
-
-
 /*===============================guide=============================================*/
 function showCrosshairs(e){
   let x = e.clientX, y = e.clientY;
-  let point_off = 7;
+  let point_off = 0;
   let hic_root = $('.hic-root');
   let b_w = $(hic_root[1]).offset().left  - $(hic_root[0]).offset().left
-  document.getElementById('cursor-guide-x').style.top = y - point_off + 'px';
+
+  let scrollerHeight = $(document).scrollTop();
+  // console.log(scrollerHeight);
+  document.getElementById('cursor-guide-x').style.top = y - point_off + scrollerHeight+ 'px';
   document.getElementById('cursor-guide-y').style.left = x - point_off + 'px';
   document.getElementById('cursor-guide-y1').style.left = x - point_off + b_w + 'px';
   document.getElementById('cursor-guide-y2').style.left = x - point_off - b_w + 'px';
@@ -67,14 +61,39 @@ $('#cursor-guide').on('click',async function(e){
 
 /*===============================search=============================================*/
 function go_and_draw_1(locus,name, b){
+  // console.log(name);
   let [chr, s, e] = parseLocus(locus); // 基因的位置
-  let data = chr + '\t' + s + '\t' + e + '\t' + chr + '\t' + s + '\t' + e + '\t69,132,1' ;
+  let _id = b.id;
+  if(live_igv_browser.has(_id)){
+    let igv_b = live_igv_browser.get(_id);
+    // if(chr.startsWith())
+    let features = [
+      {
+        chr: chr,
+        start: s - 5000,
+        end: e + 5000,
+        name: `${chr}:${s}-${e}`
+      }
+    ]
+    igv_b.loadROI([
+      {
+          name: `[${name}]`,
+          features: features,
+          indexed: false,
+          color: "rgba(184, 166, 255, 0.44)",
+          // isUserDefined:true,
+      }]
+    );
+    browser_goto_locus(`${chr}:${s}-${e}`, b);
+    return;
+  }
+  let data = chr + '\t' + (s - 5000) + '\t' + (e + 5000) + '\t' + chr + '\t' + (s - 5000) + '\t' + (e + 5000) + '\t69,132,1' ;
   let gap = e - s;
   s -= parseInt(gene_locus_range / 4); // 浏览器的位置
   e += parseInt(gene_locus_range * 0.75 - gap);
   let cor = chr + ':' + Number(s).toLocaleString() + '-' + Number(e).toLocaleString()
   let config = {
-    "name":name,
+    "name":`[${name}] ${chr}:${s}-${e}`,
     "data":data,
     "autoscale": true,
     "displayMode": "COLLAPSED",
@@ -87,7 +106,7 @@ function go_and_draw_1(locus,name, b){
 function go_and_draw_2(locus1, locus2, b){
   let [chrx,xs,xe] = parseLocus(locus1);
   let [chry,ys,ye] = parseLocus(locus2);
-  let data = chrx + '\t' + xs + '\t' + xe + '\t' + chry + '\t' + ys + '\t' + ye; + '\t0,0,0'
+  let data = chrx + '\t' + (xs - 5000) + '\t' + (xe + 5000) + '\t' + chry + '\t' + (ys  - 5000) + '\t' + (ye + 5000); + '\t0,0,0'
   let xgap = xe - xs;
   let ygap = ye - ys;
   let range;
@@ -106,7 +125,8 @@ function go_and_draw_2(locus1, locus2, b){
     "name": 'Arcs',
     "data":data,
     "autoscale": true,
-    "displayMode": "COLLAPSED"
+    "displayMode": "COLLAPSED",
+    'track_type':'fragment'
   }
   b.loadTrackDatas([config])
   browser_goto_locus(cor);
@@ -117,7 +137,7 @@ window.drawCanvas1 = function(a, name, b){
   if(!b || b === undefined){
     b = hic.getCurrentBrowser();
   }
-  go_and_draw_1(a,name, b);
+  go_and_draw_1(a[0],name[0], b);
 }
 
 window.drawCanvas2 = function(a, name, b){
@@ -316,322 +336,6 @@ $(`#analyse`).on('click', e =>{
 })
 
 /*============================================================================*/
-function get_locus(x0,y0,x1,y1,w){
-  let locus = get_goto_input();
-  if(x0 > x1){
-    [x0,x1] = swap(x0,x1);
-  }
-  if(y0 > y1){
-    [y0,y1] = swap(y0,y1);
-  }
-  locus = locus.split(' ');
-  let [chrx, xs, xe] = parseLocus(locus[0])
-  let pixel_size = (xe - xs) / w;
-  let x = (x1 - x0) * pixel_size;
-  let y = (y1 - y0) * pixel_size;
-  
-  x = formatLocus(x);
-  y = formatLocus(y);
-  
-  return {x, y}
-}
-
-// pixel to locus
-function calc_locus(box_start_x,box_start_y,box_end_x,box_end_y){
-  let locus = get_goto_input();
-  locus = locus.split(' ');
-  let [chrx, current_xs, current_xe] = parseLocus(locus[0]);
-  let [chry, current_ys, current_ye] = parseLocus(locus[1]);
-  let [w,h] = get_canvas_size();
-  let pixel_size = (current_xe - current_xs) / w;
-  let new_xs = parseInt(current_xs + pixel_size * box_start_x);
-  let new_xe = parseInt(current_xs + pixel_size * box_end_x);
-  let new_ys = parseInt(current_ys + pixel_size * box_start_y);
-  let new_ye = parseInt(current_ys + pixel_size * box_end_y);
-  return [chrx, new_xs, new_xe, chry, new_ys, new_ye]
-
-}
-
-// right menu
-window.cal = function(box_start_x,box_start_y,box_end_x,box_end_y){
-  let [chrx, new_xs, new_xe, chry, new_ys, new_ye] = calc_locus(box_start_x,box_start_y,box_end_x,box_end_y);
-  let cor;
-  if(hic.getCurrentBrowser().isDiag){
-     cor = generate_locus(chrx, new_ys, new_ye, chry, new_ys, new_ye)
-  }else{
-     cor = generate_locus(chrx, new_xs, new_xe, chry, new_ys, new_ye)
-  }
-  navigator.clipboard.writeText(cor); 
-  layer.msg(cor + ('(The clipboard has been written!)'));
-  return
-}
-
-window.esc = function(){
-  let selected_browser_id = get_selected_id();
-  $('#canvas_right_menu').remove();
-  let canvas = $(`#glass_canvas_${selected_browser_id} >canvas`)
-  canvas.get(0).height = canvas.get(0).height;
-}
-
-window.goto = function(box_start_x,box_start_y,box_end_x,box_end_y){
-  let [chrx, new_xs, new_xe, chry, new_ys, new_ye] = calc_locus(box_start_x,box_start_y,box_end_x,box_end_y)
-  if (new_xe - new_xs <= min_chromosome || new_ye - new_ys <= min_chromosome){
-    layer.msg('You cannot view smaller arease because of the resolution of your HiC file');
-    return
-  }
-  let scales = Math.max(new_xe - new_xs, new_ye - new_ys);
-  let new_locus = generate_locus(chrx, new_xs, new_xs + scales, chry, new_ys, new_ys + scales);
-  browser_goto_locus(new_locus);
-  esc();
-  return
-
-}
-
-window.highlight = function(){
-  $('#canvas_right_menu').remove();
-}
-
-window.display3d = function(box_start_x,box_start_y,box_end_x,box_end_y){
-  if(hic.getCurrentBrowser().isDiag){
-    box_start_x = box_start_y;
-    box_end_x = box_end_y;
-  }
-  let [chrx, new_xs, new_xe, chry, new_ys, new_ye] = calc_locus(box_start_x,box_start_y,box_end_x,box_end_y);
-  let x = generate_a_locus(chrx, new_xs, new_xe);
-  let y = generate_a_locus( chry, new_ys, new_ye);
-  call3d(get_selected_id(), x,y,false,false);
-  esc();
-  return
-}
-
-function generate_canvas_right_menu(ofx,ofy,box_start_x,box_start_y,box_end_x,box_end_y){
-  let _html = $(`
-    <ul class="canvas_right_menu" id="canvas_right_menu">
-      <li onclick="cal(${box_start_x},${box_start_y},${box_end_x},${box_end_y})">Get Coordinate</li>
-      <li onclick="goto(${box_start_x},${box_start_y},${box_end_x},${box_end_y})">Goto selected Aera</li>
-      <li onclick="display3d(${box_start_x},${box_start_y},${box_end_x},${box_end_y})">Display in 3D model</li>
-      <li onclick="highlight()">Highlight</li>
-      <li onclick="esc()">Cancel</li>
-    </ul>
-  `)
-  $('body').append(_html);
-  $(_html).css('display','block');
-  $(_html).css('left',ofx + box_end_x + 'px');
-  if(hic.getCurrentBrowser().isDiag){
-    $(_html).css('top', box_end_y +  'px');
-  }else{
-    $(_html).css('top', ofy + box_end_y +  'px');
-  }
-  
-}
-
-function createROI(){
-  let selected_browser_id = get_selected_id();
-  let b = hic.getCurrentBrowser();
-  let selected_div = $(`#${selected_browser_id}-viewport`);
-  let w = selected_div.width();
-  let h = selected_div.height();
-  let offx = selected_div.offset().left;
-  let offy = selected_div.offset().top;
-  let div = $(`<div style="position: absolute; left:39px;height:${h}px;width:${w}px" id="glass_canvas_${selected_browser_id}"></div>`);
-  let canvas = $(`<canvas width="${w}" height="${h}" style="background: rgba(255, 255, 155, 0);z-index=1;cursor:cell">`);
-  div.append(canvas);
-  selected_div.after(div);
-  // 创建完glass canvas后，要旋转
-  if(b.isDiag === true){
-    showGlassDiag(selected_browser_id);
-  }
-
-
-  let [origin_x, origin_y] = [0, 0];
-  let [box_start_x, box_start_y] = [0, 0];
-  let [box_end_x, box_end_y] = [0, 0];
-  let ctx = canvas.get(0).getContext('2d');
-  canvas.on('mousedown', (e) => {
-    $('#canvas_right_menu').remove();
-    box_start_x = e.offsetX;
-    box_start_y = e.offsetY;
-    if (0 === e.button){
-      document.onmousemove=function(e){
-        box_end_x = e.offsetX;
-        box_end_y = e.offsetY;
-        if (box_end_x <= origin_x) {
-            box_end_x = origin_x
-        }
-        if (box_end_x >= w) {
-            box_end_x = w;
-        }
-        if (box_end_y <= origin_y) {
-            box_end_y = origin_y
-        }
-        if (box_end_y >= h) {
-            box_end_y = h;
-        }
-       
-        canvas.get(0).height = canvas.get(0).height;
-        
-        ctx.font = '20px Arial';
-        
-        let {x,y} = get_locus(box_start_x,box_start_y,box_end_x,box_end_y,w);
-        if(b.isDiag){
-          if(box_end_y = box_end_x){
-            box_end_y = box_end_x;
-          }
-          ctx.fillStyle = `#404d5833`;
-          ctx.fillRect(box_start_y, box_start_y, box_end_y - box_start_y, box_end_y - box_start_y);
-        }
-        else{
-        // -10 是字体大小 -80 是字体个数长度
-          ctx.fillText(x + ', ' + y, box_start_x + (box_end_x - box_start_x) / 2 - 80, box_start_y + ( box_end_y - box_start_y) / 2 + 10);
-          ctx.fillStyle = `#404d5833`;
-          ctx.fillRect(box_start_x, box_start_y, box_end_x-box_start_x, box_end_y-box_start_y);
-        }
-        return false;
-      };
-      // 松开鼠标
-      document.onmouseup=function(e){
-        box_end_x = e.offsetX;
-        box_end_y = e.offsetY;
-        if (box_end_x <= origin_x) {
-            box_end_x = origin_x
-        }
-        if (box_end_x >= w) {
-            box_end_x = w;
-        }
-        if (box_end_y <= origin_y) {
-            box_end_y = origin_y
-        }
-        if (box_end_y >= h) {
-            box_end_y = h;
-        }
-        
-        if (box_start_x == box_end_x || box_start_y == box_end_y) {
-          canvas.get(0).height = canvas.get(0).height;
-          document.onmousemove=null;
-          document.onmouseup=null;
-          //阻止默认事件
-          return false;
-        }
-
-
-        canvas.get(0).height = canvas.get(0).height;
-        ctx.font = '20px Arial';
-        let {x,y} = get_locus(box_start_x,box_start_y,box_end_x,box_end_y,w);
-        // -10 是字体大小
-        // -60 是字体个数长度
-        if(b.isDiag){
-          if(box_end_y = box_end_x){
-            box_end_y = box_end_x;
-          }
-          ctx.fillStyle = `#404d5833`;
-          ctx.fillRect(box_start_y, box_start_y, box_end_y - box_start_y, box_end_y - box_start_y);
-        }
-        else{
-          ctx.fillText(x + ', ' + y, box_start_x + (box_end_x - box_start_x) / 2 - 80, box_start_y + ( box_end_y - box_start_y) / 2 + 10);
-          ctx.fillStyle = `#404d5833`;
-          ctx.fillRect(box_start_x, box_start_y, box_end_x-box_start_x, box_end_y-box_start_y);
-        }
-        generate_canvas_right_menu(offx,offy,box_start_x,box_start_y,box_end_x,box_end_y);
-        e.preventDefault();
-        document.onmousemove=null;
-        document.onmouseup=null;
-        //阻止默认事件
-        return false;
-    }
-    }
-  })
-
-}
-
-$('#ROI').on('click', function(e){
-  let selected_browser = hic.getCurrentBrowser();
-  let selected_browser_id = selected_browser.id;
-  if (selected_browser.dataset === undefined){
-    AlertSingleton.present('Load HiC map first');
-    return
-  }
-  if(selected_browser.state.chr1 === 0){
-    AlertSingleton.present('select chromosome first');
-    return
-  }
-  if($(this).hasClass('active')){
-    $(this).removeClass('active');
-    $(`#glass_canvas_${selected_browser_id}`).remove();
-    $(`#canvas_right_menu`).remove();
-    return;
-  }
-  $(this).addClass('active');
-  createROI();
-})
-
-/*============================================================================*/
-// $('#browser-zoom-in').on('click',async function(e){
-//   let selected_browser_id = get_selected_id();
-//   let cur_locus = get_goto_input();
-//   if (cur_locus === ""){
-//     if (live_igv_browser.has(selected_browser_id)){
-//       live_igv_browser.get(selected_browser_id).zoomIn();
-//       return;
-//     }
-//     return;
-//   }
-//   if(cur_locus === 'All'){
-//     browser_goto_locus('1');
-//   }else{
-//     let xy = cur_locus.split(' ');
-//     let [chrx, xs, xe] = parseLocus(xy[0]);
-//     let [chry, ys, ye] = parseLocus(xy[1]);
-//     let xns = xs + parseInt((xe - xs) / 4);
-//     let xne = xe - parseInt((xe - xs) / 4);
-//     let yns = ys + parseInt((ye - ys) / 4);
-//     let yne = ye - parseInt((ye - ys) / 4);
-//     let new_loc = generate_locus(chrx,xns,xne,chry, yns, yne);
-//     browser_goto_locus(new_loc);
-//   }
-// })
-
-/*============================================================================*/
-// $('#browser-zoom-out').on('click',async function(e){
-//   let selected_browser_id = get_selected_id();
-//   let cur_locus = get_goto_input();
-//   if (cur_locus === 'All') return;
-//   if (cur_locus === ''){
-//     if (live_igv_browser.has(selected_browser_id)){
-//       live_igv_browser.get(selected_browser_id).zoomOut();
-//       return;
-//     }
-//     return;
-//   }
-//   let xy = cur_locus.split(' ');
-//   let [chrx, xs, xe] = parseLocus(xy[0]);
-//   let [chry, ys, ye] = parseLocus(xy[1]);
-//   let xns = xs - parseInt((xe - xs) / 2);
-//   if (xns < 1) xns = 1;
-//   let xne = xe + parseInt((xe - xs) / 2);
-//   let yns = ys - parseInt((ye - ys) / 2);
-//   if (yns < 1) yns = 1;
-//   let yne = ye + parseInt((ye - ys) / 2);
-//   let new_loc = generate_locus(chrx,xns,xne,chry, yns, yne);
-//   browser_goto_locus(new_loc);
-// })
-
-/*============================================================================*/
-function showGlassDiag(_id){
-  // 旋转iewport
-  let glass_div = $(`#glass_canvas_${_id}`);
-  glass_div.css('transform','rotate(315deg)');
-  glass_div.css('clip-path','polygon(0 0, 100% 100%, 100% 0%)');
-  glass_div.css('background','transparent');
-  glass_div.css('margin-left','5px');
-  // 缩小canvas
-  let canvas = $(`#glass_canvas_${_id} > canvas`);
-  canvas.css('transform','scale(0.707)'); // 根号2 分之1
-}
-
-function browser_diag_show(browser){
-  $(`display-mode-${browser.id}`).click();
-}
-
 window.toggleColor = function(e){
   let cp = $(`.color_picks`);
   cp.toggleClass('detail');
@@ -705,13 +409,11 @@ async function restoreOneSession(sesseion, browser){
   if(hic['control'] !== undefined) await loadHiC(hic['control'], 'control-map', browser);
   browser.parseGotoInput(hic['locus']);
   await wait(2);
-  if(hic['isDiag']) browser_diag_show(browser);
+  if(hic['isDiag']) $(`#display-mode-${browser.id}`).click();
   if(hic['normalization'] !== undefined) browser.setNormalization(hic['normalization']);
   await wait(1.5);
   browser.isForce =  hic['isForce'];
-  if(hic['isSync']){
-    $(`#sync_browser_${browser.id}`).click();
-  }
+  if(hic['isSync']) $(`#sync_browser_${browser.id}`).click();
   
   let track2d = sesseion['track2d'];
   if (track2d !== undefined){
@@ -899,7 +601,7 @@ $(`#browser-refresh`).click(() => {
 $(`#delete_igv`).click(() => {
   let _id = get_selected_id();
   if(live_igv_browser.has(_id)){
-    igv.removeBrowser(live_igv_browser.get(_id));
-    live_igv_browser.delete(_id);
+    let b = live_igv_browser.get(_id);
+    b.clearROIs();
   }
 })

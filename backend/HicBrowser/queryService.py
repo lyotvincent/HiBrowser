@@ -88,9 +88,9 @@ def get_disease_by_genes(q_genes):
         g_name = d['gene_symbol']
         idx = q_genes[g_name]
         if idx in d_infos:
-            d_infos[idx] += d['disease_name'] + ','
+            d_infos[idx] += f"{d['disease_name']}({d['diseaseid']}),"
         else:
-            d_infos[idx] = d['disease_name'] + ','
+            d_infos[idx] = f"{d['disease_name']}({d['diseaseid']}),"
     return d_infos
 
 
@@ -430,8 +430,30 @@ def query(request):
     return res
 
 
+def get_variant_by_gene(gene):
+    variants = disease.query_snp_by_gene(gene)
+    if variants is None:
+        return None
+    v_info = []
+    for v in variants:
+        if type(v) != dict:
+            continue
+        v_info.append(v['variantid'])
+    return v_info
+
+
 def query_locus_by_gene_name(request):
     data = json.loads(request.body)
     name = data['name']
     locus = get_gene_locus_by_name(name)
     return locus
+
+
+def gene_variant(request):
+    data = json.loads(request.body)
+    gene = data['gene']
+    v_info = []
+    for g in gene:
+        v_info.append(get_variant_by_gene(g))
+    res = {'variants': v_info}
+    return res

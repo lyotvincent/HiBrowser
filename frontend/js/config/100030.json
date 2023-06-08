@@ -1,1 +1,335 @@
-[{"hic":{"contact":"https://cdn.bioaimed.com/GSE126199/GSE126199_0.hic","locus":"8:80,224,298-82,511,235 8:80,224,298-82,511,235","isDiag":true,"isSync":true,"isForce":false},"track2d":[{"track_type":"tad","name":"TAD_0_telo.txt","header":{"Request Method":"GET"},"url":"https://cdn.bioaimed.com/GSE126199/TAD_0_telo.txt","autoscale":true,"displayMode":"COLLAPSED","height":40},{"name":"NOTCH3","data":"chr19\t15130848\t15172806\tchr19\t15130848\t15172806\t69,132,1","autoscale":true,"displayMode":"COLLAPSED","height":40},{"name":"SH2B3","data":"chr12\t110357048\t110373810\tchr12\t110357048\t110373810\t69,132,1","autoscale":true,"displayMode":"COLLAPSED","height":40},{"name":"DEFB4A","data":"chr8\t7789608\t7791648\tchr8\t7789608\t7791648\t69,132,1","autoscale":true,"displayMode":"COLLAPSED","height":40},{"name":"MIA3","data":"chr1\t220858066\t220907977\tchr1\t220858066\t220907977\t69,132,1","autoscale":true,"displayMode":"COLLAPSED","height":40}],"fa":"https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta","fai":"https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta.fai","cytoband":"https://cdn.bioaimed.com/human/human_cytoBandIdeo.txt","ref":"https://cdn.bioaimed.com/human/human_refGene.txt.gz","track":[{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/ATAC_0_telo.bw","indexURL":"","name":"ATAC_0_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/H3K27ac_0_telo_GSE126197.bw","indexURL":"","name":"H3K27ac_0_telo_GSE126197.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/RNA_0_telo.bw","indexURL":"","name":"RNA_0_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"color":"rgb(2, 132, 1)","url":"https://cdn.bioaimed.com/GSE126199/AB_0_telo.bedGraph","indexURL":"","name":"AB_0_telo.bedGraph","track_type":"ab","format":"bedgraph"},{"type":"wig","height":50,"color":"rgb(2, 132, 1)","url":"https://cdn.bioaimed.com/GSE126199/AB_4_telo.bedGraph","indexURL":"","name":"AB_4_telo.bedGraph","track_type":"ab","format":"bedgraph"},{"track_type":"common_diff","type":"wig","url":"blob:http://127.0.0.1:5500/f919bf5b-058e-439e-9e82-c5b947fa2a24","name":"switch","height":50,"color":"rgb(255,44,28)","altColor":"rgb(160, 159, 160)","format":"bedgraph"},{"type":"variant","height":50,"url":"https://cdn.bioaimed.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz","indexURL":"https://cdn.bioaimed.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz.tbi","name":"nstd186.GRCh38.variant_call.vcf.gz","track_type":"variant","format":"vcf"},{"type":"interact","height":50,"url":"https://cdn.bioaimed.com/human/human_loop.bedpe","indexURL":"","name":"human_loop.bedpe","track_type":"interact","format":"bedpe"}]},{"hic":{"contact":"https://cdn.bioaimed.com/GSE126199/GSE126199_4.hic","locus":"8:80,224,298-82,511,235 8:80,224,298-82,511,235","isDiag":true,"isSync":true,"isForce":false},"track2d":[{"track_type":"tad","name":"TAD_4_telo.txt","header":{"Request Method":"GET"},"url":"https://cdn.bioaimed.com/GSE126199/TAD_4_telo.txt","autoscale":true,"displayMode":"COLLAPSED","height":40}],"fa":"https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta","fai":"https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta.fai","cytoband":"https://cdn.bioaimed.com/human/human_cytoBandIdeo.txt","ref":"https://cdn.bioaimed.com/human/human_refGene.txt.gz","track":[{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/ATAC_4_telo.bw","indexURL":"","name":"ATAC_4_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/H3K27ac_4_telo_GSE126197.bw","indexURL":"","name":"H3K27ac_4_telo_GSE126197.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/RNA_0_telo.bw","indexURL":"","name":"RNA_0_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"color":"rgb(2, 132, 1)","url":"https://cdn.bioaimed.com/GSE126199/AB_4_telo.bedGraph","indexURL":"","name":"AB_4_telo.bedGraph","track_type":"ab","format":"bedgraph"}]},{"hic":{"contact":"https://cdn.bioaimed.com/GSE126199/GSE126199_0.hic","control":"https://cdn.bioaimed.com/GSE126199/GSE126199_4.hic","locus":"8:80,224,298-82,511,235 8:80,224,298-82,511,235","isDiag":false,"isSync":false,"isForce":false}},{"hic":{"contact":"https://cdn.bioaimed.com/GSE126199/GSE126199_0.hic","locus":"8:80,224,298-82,511,235 8:80,224,298-82,511,235","isDiag":true,"isSync":false,"isForce":false},"track2d":[{"track_type":"tad","name":"TAD_0_telo.txt","header":{"Request Method":"GET"},"url":"https://cdn.bioaimed.com/GSE126199/TAD_0_telo.txt","autoscale":true,"displayMode":"COLLAPSED","height":40},{"track_type":"tad","name":"TAD_4_telo.txt","header":{"Request Method":"GET"},"url":"https://cdn.bioaimed.com/GSE126199/TAD_4_telo.txt","autoscale":true,"displayMode":"COLLAPSED","height":40},{"name":"SELL","data":"chr1\t167926431\t167947385\tchr1\t167926431\t167947385\t69,132,1","autoscale":true,"displayMode":"COLLAPSED","height":40},{"name":"SELL","data":"chr1\t167926431\t167947385\tchr1\t167926431\t167947385\t69,132,1","autoscale":true,"displayMode":"COLLAPSED","height":40}],"fa":"https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta","fai":"https://cdn.bioaimed.com/human/Homo_sapiens_assembly19.fasta.fai","cytoband":"https://cdn.bioaimed.com/human/human_cytoBandIdeo.txt","ref":"https://cdn.bioaimed.com/human/human_refGene.txt.gz","track":[{"type":"wig","height":50,"color":"rgb(2, 132, 1)","url":"https://cdn.bioaimed.com/GSE126199/AB_0_telo.bedGraph","indexURL":"","name":"AB_0_telo.bedGraph","track_type":"ab","format":"bedgraph"},{"type":"wig","height":50,"color":"rgb(2, 132, 1)","url":"https://cdn.bioaimed.com/GSE126199/AB_4_telo.bedGraph","indexURL":"","name":"AB_4_telo.bedGraph","track_type":"ab","format":"bedgraph"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/ATAC_0_telo.bw","indexURL":"","name":"ATAC_0_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/ATAC_4_telo.bw","indexURL":"","name":"ATAC_4_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/H3K27ac_0_telo_GSE126197.bw ","indexURL":"","name":"H3K27ac_0_telo_GSE126197.bw ","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/H3K27ac_4_telo_GSE126197.bw","indexURL":"","name":"H3K27ac_4_telo_GSE126197.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/RNA_0_telo.bw","indexURL":"","name":"RNA_0_telo.bw","track_type":"wig","format":"bigwig"},{"type":"wig","height":50,"url":"https://cdn.bioaimed.com/GSE126199/RNA_4_telo.bw","indexURL":"","name":"RNA_4_telo.bw","track_type":"wig","format":"bigwig"}]}]
+[
+    {
+        "hic": {
+            "contact": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/GSE126199_0.hic",
+            "locus": "8:80,224,298-82,511,235 8:80,224,298-82,511,235",
+            "isDiag": true,
+            "isSync": true,
+            "isForce": false
+        },
+        "track2d": [
+            {
+                "track_type": "tad",
+                "name": "TAD_0_telo.txt",
+                "header": {
+                    "Request Method": "GET"
+                },
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/TAD_0_telo.txt",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "name": "NOTCH3",
+                "data": "chr19\t15130848\t15172806\tchr19\t15130848\t15172806\t69,132,1",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "name": "SH2B3",
+                "data": "chr12\t110357048\t110373810\tchr12\t110357048\t110373810\t69,132,1",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "name": "DEFB4A",
+                "data": "chr8\t7789608\t7791648\tchr8\t7789608\t7791648\t69,132,1",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "name": "MIA3",
+                "data": "chr1\t220858066\t220907977\tchr1\t220858066\t220907977\t69,132,1",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            }
+        ],
+        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta",
+        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai",
+        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_cytoBandIdeo.txt",
+        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_refGene.txt.gz",
+        "track": [
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/ATAC_0_telo.bw",
+                "indexURL": "",
+                "name": "ATAC_0_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/H3K27ac_0_telo_GSE126197.bw",
+                "indexURL": "",
+                "name": "H3K27ac_0_telo_GSE126197.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/RNA_0_telo.bw",
+                "indexURL": "",
+                "name": "RNA_0_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "color": "rgb(2, 132, 1)",
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/AB_0_telo.bedGraph",
+                "indexURL": "",
+                "name": "AB_0_telo.bedGraph",
+                "track_type": "ab",
+                "format": "bedgraph"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "color": "rgb(2, 132, 1)",
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/AB_4_telo.bedGraph",
+                "indexURL": "",
+                "name": "AB_4_telo.bedGraph",
+                "track_type": "ab",
+                "format": "bedgraph"
+            },
+            {
+                "track_type": "common_diff",
+                "type": "wig",
+                "url": "blob:http://127.0.0.1:5500/f919bf5b-058e-439e-9e82-c5b947fa2a24",
+                "name": "switch",
+                "height": 50,
+                "color": "rgb(255,44,28)",
+                "altColor": "rgb(160, 159, 160)",
+                "format": "bedgraph"
+            },
+            {
+                "type": "variant",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz",
+                "indexURL": "https://hic-1256812583.cos.accelerate.myqcloud.com/track/variant/nstd186.GRCh38.variant_call.vcf.gz.tbi",
+                "name": "nstd186.GRCh38.variant_call.vcf.gz",
+                "track_type": "variant",
+                "format": "vcf"
+            },
+            {
+                "type": "interact",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_loop.bedpe",
+                "indexURL": "",
+                "name": "human_loop.bedpe",
+                "track_type": "interact",
+                "format": "bedpe"
+            }
+        ]
+    },
+    {
+        "hic": {
+            "contact": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/GSE126199_4.hic",
+            "locus": "8:80,224,298-82,511,235 8:80,224,298-82,511,235",
+            "isDiag": true,
+            "isSync": true,
+            "isForce": false
+        },
+        "track2d": [
+            {
+                "track_type": "tad",
+                "name": "TAD_4_telo.txt",
+                "header": {
+                    "Request Method": "GET"
+                },
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/TAD_4_telo.txt",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            }
+        ],
+        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta",
+        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai",
+        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_cytoBandIdeo.txt",
+        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_refGene.txt.gz",
+        "track": [
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/ATAC_4_telo.bw",
+                "indexURL": "",
+                "name": "ATAC_4_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/H3K27ac_4_telo_GSE126197.bw",
+                "indexURL": "",
+                "name": "H3K27ac_4_telo_GSE126197.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/RNA_0_telo.bw",
+                "indexURL": "",
+                "name": "RNA_0_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "color": "rgb(2, 132, 1)",
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/AB_4_telo.bedGraph",
+                "indexURL": "",
+                "name": "AB_4_telo.bedGraph",
+                "track_type": "ab",
+                "format": "bedgraph"
+            }
+        ]
+    },
+    {
+        "hic": {
+            "contact": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/GSE126199_0.hic",
+            "control": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/GSE126199_4.hic",
+            "locus": "8:80,224,298-82,511,235 8:80,224,298-82,511,235",
+            "isDiag": false,
+            "isSync": false,
+            "isForce": false
+        }
+    },
+    {
+        "hic": {
+            "contact": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/GSE126199_0.hic",
+            "locus": "8:80,224,298-82,511,235 8:80,224,298-82,511,235",
+            "isDiag": true,
+            "isSync": false,
+            "isForce": false
+        },
+        "track2d": [
+            {
+                "track_type": "tad",
+                "name": "TAD_0_telo.txt",
+                "header": {
+                    "Request Method": "GET"
+                },
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/TAD_0_telo.txt",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "track_type": "tad",
+                "name": "TAD_4_telo.txt",
+                "header": {
+                    "Request Method": "GET"
+                },
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/TAD_4_telo.txt",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "name": "SELL",
+                "data": "chr1\t167926431\t167947385\tchr1\t167926431\t167947385\t69,132,1",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            },
+            {
+                "name": "SELL",
+                "data": "chr1\t167926431\t167947385\tchr1\t167926431\t167947385\t69,132,1",
+                "autoscale": true,
+                "displayMode": "COLLAPSED",
+                "height": 40
+            }
+        ],
+        "fa": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta",
+        "fai": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/Homo_sapiens_assembly19.fasta.fai",
+        "cytoband": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_cytoBandIdeo.txt",
+        "ref": "https://hic-1256812583.cos.accelerate.myqcloud.com/human/human_refGene.txt.gz",
+        "track": [
+            {
+                "type": "wig",
+                "height": 50,
+                "color": "rgb(2, 132, 1)",
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/AB_0_telo.bedGraph",
+                "indexURL": "",
+                "name": "AB_0_telo.bedGraph",
+                "track_type": "ab",
+                "format": "bedgraph"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "color": "rgb(2, 132, 1)",
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/AB_4_telo.bedGraph",
+                "indexURL": "",
+                "name": "AB_4_telo.bedGraph",
+                "track_type": "ab",
+                "format": "bedgraph"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/ATAC_0_telo.bw",
+                "indexURL": "",
+                "name": "ATAC_0_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/ATAC_4_telo.bw",
+                "indexURL": "",
+                "name": "ATAC_4_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/H3K27ac_0_telo_GSE126197.bw ",
+                "indexURL": "",
+                "name": "H3K27ac_0_telo_GSE126197.bw ",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/H3K27ac_4_telo_GSE126197.bw",
+                "indexURL": "",
+                "name": "H3K27ac_4_telo_GSE126197.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/RNA_0_telo.bw",
+                "indexURL": "",
+                "name": "RNA_0_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            },
+            {
+                "type": "wig",
+                "height": 50,
+                "url": "https://hic-1256812583.cos.accelerate.myqcloud.com/GSE126199/RNA_4_telo.bw",
+                "indexURL": "",
+                "name": "RNA_4_telo.bw",
+                "track_type": "wig",
+                "format": "bigwig"
+            }
+        ]
+    }
+]

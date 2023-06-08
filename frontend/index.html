@@ -19,17 +19,16 @@
     <link rel="stylesheet" href="css/juicebox.css"/>
 
    
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery/jquery-3.6.0.min.js"></script>
+    <script src="js/jquery/popper.min.js"></script>
+    <script src="js/jquery/bootstrap.min.js"></script>
     <script src="js/layer/layer.js"></script>
-    <script src="js/canvas2svg.js"></script>
-
 
     <script type="module" src="js/app.js"></script>
     <script type="module" src="js/header.js"></script>
     <script type="module" src="js/tools.js"></script>
     <script type="module" src="js/example.js"></script>
+
 
 
 </head>
@@ -44,11 +43,17 @@
         <button class="btn btn-primary dropdown-toggle radius-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
           A map
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" id="load-a-human-sample1">human sample1</a>
-          <a class="dropdown-item" id="load-a-human-sample2">human sample2</a>
-          <a class="dropdown-item" id="load-a-mouse-sample1">mouse sample1</a>
-          <a class="dropdown-item" data-toggle="modal" data-target="#load-A-modal">From URL</a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="load-A-sample">
+          <a class="dropdown-item" value="A549">A549 (hg38)</a>
+          <a class="dropdown-item" value="K562">K562 (hg38)</a>
+          <a class="dropdown-item" value="KBM7">KBM-7 (hg38)</a>
+          <a class="dropdown-item" value="Panc1">Panc1 (hg38)</a>
+          <a class="dropdown-item" value="SKNMC">SK-N-MC (hg38)</a>
+          <a class="dropdown-item" value="GM12878">GM12878 (hg38)</a>
+          <a class="dropdown-item" value="human-sample1">human-1 (hg19)</a>
+          <a class="dropdown-item" value="human-sample2">human-2 (hg19)</a>
+          <a class="dropdown-item" value="mouse-sample1">mouse-1 (mm10)</a>
+          <span class="dropdown-item" data-toggle="modal" data-target="#load-A-modal">From URL</span>
           <label class="dropdown-item btn btn-default btn-file">
             <div>
                 <div>
@@ -67,11 +72,17 @@
         <button class="btn btn-danger dropdown-toggle radius-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
           B map
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" id="load-b-human-sample1">human sample1</a>
-          <a class="dropdown-item" id="load-b-human-sample2">human sample2</a>
-          <a class="dropdown-item" id="load-b-mouse-sample1">mouse sample1</a>
-          <a class="dropdown-item" data-toggle="modal" data-target="#load-B-modal">From URL</a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="load-B-sample">
+          <a class="dropdown-item" value="A549">A549 (hg38)</a>
+          <a class="dropdown-item" value="K562">K562 (hg38)</a>
+          <a class="dropdown-item" value="KBM7">KBM-7 (hg38)</a>
+          <a class="dropdown-item" value="Panc1">Panc1 (hg38)</a>
+          <a class="dropdown-item" value="SKNMC">SK-N-MC (hg38)</a>
+          <a class="dropdown-item" value="GM12878">GM12878 (hg38)</a>
+          <a class="dropdown-item" value="human-sample1">human-1 (hg19)</a>
+          <a class="dropdown-item" value="human-sample2">human-2 (hg19)</a>
+          <a class="dropdown-item" value="mouse-sample1">mouse-1 (mm10)</a>
+          <span class="dropdown-item" data-toggle="modal" data-target="#load-B-modal">From URL</span>
           <label class="dropdown-item btn btn-default btn-file">
             <div>
                 <div>
@@ -92,7 +103,9 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" id="load-hg19-ref">hg19</a>
+          <a class="dropdown-item" id="load-hg38-ref">hg38</a>
           <a class="dropdown-item" id="load-mm10-ref">mm10</a>
+          <a class="dropdown-item" id="load-mm39-ref">mm39</a>
           <a class="dropdown-item" data-toggle="modal" data-target="#load-gene-modal">From URL</a>
           <label class="dropdown-item btn btn-default btn-file">
             <div>
@@ -117,54 +130,16 @@
       <div class="hic-clone">
         <button name="hic-clone" type="button" class="btn btn-info radius-1">Clone</button>
       </div>
-
+<!-- 
       <div class="hic-config">
         <button name="global-config" type="button" class="btn btn-setting radius-1">Config</button>
-      </div>
+      </div> -->
       <!-- <div class="hic-clone">
         <button name="export" type="button" class="btn btn-info radius-1">Export</button>
       </div> -->
 
     </div>
   </header>
-  <!-- <div class="cover" id='cover'>
-    <div class="left-menu">
-      <div class="item title">
-        <span>A map</span>
-      </div>
-      <div class="item subtitle">
-        <span>Load Local File</span>
-      </div>
-      <div class="item subtitle">
-        <span>Load Remote File</span>
-      </div>
-      <div class="item title">
-        <span>B map</span>
-      </div>
-      <div class="item subtitle">
-        <span>Load Local File</span>
-      </div>
-      <div class="item subtitle">
-        <span>Load Remote File</span>
-      </div>
-
-      <div class="item title">
-        <span>Track</span>
-      </div>
-      <div class="item subtitle">
-        <span>Load Local File</span>
-      </div>
-      <div class="item subtitle">
-        <span>Load Remote File</span>
-      </div>
-      <div class="item subtitle">
-        <span>Clone</span>
-      </div>
-
-    </div>
-    <div class="right-cover" id = 'right-cover'></div>
-  </div> -->
-  
 
   <main class="hic-main">
     <section class="hic-view">
@@ -348,23 +323,48 @@
       </div>
     </div>
   </section>
-
-
-
-
-  <!--<div style="background-color: #eee; height: 300px;border-bottom: 1px solid white;">-->
-  <!--  <div class="footer-left">-->
-
-  <!--  </div>-->
-  <!--  <fiv class="footer-right">-->
-
-  <!--  </fiv>-->
-  <!--</div>-->
   <footer class="hic-footer">
-    <div>Copyright © 2021-2023. Nankai University.</div>
+    <div>Copyright © 2021-2023.</div>
     <div>Developed by the <a href="http://bio.nankai.edu.cn" target="_blank">Liu Lab</a></div>
+    <div style="display: flex;">
+      <span>Based on</span>
+      <span style="margin-left: 5px;margin-right: 5px;">
+        <img src="./img/juicebox.png" alt="" width="15px" height="15px">
+        <a href="https://github.com/igvteam/juicebox.js" target="_blank" rel="noopener noreferrer">juicebox.js</a>
+      </span>
+      <span>&</span>
+      <span style="margin-left: 5px;margin-right: 5px;">
+        <img src="./img/igv.png" alt="" width="16px" height="15px">
+        <a href="https://github.com/igvteam/igv.js" target="_blank" rel="noopener noreferrer">igv.js</a>
+      </span>
+    </div>
     <div>All rights reserved.</div>
   </footer>
+
+  <div class="hic-tools-left">
+    <div class="box" id="3Ddisplay" data-toggle="tooltip" data-placement="left" title="3D Display">
+      <span class="tool" >
+          <i class="fa fa-cube"></i>
+      </span>
+    </div>
+
+    <div class="box" id = "browser-search" data-toggle="tooltip" data-placement="left" title = "Search">
+        <span class="tool">
+            <i class="fa fa-search"></i>
+        </span>
+    </div>
+
+    <div class="box" id='analyse' data-toggle="tooltip" data-placement="left" title = "Spatial Structure Analysis">
+        <span class="tool">
+            <i class="fa fa-bar-chart-o"></i>
+        </span>
+    </div>
+    <div class="box" id = "delete_igv" data-toggle="tooltip" data-placement="left" title = "Delete ROI">
+      <span class="tool">
+        <i class="fa fa-trash-o"></i>
+      </span>
+    </div>
+  </div>
 
   <div class="hic-tools-right">
     <div class="box" id="cursor-guide" data-toggle="tooltip" data-placement="left" title="cursor guide">
@@ -391,35 +391,7 @@
     </div>
   </div>
 
-  <div class="hic-tools-left">
-    <div class="box" id="3Ddisplay" data-toggle="tooltip" data-placement="left" title="3D Display">
-      <span href="#" class="tool" >
-          <i class="fa fa-cube"></i>
-      </span>
-    </div>
 
-    <div  class="box" id = "browser-search" data-toggle="tooltip" data-placement="left" title = "Search">
-        <span class="tool">
-            <i class="fa fa-search"></i>
-        </span>
-    </div>
-
-    <div class="box" id='analyse' data-toggle="tooltip" data-placement="left" title = "Spatial Structure Analysis">
-        <span href="#" class="tool">
-            <i class="fa fa-bar-chart-o"></i>
-        </span>
-    </div>
-    <div class="box" id = "ROI" data-toggle="tooltip" data-placement="left" title = "Region of Interest">
-      <span href="#" class="tool">
-          <i class="fa fa-square-o"></i>
-      </span>
-    </div>
-    <div class="box" id = "delete_igv" data-toggle="tooltip" data-placement="left" title = "Delete Genome Browser">
-      <span href="#" class="tool">
-        <i class="fa fa-trash-o"></i>
-      </span>
-    </div>
-  </div>
 
   <div style="display: none;">
     <input id="delete_panel">
