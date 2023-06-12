@@ -42366,6 +42366,7 @@ class ContactMatrixView {
                   // let tr = (rec.counts >= low_bound && rec.counts <= up_bound) ? rec.counts:0;
                   // let tc = (controlRec.counts >= control_low_bound && controlRec.counts <= control_up_bound) ? controlRec.counts:0;
                   score = (rec.counts / averageCount) / (controlRec.counts / ctrlAverageCount);
+                  // score = rec.counts - controlRec;
                   rgba = this.ratioColorScale.getColor(score);
                   setPixel(id, x, y, rgba.red, rgba.green, rgba.blue, rgba.alpha);
                   if (sameChr && row === column) {

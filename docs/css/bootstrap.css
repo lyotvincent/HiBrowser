@@ -8,7 +8,7 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
 
-.clearfix {
+ .clearfix {
   *zoom: 1;
 }
 
@@ -99,7 +99,6 @@ sub {
 }
 
 img {
-  width: auto\9;
   height: auto;
   max-width: 100%;
   vertical-align: middle;
@@ -763,7 +762,7 @@ h3 {
 }
 
 h1 {
-  font-size: 38.5px;
+  font-size: 25px;
 }
 
 h2 {

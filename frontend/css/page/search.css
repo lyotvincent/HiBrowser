@@ -306,6 +306,10 @@ tbody>tr>td {
   color: rgb(103, 106, 108)
 }
 
+tbody>tr>td>a {
+  color: rgb(103, 106, 108)
+}
+
 .search_goto_button {
   border: none;
   background: white;

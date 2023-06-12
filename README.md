@@ -98,6 +98,10 @@ visit http://<you_ip>
 2. Open `index.html` with your browser[eg. Google Chrome]
 
 
+## 4、docs in pdf
+
+see usermanual.pdf in repo.
+
 # Example page
 Three cases are available for users to view. 
 

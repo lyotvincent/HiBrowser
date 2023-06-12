@@ -106,21 +106,25 @@ function go_and_draw_1(locus,name, b){
 function go_and_draw_2(locus1, locus2, b){
   let [chrx,xs,xe] = parseLocus(locus1);
   let [chry,ys,ye] = parseLocus(locus2);
-  let data = chrx + '\t' + (xs - 5000) + '\t' + (xe + 5000) + '\t' + chry + '\t' + (ys  - 5000) + '\t' + (ye + 5000); + '\t0,0,0'
+  let left = Math.min(xs, ys);
+  let right = Math.max(xe, ye);
+  let data;
   let xgap = xe - xs;
   let ygap = ye - ys;
   let range;
   if (chrx === chry){
     range = intra_locus_range;
+    data = chrx + '\t' + (left - 5000) + '\t' + (right + 5000) + '\t' + chry + '\t' + (left  - 5000) + '\t' + (right + 5000); + '\t0,0,0'
   }else{
     range = inter_locus_range;
+    data = chrx + '\t' + (xs - 5000) + '\t' + (xe + 5000) + '\t' + chry + '\t' + (ys  - 5000) + '\t' + (ye + 5000); + '\t0,0,0'
   }
   xs -= range / 4;
   xe += range * 0.75 - xgap;
   ys -= range / 4;
   ye += range * 0.75 - ygap;
   let cor = chrx + ':' + Number(xs).toLocaleString() + '-' + Number(xe).toLocaleString() + ' ' + chry + ':' + Number(ys).toLocaleString() + '-' + Number(ye).toLocaleString();
-  
+  console.log(data);
   let config = {
     "name": 'Arcs',
     "data":data,

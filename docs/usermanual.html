@@ -29,7 +29,7 @@
               <div class="nav-collapse collapse">
                   <ul class="nav">
                       <li><a href="./index.html">HOME</a></li>
-                      <li><a href="" target="_blank">BROWSER</a></li>
+                      <li><a href="./browser" target="_blank">BROWSER</a></li>
                       <li class="active"><a href="./usermanual.html">USER MANUAL</a></li>
                       <li><a href="./data.html">SUPPORT DATA</a></li>
                       <li><a href="https://github.com/nkulpj/hicbrowser" target="_blank">SOURCE</a></li>
@@ -94,7 +94,7 @@
 								<li>Others</li>
 							</ul>
 					</ul>
-					<p><b>When entering the app homepage, we will load two empty Hi-C Viewer by default 
+					<p><b>When entering the app homepage, we will load two(or three, adapt to the display page automatically.) empty Hi-C Viewer by default 
 						and use a <span style="background: rgb(15, 118, 162);color: white;">blue bar</span> to indicate the currently selected viewer.
 					</b></p>
 					<p class="warning">
@@ -128,6 +128,7 @@
 						</p>
 					</div>
 					<h4>B map</h4>
+					<b>The button will be disabled if A map is not loaded.</b>
 					<p><i>The first .hic file is called <b class="warning">contact map</b> and the second one called <b class="warning">control map</b> if they are both loaded into the same Hi-C Viewer.</i></p>
 					<p><i>This function is implemented to compare the differences between samples more conveniently which is supported by juicer box.</i></p>
 					<p>By clicking this button, you can load a control Hi-C file and visualize it.</p>
@@ -152,10 +153,9 @@
 					</div>
 					<p class="info">If you are prompted that loading fails, you can confirm whether you have selected the correct viewer.</p>
 					<div class="bs-docs-example" style="text-align: center;">
-						<img width="48%" src="img/fig5.png" class="img-rounded">
-						<img width="48%" src="img/fig6.png" class="img-rounded">
+						<img width="100%" src="img/fig33.png" class="img-rounded">
 						<hr>
-						<span>left:load contact map; right: load control map</span>
+						<span>left:load contact map; middle: load control map; right: change displayed heatmap</span>
 					</div> 
                 </section>
 				<section id="loadgene">
@@ -195,6 +195,12 @@
 					<p class="info">If you are prompted that loading fails, you can confirm whether you have selected the correct viewer.</p>
 					<div class="bs-docs-example" style="text-align: center;">
 						<img width="100%" src="img/fig7.png" class="img-rounded">
+					</div> 
+					<p class="info">You can choose whether to display chromosome ideogram, chromosome coordinate axes, chromosome sequences, settings button, and scrollbar. 
+						All settings can be changed at any time during runtime.</p>
+
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="40%" src="img/fig5.png" class="img-rounded">
 					</div> 
                 </section>
 				<section id="loadtrack">
@@ -258,9 +264,9 @@
 					 <ul>
 						 <li>Support coordinate : <span class="bghl">chrx:start-end chry:start-end(space split)</span></li>
 							 <ul>
-								 <li>support omitting prefix `chr` </li>
-								 <li>support ommiting chry</li>
-								 <li>support ommiting end</li>
+								 <li>support omitting prefix `chr` [eg:5:1-181,538,259 5:1-181,538,259 </li>
+								 <li>support ommiting chry [eg: 5:1-181,538,259]</li>
+								 <li>support ommiting end [eg: 5:1]</li>
 							 </ul>
 						 <li>Support gene : gene name</li>
 					 </ul>
@@ -270,6 +276,37 @@
 						<li>left one: if the value recored in .hic is equal to min value</li>
 						<li>right one: if the value recored in .hic is equal to max value</li>
 					 </ul>
+					 <p class="info">If B map is loaded, the colorbar will add to three. At this point:</p>
+					 <p><span style="color: green;">When both A and B map are loaded simultaneously, the color is caulcated by log(a/b).</span></p>
+					 <ul>
+						<li>left one: if the value is equal to 0</li>
+						<li>middle one: if the value is negative</li>
+						<li>right one: if the value is positive</li>
+					 </ul>
+					 <h4>Tooltip and rulers</h4>
+					 <p>Display the current record value of loaded Hi-C data at the mouse cursor.</p>
+					 <h4>Display mode</h4>
+					 <ul>
+						<li>horizontal triangular heatmap</li>
+						<li>two-dimensional heatmap</li>
+					 </ul>
+					 <div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig22.png" class="img-rounded">
+						<hr>
+						<span>left: inter-contact between chr X and chr Y; right : intra-contact of chr 1</span>
+					</div> 
+					 <h4>Displayed mode</h4>
+					 <ul>
+						<li>A</li>
+						<li>B</li>
+						<li>A/B</li>
+						<li>B/A</li>
+						<li>AMB</li>
+					 </ul>
+					 <p class="info">
+						In the mode od “AMB”, the lower-left and upper-right parts of a view display the contact maps of A and B respectively. 
+						And 2D annotations associated with two samples (A and B) are displayed in the corresponding lower-left and upper-right of the heatmap 
+					 </p>
 					 <h4>Threshold of contact value</h4>
 					 <p>Controls the color depth of the heat map. The higher the value, the lighter the heat map color</p>
 				
@@ -283,6 +320,9 @@
 						 <hr>
 						 <span>Adjust color bar and threshold. The resolution and normalization are changed for the right</span>
 					 </div> 
+					 <h4>Zoom in & Zoom out</h4>
+					<p>The functions are the same as their name.</p>
+			
 					 <h4>lock</h4>
 					 <p>lock the select option resolution</p>
 					 <h4>delete</h4>
@@ -306,10 +346,12 @@
 					 </div>
 					 <h4>2d track menu</h4>
 					 <p>Here, you can quickly locate the whole chromosome.</p>
+					 <p>adjust the heatmap data display range during runtime, (e.g., filtering out low-frequency remote interactions or high-frequency internal interactions) </p>
 					 <p>If you loaded 2d tracks, you can also manage them here, such as adjusting colors, deleting, etc</p>
+					 <p>You can also modify some settings related to the genome browser.</p>
 					 <div class="bs-docs-example" style="text-align: center;">
-						<img width="48%" src="img/fig13.png" class="img-rounded">
-						<img width="48%" src="img/fig14.png" class="img-rounded">
+						<img width="48%" src="img/fig6.png" class="img-rounded">
+						<img width="48%" src="img/fig34.png" class="img-rounded">
 					</div> 
 					 <h4>sync</h4>
 					 <p>See Next Section.</p>
@@ -322,12 +364,13 @@
 						<li>B/A</li>
 					 </ul>
 					 <div class="bs-docs-example" style="text-align: center;">
-						<img width="24%" src="img/fig15.png" class="img-rounded">
-						<img width="24%" src="img/fig16.png" class="img-rounded">
-						<img width="24%" src="img/fig17.png" class="img-rounded">
-						<img width="24%" src="img/fig18.png" class="img-rounded">
+						<img width="19%" src="img/fig15.png" class="img-rounded">
+						<img width="19%" src="img/fig16.png" class="img-rounded">
+						<img width="19%" src="img/fig17.png" class="img-rounded">
+						<img width="19%" src="img/fig18.png" class="img-rounded">
+						<img width="19%" src="img/fig35.png" class="img-rounded">
 						<hr>
-						<span>From left to right: A, B, A/B, B/A</span>
+						<span>From left to right: A, B, A/B, B/A, AMB</span>
 					</div> 
 
 				 </section>	
@@ -370,34 +413,8 @@
 					<p>see in <a href="#search">here</a></p>
 					<h4>Analyse</h4>
 					<p>see in <a href="#analyse">here</a></p>
-					<h4>ROI</h4>
-					<p>Region of Interest</p>
-					<div class="bs-docs-example" style="text-align: center;">
-						<img width="100%" src="img/fig21.png" class="img-rounded">
-					</div> 
-					<p>Changed the drag event on canvas to be selecting a region of interest, where you can: </p>
-					<ul>
-						<li>Get coordinate</li>
-						<li>Zoom into this region</li>
-						<li>Display in 3D model</li>
-						<li>Highlight</li>
-					</ul>
-					<h4>Zoom in & Zoom out & Back to Top</h4>
-					<p>The functions are the same as their name.</p>
-					<h4>Rotate</h4>
-					<p class="warning">We found that the currently published Hi-C browser only allows to display the heat maps for intra-chromosomes, 
-						that are displayed in diagonal matrix which is more suitable for studying the internal interaction of chromosomes 
-						while The juicebox can display the heatmap of different chromosomes.
-					</p>
-					<p>We integrate two forms, 
-						supporting the diagonal matrix to display the  heat map of intra-chromosomes, 
-						and the matrix to display the inter-chromosomes.
-					</p>
-					<div class="bs-docs-example" style="text-align: center;">
-						<img width="100%" src="img/fig22.png" class="img-rounded">
-						<hr>
-						<span>left: inter-contact between chr X and chr Y; right : intra-contact of chr 1</span>
-					</div> 
+
+					
 					<h4>Refresh</h4>
 					<p class="warning">
 						We suggest using this widget to refresh the page instead of using `F5` or the reload button of your browser.
@@ -521,7 +538,10 @@
 						<img width="100%" src="img/fig25.png" class="img-rounded">
 					</div> 
 					<p>In each column of the interaction table, you can click to view the details and associate them with the Hi-C Viewer</p>
-                </section>
+					<div class="bs-docs-example" style="text-align: center;">
+						<img width="100%" src="img/fig36.png" class="img-rounded">
+					</div> 
+				</section>
 				 <section id="analyse">
 					<div class="page-header"><h1>Analyse</h1></div>
 					<p>At the chromosome level, Hi-C technology reveals that chromatin can be divided into A/B components, where A is related with accessible and transcriptionally active euchromatin
