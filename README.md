@@ -118,6 +118,19 @@ https://hic.bioaimed.com/browser/?example=100010
 https://hic.bioaimed.com/browser/?example=100020
 https://hic.bioaimed.com/browser/?example=100030
 ```
+## Data used in Supplementary:
+
+The data used in the supplementary figures is listed below.
+
+GM12878 Cell Line: https://4dn-open-data-public.s3.amazonaws.com/fourfront-webprod/wfoutput/1201682a-a223-482d-913d-3c3972b8eb65/4DNFIIRIHBR2.hic
+
+mES Cell Line: https://cdn.bioaimed.com/mouse/mouse.hic
+
+ChIP-seq Data: GEO accession code GSE36028
+
+K562 and KBM-7 Cell Lines: https://data.4dnucleome.org/publications/cf0e49aa-173c-49d1-a7c7-22acbc83c064/
+
+
 
 ## test data
 Here are some test data we provide.It can be visualized in HiBrowser(your locally deployed or we host instance) by using URL. But it will be slow due to the network congestion.
