@@ -10,18 +10,15 @@
 >
 
 <div align=center>
-<img src="./imgs/figure2.png" width="70%" height="50%" />
-</br>Figure 1. framework of HiBrowser
+<img src="./imgs/figure5.png" width="70%" height="50%" />
 </div>
 
 <div align=center>
 <img src="./imgs/figure3.png" width="70%" height="70%" />
-</br>Figure 2. Interface of HiBrowser
 </div>
 
 <div align=center>
 <img src="./imgs/figure4.png" width="70%" height="70%" />
-</br>Figure 3. Interface of HiBrowser
 </div>
 
 
